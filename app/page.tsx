@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {type SanityDocument} from "next-sanity";
 import {client} from "@/sanity/client";
+import Button from "@/components/Button";
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -13,8 +14,9 @@ export default async function IndexPage() {
   const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
 
   return (
-    <main>
-      <h1>Posts</h1>
+    <main className="dark">
+      <h1>Homepage</h1>
+      <Button variant="secondary">Testing</Button>
       <ul>
         {posts.map((post) => (
           <li key={post._id}>
