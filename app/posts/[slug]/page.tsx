@@ -24,7 +24,7 @@ export default async function PostPage({
     : null;
 
   return (
-    <main className="prose dark:prose-invert m-auto">
+    <main className="w-4xl m-auto">
       <Link href="/">Back to posts</Link>
       {postImageUrl && (
         <img

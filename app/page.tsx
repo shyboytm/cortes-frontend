@@ -14,13 +14,15 @@ export default async function IndexPage() {
   const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
 
   return (
-    <main className="m-auto mt-16">
+    <main className="w-4xl m-auto mt-16">
       <div className="flex text-xl flex-col items-start gap-2">
         <h1 className="">Dennis Cortés</h1>
         <h2 className="font-normal">Software Product Designer</h2>
       </div>
+      <Button variant="primary">Testing</Button>
       <Button variant="secondary">Testing</Button>
-      <ul>
+      <Button variant="tertiary">Testing</Button>
+      {/* <ul>
         {posts.map((post) => (
           <li key={post._id}>
             <Link href={`/posts/${post.slug.current}`}>
@@ -29,7 +31,7 @@ export default async function IndexPage() {
             </Link>
           </li>
         ))}
-      </ul>
+      </ul> */}
     </main>
   );
 }
