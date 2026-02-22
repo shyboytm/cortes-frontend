@@ -3,8 +3,8 @@
 // @use "tw-animate-css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f4ff;
+  --foreground: #120b1c;
 }
 
 @theme {
@@ -16,20 +16,16 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #120b1c;
+    --foreground: #f8f4ff;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mono);
+  @apply antialiased;
 }
 
 h1 {
-}
-
-p, span {
-  font-family: var(--font-mono);
 }

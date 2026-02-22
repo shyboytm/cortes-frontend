@@ -24,7 +24,7 @@ export default async function PostPage({
     : null;
 
   return (
-    <main className="w-4xl m-auto">
+    <main className="w-3xl m-auto">
       <Link href="/">Back to posts</Link>
       {postImageUrl && (
         <img
