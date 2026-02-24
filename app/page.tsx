@@ -17,7 +17,7 @@ export default async function IndexPage() {
   return (
     <main className="gradient-background">
       <div id="main-content" className="m-auto w-3xl">
-        <PrimaryNav />
+        <PrimaryNav></PrimaryNav>
         <div className="flex text-xl flex-col items-start gap-2">
           <h1 className="font-semibold">Dennis Cortés</h1>
           <h2 className="font-normal">Software Product Designer</h2>
