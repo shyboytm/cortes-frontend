@@ -1,6 +1,6 @@
 import React, { forwardRef, ButtonHTMLAttributes } from "react";
 
-export default function Button({ children, variant = "primary", onClick }) {
+export default function Button({ children, variant = "primary" }) {
   const styles = "font-semibold px-4 py-2 rounded-xl transition-all";
   const variants = {
     primary: "bg-purple-900 text-white hover:bg-purple-800",
@@ -9,7 +9,7 @@ export default function Button({ children, variant = "primary", onClick }) {
   };
 
   return (
-    <button onClick={onClick} className={`${styles} ${variants[variant]}`}>
+    <button className={`${styles} ${variants[variant]}`}>
       {children}
     </button>
   );
