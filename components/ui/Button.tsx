@@ -1,6 +1,11 @@
-import React, { forwardRef, ButtonHTMLAttributes } from "react";
+import React, { forwardRef, ButtonHTMLAttributes, ReactNode } from "react";
 
-export default function Button({ children, variant = "primary" }) {
+interface ButtonProps {
+  children: ReactNode;
+  variant?: "primary" | "secondary" | "tertiary";
+}
+
+export default function Button({ children, variant = "primary" }: ButtonProps) {
   const styles = "font-semibold px-4 py-2 rounded-xl transition-all";
   const variants = {
     primary: "bg-purple-900 text-white hover:bg-purple-800",
