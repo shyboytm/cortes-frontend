@@ -33,10 +33,14 @@ h1 {
 
 // Custom classes
 .gradient-background {
-  background: linear-gradient(-45deg, rgba(238, 119, 82, 0.1), rgba(231, 60, 126, 0.1), rgba(35, 166, 213, 0.1), rgba(35, 213, 171, 0.1));
+  background: linear-gradient(-45deg, rgba(238, 119, 82, 0.1), rgba(231, 60, 126, 0.1), rgba(35, 166, 213, 0.1), rgba(35, 213, 171, 0.1)), url("/public/noise.png");
 	background-size: 400% 400%;
 	animation: gradient-animation 15s ease-in-out infinite;
 	height: 100vh;
+}
+
+.glass {
+  backdrop-filter: blur(10px);
 }
 
 // Animations

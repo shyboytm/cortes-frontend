@@ -16,13 +16,13 @@ export default async function IndexPage() {
   const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
 
   return (
-    <main className="gradient-background pt-32">
+    <main className="gradient-background">
       <div id="main-content" className="ml-16 w-3xl">
 
         <PrimaryNav></PrimaryNav>
 
         <div className="flex text-xl flex-col items-start gap-2">
-          <h1 className="font-semibold">Dennis Cortés</h1>
+          <h1 className="font-semibold">About</h1>
           <h2 className="font-normal">Software Product Designer</h2>
         </div>
 
@@ -32,27 +32,6 @@ export default async function IndexPage() {
           <p>I'm currently available for full time and contract design roles for early stage startups and sound/music design projects for games, apps, podcasts, and films.</p>
           <p>I produce music under the alias Cordio, and create tracks for films, shows, and podcasts. Listen to all my music anywhere you stream music, or snag some on my Bandcamp.</p>
         </div>
-
-        <Button variant="primary">Testing</Button>
-        <Button variant="secondary">Testing</Button>
-        <Button variant="tertiary">Testing</Button>
-
-        <ul>
-          {posts.map((post) => (
-            <li key={post._id}>
-              <Link href={`/posts/${post.slug.current}`}>
-                 {/* <Image
-                    src={post.image}
-                    width={500}
-                    height={500}
-                    alt="Picture of the author"
-                  /> */}
-                <h2>{post.title}</h2>
-                <p>{new Date(post.publishedAt).toLocaleDateString()}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
       </div>
     </main>
   );
