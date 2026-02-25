@@ -1,6 +1,16 @@
 import React from "react";
 import Link from 'next/link'
 
+let dateTime = new Date().toLocaleString("en-US", {
+  timeZone: "America/Chicago",
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true,
+});
+
 export default function PrimaryNav({}) {
   const styles = "glass bg-black/10 dark:bg-white/10 fixed font-semibold px-6 py-2 rounded-full transition-all top-8 z-40";
 
@@ -20,6 +30,9 @@ export default function PrimaryNav({}) {
         </li>
         <li className={`${itemStyles}`}>
           <Link href="/work">Work</Link>
+        </li>
+        <li className={`${itemStyles} font-mono font-normal`}>
+          {dateTime}
         </li>
       </ul>
     </div>

@@ -17,16 +17,16 @@ export default async function IndexPage() {
 
   return (
     <main className="gradient-background pt-32">
-      <div id="main-content" className="ml-16 w-3xl">
+      <div id="main-content" className="ml-16 w-xl">
 
         <PrimaryNav></PrimaryNav>
 
-        <div className="flex text-xl flex-col items-start gap-2">
+        <div className="flex glow text-xl flex-col items-start gap-2">
           <h1 className="font-semibold">Dennis Cortés</h1>
           <h2 className="font-normal">Software Product Designer</h2>
         </div>
 
-        <div className="font-mono opacity-75 mt-6 space-y-4">
+        <div className="font-mono opacity-75 my-6 space-y-4 text-sm">
           <p>I currently work at Aboon, and I was most recently a designer at Instagram on the Growth Web team. Outside of work, I build the game journaling app GamePal, I create music as Cordio & Horizon Radar, restore and mod old game consoles, and take photos.</p>
           <p>I specialize in product design for both web and mobile apps and thrive in 0 → 1 work. My expertise is in design leadership, visual design, user experience, and design systems. I also have a background in Engineering, with a focus on React, CSS architecture, and component systems.</p>
           <p>I'm currently available for full time and contract design roles for early stage startups and sound/music design projects for games, apps, podcasts, and films.</p>
