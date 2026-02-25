@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@icons-pack/react-simple-icons": "^13.11.2",
     "@sanity/image-url": "^2.0.3",
     "geist": "^1.7.0",
+    "lucide-react": "^0.575.0",
     "next": "16.1.6",
     "next-sanity": "^12.1.0",
     "postcss": "^8.5.6",

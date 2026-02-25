@@ -4,6 +4,7 @@ import {client} from "@/sanity/client";
 import Button from "@/components/ui/Button";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import Image from 'next/image'
+import { Mailbox } from 'lucide-react';
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -17,13 +18,23 @@ export default async function IndexPage() {
 
   return (
     <main className="gradient-background pt-32">
-      <div id="main-content" className="ml-16 w-xl">
-
-        <PrimaryNav></PrimaryNav>
+      <PrimaryNav></PrimaryNav>
+      
+      <div id="main-content" className="m-auto w-xl">
 
         <div className="flex glow text-xl flex-col items-start gap-2">
-          <h1 className="font-semibold">Dennis Cortés</h1>
-          <h2 className="font-normal">Software Product Designer</h2>
+          <span className="font-mono opacity-50 text-xs w-full">36.1627° N, 86.7816° W</span>
+          <span className="font-mono opacity-50 text-xs w-full">DESIGN / PHOTO / CODE / MUSIC</span>
+          <h1 className="font-semibold w-full">Dennis Cortés</h1>
+          <h2 className="font-normal w-full">Software Product Designer</h2>
+        </div>
+
+        <div className="my-6">
+          <Link href="https://www.instagram.com/shyboytm/">
+            <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
+              <Mailbox size={24} />
+            </div>
+          </Link>
         </div>
 
         <div className="font-mono opacity-75 my-6 space-y-4 text-sm">

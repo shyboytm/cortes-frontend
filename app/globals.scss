@@ -37,7 +37,7 @@ h1 {
 }
 
 .glow {
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
 .gradient-background {
@@ -45,6 +45,7 @@ h1 {
   background-size: 400% 400%;
   animation: gradient-animation 15s ease-in-out infinite;
   height: 100vh;
+
 }
 // Animations
 @keyframes gradient-animation {
