@@ -1,10 +1,11 @@
 import Link from "next/link";
 import {type SanityDocument} from "next-sanity";
 import {client} from "@/sanity/client";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button"
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import Image from 'next/image'
 import { Mailbox } from 'lucide-react';
+import type {SimpleIcon} from 'simple-icons';
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -35,6 +36,11 @@ export default async function IndexPage() {
               <Mailbox size={24} />
             </div>
           </Link>
+          <Link href="https://www.instagram.com/shyboytm/">
+            <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
+              <img height="24" width="24" src="https://cdn.simpleicons.org/instagram/black" />
+            </div>
+          </Link>
         </div>
 
         <div className="font-mono opacity-75 my-6 space-y-4 text-sm">
@@ -44,9 +50,8 @@ export default async function IndexPage() {
           <p>I produce music under the alias Cordio, and create tracks for films, shows, and podcasts. Listen to all my music anywhere you stream music, or snag some on my Bandcamp.</p>
         </div>
 
-        <Button variant="primary">Testing</Button>
-        <Button variant="secondary">Testing</Button>
-        <Button variant="tertiary">Testing</Button>
+        <Button>Testing</Button>
+        <Button variant="outline">Testing</Button>
 
         <ul>
           {posts.map((post) => (
