@@ -41,6 +41,16 @@ export default async function IndexPage() {
               <img height="24" width="24" src="https://cdn.simpleicons.org/instagram/black" />
             </div>
           </Link>
+          <Link href="https://www.linkedin.com/in/fromcortes/">
+            <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
+              <img height="24" width="24" src="https://cdn.simpleicons.org/linkedin/black" />
+            </div>
+          </Link>
+          <Link href="https://www.instagram.com/shyboytm/">
+            <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
+              <img height="24" width="24" src="https://cdn.simpleicons.org/instagram/black" />
+            </div>
+          </Link>
         </div>
 
         <div className="font-mono opacity-75 my-6 space-y-4 text-sm">
