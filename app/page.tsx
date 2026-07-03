@@ -23,13 +23,6 @@ export default async function IndexPage() {
       
       <div id="main-content" className="m-auto w-xl">
 
-        <div className="flex glow text-xl flex-col items-start gap-2">
-          <span className="font-mono opacity-50 text-xs w-full">36.1627° N, 86.7816° W</span>
-          <span className="font-mono opacity-50 text-xs w-full">DESIGN / PHOTO / CODE / MUSIC</span>
-          <h1 className="font-semibold w-full">Dennis Cortés</h1>
-          <h2 className="font-normal w-full">Software Product Designer</h2>
-        </div>
-
         <div className="my-6">
           <Link href="https://www.instagram.com/shyboytm/">
             <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
@@ -80,6 +73,61 @@ export default async function IndexPage() {
           ))}
         </ul>
       </div>
+
+      <main className="pt-24 px-2 md:px-4 pb-10">
+        <div className="columns-2 md:columns-3 lg:columns-4 gap-2 md:gap-3 space-y-2 md:space-y-3 [column-fill:_balance]">
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden1/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden2/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden3/600/400" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden4/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden5/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden6/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden7/600/280" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden8/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden9/600/500" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden10/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden11/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden12/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+        </div>
+      </main>
+
     </main>
   );
 }
