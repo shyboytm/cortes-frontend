@@ -126,6 +126,54 @@ export default async function IndexPage() {
           <a href="#" className="block break-inside-avoid overflow-hidden group relative">
             <img src="https://picsum.photos/seed/hidden12/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
           </a>
+          
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden1/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden2/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden3/600/400" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden4/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden5/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden6/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden7/600/280" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden8/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden9/600/500" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden10/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden11/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
+
+          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
+            <img src="https://picsum.photos/seed/hidden12/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+          </a>
 
         </div>
       </main>
