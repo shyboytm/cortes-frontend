@@ -3,6 +3,7 @@ import {type SanityDocument} from "next-sanity";
 import {client} from "@/sanity/client";
 import { Button } from "@/components/ui/button"
 import PrimaryNav from "@/components/ui/PrimaryNav";
+import PrimaryFooter from "@/components/ui/PrimaryFooter";
 import Image from 'next/image'
 import { Mailbox } from 'lucide-react';
 import type {SimpleIcon} from 'simple-icons';
@@ -19,6 +20,7 @@ export default async function IndexPage() {
 
   return (
     <main className="gradient-background pt-32">
+      
       <PrimaryNav></PrimaryNav>
       
       <div id="main-content" className="m-auto w-xl">
@@ -127,6 +129,8 @@ export default async function IndexPage() {
 
         </div>
       </main>
+
+      <PrimaryFooter></PrimaryFooter>
 
     </main>
   );
