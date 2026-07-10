@@ -91,7 +91,7 @@ export default function PrimaryNav({}) {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+                <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="w-96">
                     <ListItem href="/docs" title="Introduction">
@@ -107,7 +107,7 @@ export default function PrimaryNav({}) {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem className="hidden md:flex">
-                <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+                <NavigationMenuTrigger>Fun</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {components.map((component) => (
@@ -123,18 +123,18 @@ export default function PrimaryNav({}) {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>With Icon</NavigationMenuTrigger>
+                <NavigationMenuTrigger>Contact</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[200px]">
                     <li className="flex-row items-center gap-2">
                       <NavigationMenuLink asChild>
-                        <Link href="#" className="flex-row items-center gap-2"><CircleAlertIcon />Backlog</Link>
+                        <Link href="#" className={`itemStyles`}><CircleAlertIcon />Backlog</Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
                         <Link href="#"><CircleDashedIcon />To Do</Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
-                        <Link href="#" className="flex-row items-center gap-2"><CircleCheckIcon />Done</Link>
+                        <Link href="#" className={`itemStyles`}><CircleCheckIcon />Done</Link>
                       </NavigationMenuLink>
                     </li>
                   </ul>
@@ -161,7 +161,7 @@ function ListItem({
 }: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
   return (
     <li {...props}>
-      <NavigationMenuLink asChild>
+      <NavigationMenuLink asChild className="py-1 px-1">
         <Link href={href}><div className="flex flex-col gap-1 text-sm">
           <div className="leading-none font-medium">{title}</div>
           <div className="line-clamp-2 text-muted-foreground">{children}</div>
