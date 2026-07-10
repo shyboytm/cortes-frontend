@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import GlobalShader from '@/components/GlobalShaders'
 
 import "./globals.scss";
 
@@ -25,7 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <body>{children}</body>
+      <body className="bg-white text-black dark:bg-black dark:text-white">
+        {/* The DOM the shader samples — all pages render inside this */}
+        <div id="site-content">
+          {children}
+        </div>
+
+        {/* One canvas, every page */}
+        <GlobalShader />
+      </body>
     </html>
   );
 }

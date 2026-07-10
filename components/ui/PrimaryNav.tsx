@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import Link from 'next/link'
 import {
@@ -53,6 +54,7 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ]
 
+// Get the current date and time in the specified format
 let dateTime = new Date().toLocaleString("en-US", {
   timeZone: "America/Chicago",
   month: "short",
@@ -69,8 +71,8 @@ export default function PrimaryNav({}) {
   const ulStyles = "flex flex-col gap-2 transition-all";
 
   return (
-    <div className="px-6 w-full">
-      <div className={`${styles}`}>
+    <header className="px-6 w-full">
+      <div id="primary-nav" className={`${styles}`}>
         <ul className={`${ulStyles}`}>
           <li>
             Dennis Cortés
@@ -149,7 +151,9 @@ export default function PrimaryNav({}) {
           </NavigationMenu>
         </ul>
       </div>
-    </div>
+                  
+
+    </header>
   );
 }
 
