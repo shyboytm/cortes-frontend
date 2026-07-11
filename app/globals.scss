@@ -99,6 +99,10 @@
 
 body {
   @apply antialiased;
+  // Subtle site-wide glow — text-shadow is inherited, and currentColor
+  // re-resolves per element, so every element glows in its own color
+  // without needing to touch individual components.
+  text-shadow: 0 0 3px color-mix(in oklab, currentColor 45%, transparent);
 }
 
 h1 {
@@ -113,6 +117,16 @@ h1 {
   text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
+.underline {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 12px;
+}
+
+.underline:hover {
+  text-decoration-thickness: 0px;
+}
+
 // Keeps horizontally-scrolling rows (e.g. WorkRow) usable without a visible
 // scrollbar cluttering the design.
 .scrollbar-hide {
@@ -124,10 +138,6 @@ h1 {
   }
 }
 
-// Fine dot-grid texture used by PrimaryNav — a grid of tiny dots baked
-// into the background via radial-gradient, independent of text color.
-// Drifts diagonally instead of sitting static — the shift distance matches
-// the tile size (7px) so the loop is seamless, no jump at the reset.
 .dot-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1.5px);
   background-size: 7px 7px;
@@ -145,19 +155,25 @@ h1 {
 }
 
 .dot-font {
-  font-variation-settings: "ROND" 100;
+  // font-variation-settings: "ROND" 100;
   font-weight: 700;
-  text-shadow: 0 0 6px currentColor;
+  text-shadow: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .dot-font {
+    text-shadow: 0 0 6px currentColor;
+  }
 }
 
 
 .gradient-background {
   background-image: linear-gradient(
     -45deg,
-    color-mix(in oklab, var(--gradient-1) 7%, transparent),
-    color-mix(in oklab, var(--gradient-2) 7%, transparent),
-    color-mix(in oklab, var(--gradient-3) 7%, transparent),
-    color-mix(in oklab, var(--gradient-4) 7%, transparent)
+    color-mix(in oklab, var(--gradient-1) 12%, transparent),
+    color-mix(in oklab, var(--gradient-2) 12%, transparent),
+    color-mix(in oklab, var(--gradient-3) 12%, transparent),
+    color-mix(in oklab, var(--gradient-4) 12%, transparent)
   );
   background-size: 400% 400%;
   animation: gradient-animation 32s ease-in-out infinite;

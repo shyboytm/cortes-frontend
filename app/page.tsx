@@ -4,6 +4,7 @@ import {client} from "@/sanity/client";
 import { Button } from "@/components/ui/button"
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import WorkRow from "@/components/ui/WorkRow";
+import GlobeIcon from "@/components/ui/GlobeIcon";
 import Image from 'next/image'
 import { Mailbox } from 'lucide-react';
 import type {SimpleIcon} from 'simple-icons';
@@ -42,9 +43,9 @@ export default async function IndexPage() {
       
       <PrimaryNav></PrimaryNav>
       
-      <div id="main-content" className="m-auto w-xl">
+      <div id="main-content" className="m-auto w-full px-12">
 
-        <div className="my-6">
+        {/* <div className="my-6">
           <Link href="https://www.instagram.com/shyboytm/">
             <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
               <Mailbox size={24} />
@@ -65,13 +66,29 @@ export default async function IndexPage() {
               <img height="24" width="24" src="https://cdn.simpleicons.org/instagram/black" />
             </div>
           </Link>
+        </div> */}
+
+        <div className="dot-font mb-6 flex flex-col gap-3 py-4 font-doto text-black dark:text-white">
+          <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">
+            <GlobeIcon className="h-3.5 w-auto mr-2" />
+            <span>36.1627° N, 86.7816° W</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 tracking-widest uppercase">
+            <span className="text-blue-800 dark:text-blue-400">Design</span>
+            <span className="text-black/20 dark:text-white/20">/</span>
+            <span className="text-green-800 dark:text-green-400">Music</span>
+            <span className="text-black/20 dark:text-white/20">/</span>
+            <span className="text-red-800 dark:text-red-400">Photo</span>
+            <span className="text-black/20 dark:text-white/20">/</span>
+            <span className="text-amber-800 dark:text-amber-400">Code</span>
+          </div>
         </div>
 
-        <div className="font-mono opacity-75 my-6 space-y-4 text-sm">
-          <p>I currently work at Aboon, and I was most recently a designer at Instagram on the Growth Web team. Outside of work, I build the game journaling app GamePal, I create music as Cordio & Horizon Radar, restore and mod old game consoles, and take photos.</p>
-          <p>I specialize in product design for both web and mobile apps and thrive in 0 → 1 work. My expertise is in design leadership, visual design, user experience, and design systems. I also have a background in Engineering, with a focus on React, CSS architecture, and component systems.</p>
-          <p>I'm currently available for full time and contract design roles for early stage startups and sound/music design projects for games, apps, podcasts, and films.</p>
-          <p>I produce music under the alias Cordio, and create tracks for films, shows, and podcasts. Listen to all my music anywhere you stream music, or snag some on my Bandcamp.</p>
+        <div className="font-light my-6 space-y-4 text-6xl leading-20 text-black dark:text-white/80 ">
+          <h2 className="mb-12">I'm a Principal Product Designer at Aboon, previously at Instagram on the Growth Web team.</h2>
+          <h2 className="mb-12">Outside of work, I build GamePal, restore and mod old consoles, take photos, and make music as <Link className="underline" href="#">Cordio</Link> and <Link className="underline" href="#">Horizon Radar</Link> — you can stream it anywhere or grab it on Bandcamp.</h2>
+          <h2 className="mb-12">I'm available for design consulting at early-stage startups, or sound design and music projects for video games, apps, podcasts, and films.</h2>
         </div>
 
         <Button>Testing</Button>
