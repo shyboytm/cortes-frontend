@@ -27,7 +27,8 @@ const WORK_QUERY = `*[
     alt,
     asset,
     "aspectRatio": asset->metadata.dimensions.aspectRatio
-  }
+  },
+  "hasCaseStudy": count(caseStudy) > 0
 }`;
 
 const options = {next: {revalidate: 30}};
@@ -119,6 +120,8 @@ export default async function IndexPage() {
             title={work.title}
             dateRange={work.dateRange}
             photos={work.photos}
+            slug={work.slug?.current}
+            hasCaseStudy={work.hasCaseStudy}
           />
         ))}
       </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
@@ -24,12 +25,18 @@ export interface WorkRowProps {
   // document has no photos yet, so this has to be handled explicitly below
   // rather than relying on a default parameter value.
   photos?: WorkRowPhoto[] | null;
+  // Slug + whether the case study field has any content — both come from
+  // the homepage's WORK_QUERY. The "View More" link only renders when both
+  // are present, so projects without a written case study don't get a
+  // dead-end button.
+  slug?: string;
+  hasCaseStudy?: boolean;
 }
 
 // One project's row on the homepage: title + date range up top, then a
 // horizontally-scrolling strip of every photo attached to that work post
 // in Sanity. Renders nothing if the post has no photos yet.
-export default function WorkRow({ title, dateRange, photos }: WorkRowProps) {
+export default function WorkRow({ title, dateRange, photos, slug, hasCaseStudy }: WorkRowProps) {
   const safePhotos = photos ?? [];
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -99,14 +106,28 @@ export default function WorkRow({ title, dateRange, photos }: WorkRowProps) {
     return null;
   }
 
+  // Only show the button when there's actually somewhere for it to go.
+  const showViewMore = Boolean(hasCaseStudy && slug);
+
   return (
     <section className="w-full border-t border-black/10 pt-6 pb-10 dark:border-white/10">
-      <div className="mb-6 flex flex-col gap-1 px-6 md:px-10">
-        <h2 className="text-3xl font-normal text-black md:text-4xl dark:text-white">{title}</h2>
-        {dateRange && (
-          <p className="dot-font font-doto text-sm tracking-widest text-black/40 uppercase dark:text-white/80">
-            {dateRange}
-          </p>
+      <div className="mb-6 flex flex-col gap-3 px-6 md:flex-row md:items-end md:justify-between md:px-10">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-3xl font-normal text-black md:text-4xl dark:text-white">{title}</h2>
+          {dateRange && (
+            <p className="dot-font font-doto text-sm tracking-widest text-black/40 uppercase dark:text-white/80">
+              {dateRange}
+            </p>
+          )}
+        </div>
+
+        {showViewMore && (
+          <Link
+            href={`/work/${slug}`}
+            className="dot-font font-doto w-fit text-xs tracking-widest text-black/60 uppercase underline underline-offset-4 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
+          >
+            View More
+          </Link>
         )}
       </div>
 
