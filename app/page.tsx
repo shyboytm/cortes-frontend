@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {type SanityDocument} from "next-sanity";
 import {client} from "@/sanity/client";
-import { Button } from "@/components/ui/button"
+import { Button } from "../components/ui/Button"
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import WorkRow from "@/components/ui/WorkRow";
 import GlobeIcon from "@/components/ui/GlobeIcon";
