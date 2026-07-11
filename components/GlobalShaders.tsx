@@ -36,15 +36,15 @@ export default function GlobalShader() {
   return (
     <Shader className="fixed inset-0 z-0 w-screen h-screen pointer-events-none opacity-80">
       <ChromaticAberration strength={0.6} angle={45}>
-        {/* <ChromaFlow
+        <ChromaFlow
           baseColor={isDark ? '#000000' : '#ffffff'}
           upColor="#00ffff"
           downColor="#ff00ff"
           leftColor="#3300ff"
           rightColor="#ffee00"
-          intensity={1}
+          intensity={0.5}
           radius={1}
-        /> */}
+        />
       </ChromaticAberration>
 
       {/* ASCII characters trailing the cursor, layered on top of the background */}
@@ -53,7 +53,7 @@ export default function GlobalShader() {
           colorA={isDark ? '#141414' : '#e5e5e5'}
           colorB={isDark ? '#ffffff' : '#141414'}
           radius={0.2}
-          length={0.25}
+          length={0.5}
           shrink={0.5}
         />
       </Ascii>

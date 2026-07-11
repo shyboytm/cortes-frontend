@@ -126,10 +126,22 @@ h1 {
 
 // Fine dot-grid texture used by PrimaryNav — a grid of tiny dots baked
 // into the background via radial-gradient, independent of text color.
+// Drifts diagonally instead of sitting static — the shift distance matches
+// the tile size (7px) so the loop is seamless, no jump at the reset.
 .dot-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1.5px);
   background-size: 7px 7px;
   background-position: center;
+  animation: dot-grid-drift 18s linear infinite;
+}
+
+@keyframes dot-grid-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 7px 7px;
+  }
 }
 
 .dot-font {

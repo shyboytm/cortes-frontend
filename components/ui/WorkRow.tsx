@@ -104,7 +104,7 @@ export default function WorkRow({ title, dateRange, photos }: WorkRowProps) {
       <div className="mb-6 flex flex-col gap-1 px-6 md:px-10">
         <h2 className="text-3xl font-normal text-black md:text-4xl dark:text-white">{title}</h2>
         {dateRange && (
-          <p className="font-mono text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+          <p className="dot-font font-doto text-sm tracking-widest text-black/40 uppercase dark:text-white/80">
             {dateRange}
           </p>
         )}

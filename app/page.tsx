@@ -3,7 +3,6 @@ import {type SanityDocument} from "next-sanity";
 import {client} from "@/sanity/client";
 import { Button } from "@/components/ui/button"
 import PrimaryNav from "@/components/ui/PrimaryNav";
-import PrimaryFooter from "@/components/ui/PrimaryFooter";
 import WorkRow from "@/components/ui/WorkRow";
 import Image from 'next/image'
 import { Mailbox } from 'lucide-react';
@@ -106,8 +105,6 @@ export default async function IndexPage() {
           />
         ))}
       </div>
-
-      <PrimaryFooter></PrimaryFooter>
 
     </div>
   );

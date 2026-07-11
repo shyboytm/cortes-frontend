@@ -25,14 +25,14 @@ export default function PrimaryNav() {
     <header>
       <div
         id="primary-nav"
-        className="dot-font dot-grid fixed glass inset-x-6 top-8 z-40 flex items-center justify-between gap-6 rounded-full border border-white/10 bg-black/90 px-6 py-3 font-doto text-white"
+        className="dot-font fixed glass inset-x-6 top-8 z-40 flex items-center justify-between gap-6 rounded-lg border border-white/10 bg-black/90 px-6 py-3 font-doto text-white"
       >
         <span className="text-sm tracking-widest uppercase whitespace-nowrap">
           Dennis Cortes
         </span>
 
         <nav>
-          <ul className="flex items-center gap-6 text-xs tracking-widest">
+          <ul className="flex items-center gap-6 text-sm tracking-widest">
             {NAV_LINKS.map((link) => (
               <li key={link.label}>
                 <Link
