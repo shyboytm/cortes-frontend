@@ -1,17 +1,39 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Doto, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import GlobalShader from '@/components/GlobalShaders'
+import ScreenOverlay from '@/components/ScreenOverlay'
 
 import "./globals.scss";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Primary sans typeface. Local weight files, no variable axis, so each
+// static weight is registered separately.
+const ufficio = localFont({
+  variable: "--font-ufficio",
+  display: "swap",
+  src: [
+    { path: "./fonts/Ufficio-300.ttf", weight: "300", style: "normal" },
+    { path: "./fonts/Ufficio-400.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/Ufficio-500.ttf", weight: "500", style: "normal" },
+    { path: "./fonts/Ufficio-600.ttf", weight: "600", style: "normal" },
+  ],
+});
+
+// First fallback if Ufficio ever fails to load — the final fallback after
+// that is the system font stack, set in globals.scss's --font-sans.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Variable font used by PrimaryNav for the dot-grid/LED look, and now also
+// standing in for the old monospace typeface everywhere font-mono is used.
+// The ROND axis is what rounds the dots — dialed in via .dot-font in globals.scss.
+const doto = Doto({
+  variable: "--font-doto",
   subsets: ["latin"],
+  weight: "variable",
+  axes: ["ROND"],
 });
 
 export const metadata: Metadata = {
@@ -25,8 +47,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <body className="bg-white text-black dark:bg-black dark:text-white">
+    <html lang="en" className={`${ufficio.variable} ${inter.variable} ${doto.variable} antialiased`}>
+      <body className="bg-white text-black dark:bg-black dark:text-white gradient-background">
         {/* The DOM the shader samples — all pages render inside this */}
         <div id="site-content">
           {children}
@@ -34,6 +56,9 @@ export default function RootLayout({
 
         {/* One canvas, every page */}
         <GlobalShader />
+
+        {/* Film grain + CRT overlay, above all content on every page */}
+        <ScreenOverlay />
       </body>
     </html>
   );

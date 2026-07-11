@@ -7,12 +7,95 @@
 @tailwind utilities;
 @import "https://unpkg.com/open-props/durations.min.css";
 
-// @theme {
-//   --color-background: var(--background);
-//   --color-foreground: var(--foreground);
-//   --font-sans: var(--font-geist-sans);
-//   --font-mono: var(--font-geist-mono);
-// }
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+  // Subtle multi-hue wash used by .gradient-background — soft/pastel in light mode.
+  --gradient-1: oklch(0.8 0.1 40);
+  --gradient-2: oklch(0.78 0.12 340);
+  --gradient-3: oklch(0.8 0.09 230);
+  --gradient-4: oklch(0.82 0.1 170);
+}
+
+// Automatic dark mode driven by the OS/browser preference —
+// no JS theme toggle exists in this project, so we key off
+// prefers-color-scheme directly rather than a `.dark` class.
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+
+    // Deeper/richer versions of the same hues for dark mode.
+    --gradient-1: oklch(0.5 0.14 40);
+    --gradient-2: oklch(0.48 0.16 340);
+    --gradient-3: oklch(0.5 0.14 230);
+    --gradient-4: oklch(0.52 0.14 170);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  // Ufficio first, Inter if it ever fails to load, system font stack after that.
+  --font-sans: var(--font-ufficio), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  // The old monospace typeface has been retired — font-mono now renders in Doto.
+  --font-mono: var(--font-doto);
+  --font-doto: var(--font-doto);
+}
 
 body {
   @apply antialiased;
@@ -30,22 +113,53 @@ h1 {
   text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
-// .gradient-background {
-//   background: linear-gradient(-45deg, rgba(238, 119, 82, 0.2), rgba(231, 60, 126, 0.2), rgba(35, 166, 213, 0.2), rgba(35, 213, 171, 0.2)), url("/public/noise.png");
-//   background-size: 400% 400%;
-//   animation: gradient-animation 15s ease-in-out infinite;
-//   height: 100%;
-// }
-// // Animations
-// @keyframes gradient-animation {
-// 	0% {
-// 		background-position: 0% 50%;
-// 	}
-// 	50% {
-// 		background-position: 100% 50%;
-// 	}
-// 	100% {
-// 		background-position: 0% 50%;
-// 	}
-// }
+// Keeps horizontally-scrolling rows (e.g. WorkRow) usable without a visible
+// scrollbar cluttering the design.
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// Fine dot-grid texture used by PrimaryNav — a grid of tiny dots baked
+// into the background via radial-gradient, independent of text color.
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1.5px);
+  background-size: 7px 7px;
+  background-position: center;
+}
+
+.dot-font {
+  font-variation-settings: "ROND" 100;
+  font-weight: 700;
+  text-shadow: 0 0 6px currentColor;
+}
+
+
+.gradient-background {
+  background-image: linear-gradient(
+    -45deg,
+    color-mix(in oklab, var(--gradient-1) 7%, transparent),
+    color-mix(in oklab, var(--gradient-2) 7%, transparent),
+    color-mix(in oklab, var(--gradient-3) 7%, transparent),
+    color-mix(in oklab, var(--gradient-4) 7%, transparent)
+  );
+  background-size: 400% 400%;
+  animation: gradient-animation 32s ease-in-out infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 

@@ -4,6 +4,7 @@ import {client} from "@/sanity/client";
 import { Button } from "@/components/ui/button"
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PrimaryFooter from "@/components/ui/PrimaryFooter";
+import WorkRow from "@/components/ui/WorkRow";
 import Image from 'next/image'
 import { Mailbox } from 'lucide-react';
 import type {SimpleIcon} from 'simple-icons';
@@ -13,13 +14,32 @@ const POSTS_QUERY = `*[
   && defined(slug.current)
 ]|order(publishedAt desc)[0...12]{_id, title, slug, publishedAt}`;
 
+const WORK_QUERY = `*[
+  _type == "work"
+  && defined(slug.current)
+]|order(order asc, _createdAt desc){
+  _id,
+  title,
+  dateRange,
+  slug,
+  photos[]{
+    _key,
+    alt,
+    asset,
+    "aspectRatio": asset->metadata.dimensions.aspectRatio
+  }
+}`;
+
 const options = {next: {revalidate: 30}};
 
 export default async function IndexPage() {
-  const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
+  const [posts, workItems] = await Promise.all([
+    client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options),
+    client.fetch<SanityDocument[]>(WORK_QUERY, {}, options),
+  ]);
 
   return (
-    <div id="home" className="gradient-background pt-32">
+    <div id="home" className="pt-32">
       
       <PrimaryNav></PrimaryNav>
       
@@ -76,59 +96,16 @@ export default async function IndexPage() {
         </ul>
       </div>
 
-      <main className="pt-24 px-2 md:px-4 pb-10">
-        <div className="columns-2 md:columns-3 lg:columns-4 gap-2 md:gap-3 space-y-2 md:space-y-3 [column-fill:_balance]">
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden1/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden2/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden3/600/400" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden4/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden5/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden6/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden7/600/280" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden8/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden9/600/500" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden10/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden11/600/750" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-
-          <a href="#" className="block break-inside-avoid overflow-hidden group relative">
-            <img src="https://picsum.photos/seed/hidden12/600/600" alt="" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-500" />
-          </a>
-          
-        </div>
-      </main>
+      <div id="work">
+        {workItems.map((work) => (
+          <WorkRow
+            key={work._id}
+            title={work.title}
+            dateRange={work.dateRange}
+            photos={work.photos}
+          />
+        ))}
+      </div>
 
       <PrimaryFooter></PrimaryFooter>
 
