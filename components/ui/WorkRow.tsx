@@ -124,7 +124,7 @@ export default function WorkRow({ title, dateRange, photos, slug, hasCaseStudy }
         {showViewMore && (
           <Link
             href={`/work/${slug}`}
-            className="dot-font font-doto w-fit text-xs tracking-widest text-black/60 uppercase underline underline-offset-4 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
+            className="dot-font font-doto w-fit text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
           >
             View More
           </Link>

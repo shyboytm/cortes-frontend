@@ -71,7 +71,7 @@ export default async function IndexPage() {
 
         <div className="dot-font mb-6 flex flex-col gap-3 py-4 font-doto text-black dark:text-white">
           <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">
-            <GlobeIcon className="h-3.5 w-auto mr-2" />
+            <GlobeIcon className="h-3.5 w-auto mr-2 svg-shadow" />
             <span>36.1627° N, 86.7816° W</span>
           </div>
 
@@ -88,7 +88,7 @@ export default async function IndexPage() {
 
         <div className="font-light my-6 space-y-4 text-6xl leading-20 text-black dark:text-white/80 ">
           <h2 className="mb-12">I'm a Principal Product Designer at Aboon, previously at Instagram on the Growth Web team.</h2>
-          <h2 className="mb-12">Outside of work, I build GamePal, restore and mod old consoles, take photos, and make music as <Link className="underline" href="#">Cordio</Link> and <Link className="underline" href="#">Horizon Radar</Link> — you can stream it anywhere or grab it on Bandcamp.</h2>
+          <h2 className="mb-12">Outside of work, I build GamePal, restore and mod old consoles, take photos, and make music as <Link className="link-underline" href="#">Cordio</Link> and <Link className="link-underline" href="#">Horizon Radar</Link> — you can stream it anywhere or grab it on Bandcamp.</h2>
           <h2 className="mb-12">I'm available for design consulting at early-stage startups, or sound design and music projects for video games, apps, podcasts, and films.</h2>
         </div>
 

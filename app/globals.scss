@@ -117,14 +117,40 @@ h1 {
   text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
-.underline {
-  text-decoration: underline;
-  text-decoration-thickness: 3px;
-  text-underline-offset: 12px;
-}
+// Underline reveal — opt-in only, not applied to any <Link> by default.
+// Add className="link-underline" to whichever links should get it: hidden
+// by default, grows in from the left on hover, and retracts back toward the
+// left on mouseleave. `bottom` is in em so the gap scales with whatever
+// font-size it's used on, instead of sitting at a fixed pixel distance that
+// only looks right at one text size. background-color: currentColor means
+// it always matches whatever text color the link itself is rendered in.
+.link-underline {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  opacity: 0.5;
+  transition: all 0.25s ease-in-out;
 
-.underline:hover {
-  text-decoration-thickness: 0px;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0em;
+    width: 100%;
+    height: 3px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: all 0.25s ease-in-out;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 // Keeps horizontally-scrolling rows (e.g. WorkRow) usable without a visible
@@ -177,6 +203,12 @@ h1 {
   );
   background-size: 400% 400%;
   animation: gradient-animation 32s ease-in-out infinite;
+}
+
+.svg-shadow {
+  -webkit-filter: drop-shadow( 3px 3px 2px rgba(255, 255, 255, 0.7));
+  filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+  /* Similar syntax to box-shadow */
 }
 
 @keyframes gradient-animation {

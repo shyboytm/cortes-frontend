@@ -19,16 +19,11 @@ const ufficio = localFont({
   ],
 });
 
-// First fallback if Ufficio ever fails to load — the final fallback after
-// that is the system font stack, set in globals.scss's --font-sans.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
 
-// Variable font used by PrimaryNav for the dot-grid/LED look, and now also
-// standing in for the old monospace typeface everywhere font-mono is used.
-// The ROND axis is what rounds the dots — dialed in via .dot-font in globals.scss.
 const doto = Doto({
   variable: "--font-doto",
   subsets: ["latin"],

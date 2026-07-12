@@ -27,9 +27,9 @@ export default function PrimaryNav() {
         id="primary-nav"
         className="dot-font fixed glass inset-x-6 top-8 z-40 flex items-center justify-between gap-6 rounded-lg border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 px-6 py-3 font-doto text-black dark:text-white"
       >
-        <span className="text-sm tracking-widest uppercase whitespace-nowrap">
+        <Link href="/" className="text-sm tracking-widest uppercase whitespace-nowrap text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white">
           Dennis Cortes
-        </span>
+        </Link>
 
         <nav>
           <ul className="flex items-center gap-6 text-sm tracking-widest">
