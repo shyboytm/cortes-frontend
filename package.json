@@ -25,7 +25,8 @@
     "react-dom": "19.2.3",
     "shaders": "^2.5.135",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tone": "^15.1.22"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.0",

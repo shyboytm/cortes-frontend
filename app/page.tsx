@@ -22,11 +22,13 @@ const WORK_QUERY = `*[
   title,
   dateRange,
   slug,
-  photos[]{
-    _key,
+  mainImage{
     alt,
-    asset,
-    "aspectRatio": asset->metadata.dimensions.aspectRatio
+    asset
+  },
+  hoverImage{
+    alt,
+    asset
   },
   "hasCaseStudy": count(caseStudy) > 0
 }`;
@@ -113,13 +115,17 @@ export default async function IndexPage() {
         </ul>
       </div>
 
-      <div id="work">
+      <div
+        id="work"
+        className="grid grid-cols-1 gap-x-8 gap-y-12 px-12 pt-6 pb-24 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {workItems.map((work) => (
           <WorkRow
             key={work._id}
             title={work.title}
             dateRange={work.dateRange}
-            photos={work.photos}
+            mainImage={work.mainImage}
+            hoverImage={work.hoverImage}
             slug={work.slug?.current}
             hasCaseStudy={work.hasCaseStudy}
           />

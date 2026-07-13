@@ -5,6 +5,8 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 const WORK_BY_SLUG_QUERY = `*[
   _type == "work"
@@ -86,9 +88,9 @@ export default async function WorkCaseStudyPage({
       <div className="m-auto w-full max-w-3xl px-6 md:px-10">
         <Link
           href="/#work"
-          className="text-sm tracking-widest text-black/50 uppercase transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
+          className={buttonVariants({ variant: "secondary", size: "sm" })}
         >
-          ← Back
+          <ArrowLeft size={18} /> Back
         </Link>
 
         <div className="mt-6 mb-10 flex flex-col gap-1">

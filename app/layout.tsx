@@ -45,7 +45,7 @@ export default function RootLayout({
     <html lang="en" className={`${ufficio.variable} ${inter.variable} ${doto.variable} antialiased`}>
       <body className="bg-white text-black dark:bg-black dark:text-white gradient-background">
         {/* The DOM the shader samples — all pages render inside this */}
-        <div id="site-content">
+        <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}
         </div>
 

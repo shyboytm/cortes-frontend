@@ -117,18 +117,11 @@ h1 {
   text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
-// Underline reveal — opt-in only, not applied to any <Link> by default.
-// Add className="link-underline" to whichever links should get it: hidden
-// by default, grows in from the left on hover, and retracts back toward the
-// left on mouseleave. `bottom` is in em so the gap scales with whatever
-// font-size it's used on, instead of sitting at a fixed pixel distance that
-// only looks right at one text size. background-color: currentColor means
-// it always matches whatever text color the link itself is rendered in.
 .link-underline {
   position: relative;
   display: inline-block;
   text-decoration: none;
-  opacity: 0.5;
+  opacity: 0.7;
   transition: all 0.25s ease-in-out;
 
   &::after {
@@ -137,7 +130,7 @@ h1 {
     left: 0;
     bottom: 0em;
     width: 100%;
-    height: 3px;
+    height: 0.05em;
     background-color: currentColor;
     transform: scaleX(0);
     transform-origin: left;
@@ -145,7 +138,7 @@ h1 {
   }
 
   &:hover::after {
-    transform: scaleX(1);
+    transform: scaleX(0.97);
   }
 
   &:hover {
@@ -196,13 +189,13 @@ h1 {
 .gradient-background {
   background-image: linear-gradient(
     -45deg,
-    color-mix(in oklab, var(--gradient-1) 12%, transparent),
-    color-mix(in oklab, var(--gradient-2) 12%, transparent),
-    color-mix(in oklab, var(--gradient-3) 12%, transparent),
-    color-mix(in oklab, var(--gradient-4) 12%, transparent)
+    color-mix(in oklab, var(--gradient-1) 16%, transparent),
+    color-mix(in oklab, var(--gradient-2) 16%, transparent),
+    color-mix(in oklab, var(--gradient-3) 16%, transparent),
+    color-mix(in oklab, var(--gradient-4) 16%, transparent)
   );
   background-size: 400% 400%;
-  animation: gradient-animation 32s ease-in-out infinite;
+  animation: gradient-animation 24s ease-in-out infinite;
 }
 
 .svg-shadow {
