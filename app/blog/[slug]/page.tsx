@@ -7,6 +7,9 @@ import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { formatPostDate } from "@/lib/utils";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -24,6 +27,21 @@ const options = { next: { revalidate: 30 } };
 // Same typography treatment as the work case-study page — plain-text body
 // blocks only for now, since the post schema doesn't support inline images.
 const postComponents: PortableTextComponents = {
+  marks: {
+    link: ({ value, children }) => {
+      const href = value?.href || "#";
+      const isExternal = /^https?:\/\//.test(href);
+      return (
+        <a
+          href={href}
+          className="link-underline opacity-50"
+          {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        >
+          {children}
+        </a>
+      );
+    },
+  },
   block: {
     normal: ({ children }) => (
       <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>
@@ -56,14 +74,14 @@ export default async function BlogPostPage({
       <div className="m-auto w-full max-w-3xl px-6 md:px-10">
         <Link
           href="/blog"
-          className="text-sm tracking-widest text-black/50 uppercase transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
+          className={buttonVariants({ variant: "secondary", size: "sm" })}
         >
-          ← Back
+          <ArrowLeft size={18} /> Back
         </Link>
 
         <PageHeader
           title={post.title}
-          subtitle={post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : undefined}
+          subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
           className="mt-6"
         />
 

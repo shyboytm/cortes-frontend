@@ -1,14 +1,9 @@
 import Link from "next/link";
 import {type SanityDocument} from "next-sanity";
 import {client} from "@/sanity/client";
-import { Button } from "@/components/ui/button"
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import WorkRow from "@/components/ui/WorkRow";
-import PostList from "@/components/ui/PostList";
 import GlobeIcon from "@/components/ui/GlobeIcon";
-// import Image from 'next/image'
-// import { Mailbox } from 'lucide-react';
-// import type {SimpleIcon} from 'simple-icons';
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -49,29 +44,6 @@ export default async function IndexPage() {
       
       <div id="main-content" className="m-auto w-full px-6">
 
-        {/* <div className="my-6">
-          <Link href="https://www.instagram.com/shyboytm/">
-            <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
-              <Mailbox size={24} />
-            </div>
-          </Link>
-          <Link href="https://www.instagram.com/shyboytm/">
-            <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
-              <img height="24" width="24" src="https://cdn.simpleicons.org/instagram/black" />
-            </div>
-          </Link>
-          <Link href="https://www.linkedin.com/in/fromcortes/">
-            <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
-              <img height="24" width="24" src="https://cdn.simpleicons.org/linkedin/black" />
-            </div>
-          </Link>
-          <Link href="https://www.instagram.com/shyboytm/">
-            <div className="bg-black/10 dark:bg-white/10 inline-block opacity-75 hover:opacity-100 p-4 rounded-full transition-opacity">
-              <img height="24" width="24" src="https://cdn.simpleicons.org/instagram/black" />
-            </div>
-          </Link>
-        </div> */}
-
         <div className="dot-font mb-6 flex flex-col gap-3 py-4 font-doto text-black dark:text-white">
           <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">
             <GlobeIcon className="h-3.5 w-auto mr-2 svg-shadow" />
@@ -95,17 +67,6 @@ export default async function IndexPage() {
           <h2 className="mb-12">I'm available for design consulting at early-stage startups, or sound design and music projects for video games, apps, podcasts, and films.</h2>
         </div>
 
-        <Button>Testing</Button>
-        <Button variant="outline">Testing</Button>
-
-        <PostList
-          posts={posts.map((post) => ({
-            _id: post._id,
-            title: post.title,
-            slug: post.slug?.current,
-            publishedAt: post.publishedAt,
-          }))}
-        />
       </div>
 
       <div

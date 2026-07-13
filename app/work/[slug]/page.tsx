@@ -36,6 +36,21 @@ const options = { next: { revalidate: 30 } };
 // carry the same aspect-ratio projection trick WorkRow uses so they don't
 // jump around as they load.
 const caseStudyComponents: PortableTextComponents = {
+  marks: {
+    link: ({ value, children }) => {
+      const href = value?.href || "#";
+      const isExternal = /^https?:\/\//.test(href);
+      return (
+        <a
+          href={href}
+          className="link-underline opacity-50"
+          {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        >
+          {children}
+        </a>
+      );
+    },
+  },
   types: {
     image: ({ value }) => {
       if (!value?.asset) return null;

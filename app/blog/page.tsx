@@ -23,7 +23,7 @@ export default async function BlogIndexPage() {
     <div className="pt-32 pb-24">
       <PrimaryNav />
 
-      <div className="px-12">
+      <div className="px-6">
         <PageHeader title="Blog" subtitle="Software Product Designer" />
 
         <PostList
