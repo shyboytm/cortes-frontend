@@ -136,7 +136,8 @@ h1 {
     transition: all 0.25s ease-in-out;
   }
 
-  &:hover::after {
+  &:hover::after,
+  &.is-active::after {
     transform: scaleX(0.97);
   }
 

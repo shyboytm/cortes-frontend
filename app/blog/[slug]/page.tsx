@@ -6,6 +6,7 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
+import PageHeader from "@/components/ui/PageHeader";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -36,7 +37,7 @@ const postComponents: PortableTextComponents = {
   },
 };
 
-export default async function PostPage({
+export default async function BlogPostPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -54,22 +55,17 @@ export default async function PostPage({
 
       <div className="m-auto w-full max-w-3xl px-6 md:px-10">
         <Link
-          href="/#posts"
+          href="/blog"
           className="text-sm tracking-widest text-black/50 uppercase transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
         >
           ← Back
         </Link>
 
-        <div className="mt-6 mb-10 flex flex-col gap-1">
-          <h1 className="text-4xl font-normal text-black md:text-5xl dark:text-white">
-            {post.title}
-          </h1>
-          {post.publishedAt && (
-            <p className="dot-font font-doto text-sm tracking-widest text-black/40 uppercase dark:text-white/80">
-              {new Date(post.publishedAt).toLocaleDateString()}
-            </p>
-          )}
-        </div>
+        <PageHeader
+          title={post.title}
+          subtitle={post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : undefined}
+          className="mt-6"
+        />
 
         {post.image && (
           <div

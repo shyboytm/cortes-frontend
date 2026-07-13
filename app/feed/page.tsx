@@ -1,5 +1,6 @@
 import { client } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
+import PageHeader from "@/components/ui/PageHeader";
 import FeedGrid, { type FeedItem } from "@/components/ui/FeedGrid";
 
 const FEED_QUERY = `*[
@@ -21,7 +22,7 @@ const FEED_QUERY = `*[
 
 const options = { next: { revalidate: 30 } };
 
-export default async function PostsIndexPage() {
+export default async function FeedIndexPage() {
   const items = await client.fetch<FeedItem[]>(FEED_QUERY, {}, options);
 
   return (
@@ -29,12 +30,7 @@ export default async function PostsIndexPage() {
       <PrimaryNav />
 
       <div className="px-12">
-        <div className="flex flex-col items-start gap-2 pb-10">
-          <h1 className="text-4xl font-normal text-black md:text-5xl dark:text-white">Feed</h1>
-          <h2 className="dot-font font-doto text-sm tracking-widest text-black/40 uppercase dark:text-white/80">
-            Software Product Designer
-          </h2>
-        </div>
+        <PageHeader title="Feed" subtitle="Software Product Designer" />
 
         <FeedGrid items={items} />
       </div>

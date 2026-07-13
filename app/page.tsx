@@ -4,6 +4,7 @@ import {client} from "@/sanity/client";
 import { Button } from "@/components/ui/button"
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import WorkRow from "@/components/ui/WorkRow";
+import PostList from "@/components/ui/PostList";
 import GlobeIcon from "@/components/ui/GlobeIcon";
 // import Image from 'next/image'
 // import { Mailbox } from 'lucide-react';
@@ -12,7 +13,7 @@ import GlobeIcon from "@/components/ui/GlobeIcon";
 const POSTS_QUERY = `*[
   _type == "post"
   && defined(slug.current)
-]|order(publishedAt desc)[0...12]{_id, title, slug, publishedAt}`;
+]|order(publishedAt desc)[0...5]{_id, title, slug, publishedAt}`;
 
 const WORK_QUERY = `*[
   _type == "work"
@@ -97,28 +98,22 @@ export default async function IndexPage() {
         <Button>Testing</Button>
         <Button variant="outline">Testing</Button>
 
-        <ul>
-          {posts.map((post) => (
-            <li key={post._id}>
-              <Link href={`/posts/${post.slug.current}`}>
-                 {/* <Image
-                    src={post.image}
-                    width={500}
-                    height={500}
-                    alt="Picture of the author"
-                  /> */}
-                <h2>{post.title}</h2>
-                <p>{new Date(post.publishedAt).toLocaleDateString()}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <PostList
+          posts={posts.map((post) => ({
+            _id: post._id,
+            title: post.title,
+            slug: post.slug?.current,
+            publishedAt: post.publishedAt,
+          }))}
+        />
       </div>
 
       <div
         id="work"
         className="grid grid-cols-1 gap-x-8 gap-y-12 px-12 pt-6 pb-24 sm:grid-cols-2 lg:grid-cols-3"
       >
+        <h1 className="col-span-full text-4xl font-normal text-black dark:text-white">Featured Work</h1>
+
         {workItems.map((work) => (
           <WorkRow
             key={work._id}

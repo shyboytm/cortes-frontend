@@ -5,6 +5,7 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
+import PageHeader from "@/components/ui/PageHeader";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
@@ -85,7 +86,7 @@ export default async function WorkCaseStudyPage({
     <div className="pt-32 pb-24">
       <PrimaryNav />
 
-      <div className="m-auto w-full max-w-3xl px-6 md:px-10">
+      <div className="m-auto w-full max-w-7xl px-6 md:px-10">
         <Link
           href="/#work"
           className={buttonVariants({ variant: "secondary", size: "sm" })}
@@ -93,16 +94,7 @@ export default async function WorkCaseStudyPage({
           <ArrowLeft size={18} /> Back
         </Link>
 
-        <div className="mt-6 mb-10 flex flex-col gap-1">
-          <h1 className="text-4xl font-normal text-black md:text-5xl dark:text-white">
-            {work.title}
-          </h1>
-          {work.dateRange && (
-            <p className="dot-font font-doto text-sm tracking-widest text-black/40 uppercase dark:text-white/80">
-              {work.dateRange}
-            </p>
-          )}
-        </div>
+        <PageHeader title={work.title} subtitle={work.dateRange} className="mt-6" />
 
         {work.caseStudy && work.caseStudy.length > 0 ? (
           <PortableText value={work.caseStudy} components={caseStudyComponents} />
