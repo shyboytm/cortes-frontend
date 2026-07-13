@@ -3,6 +3,7 @@ import { Doto, Inter } from "next/font/google";
 import localFont from "next/font/local";
 import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
+import PrimaryFooter from '@/components/ui/PrimaryFooter'
 
 import "./globals.scss";
 
@@ -47,6 +48,7 @@ export default function RootLayout({
         {/* The DOM the shader samples — all pages render inside this */}
         <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}
+          <PrimaryFooter />
         </div>
 
         {/* One canvas, every page */}

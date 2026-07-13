@@ -46,7 +46,7 @@ export default async function IndexPage() {
       
       <PrimaryNav></PrimaryNav>
       
-      <div id="main-content" className="m-auto w-full px-12">
+      <div id="main-content" className="m-auto w-full px-6">
 
         {/* <div className="my-6">
           <Link href="https://www.instagram.com/shyboytm/">
@@ -90,7 +90,7 @@ export default async function IndexPage() {
 
         <div className="font-light my-6 space-y-4 text-6xl leading-20 text-black dark:text-white/80 ">
           <h2 className="mb-12">I'm a Principal Product Designer at Aboon, previously at Instagram on the Growth Web team.</h2>
-          <h2 className="mb-12">Outside of work, I build GamePal, restore and mod old consoles, take photos, and make music as <Link className="link-underline" href="#">Cordio</Link> and <Link className="link-underline" href="#">Horizon Radar</Link> — you can stream it anywhere or grab it on Bandcamp.</h2>
+          <h2 className="mb-12">Outside of work, I build GamePal, restore and mod old consoles, take photos, and make music as <Link className="link-underline opacity-50" href="#">Cordio</Link> and <Link className="link-underline opacity-50" href="#">Horizon Radar</Link> — you can stream it anywhere or grab it on Bandcamp.</h2>
           <h2 className="mb-12">I'm available for design consulting at early-stage startups, or sound design and music projects for video games, apps, podcasts, and films.</h2>
         </div>
 

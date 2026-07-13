@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "cdn.sanity.io",
       },
+      {
+        // Album artwork for the footer's "now playing" widget.
+        protocol: "https",
+        hostname: "lastfm.freetls.fastly.net",
+      },
     ],
   },
 };

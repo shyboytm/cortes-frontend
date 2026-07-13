@@ -1,17 +1,28 @@
-import Link from "next/link";
-import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
+import FeedGrid, { type FeedItem } from "@/components/ui/FeedGrid";
 
-const POSTS_QUERY = `*[
-  _type == "post"
-  && defined(slug.current)
-]|order(publishedAt desc){_id, title, slug, publishedAt}`;
+const FEED_QUERY = `*[
+  _type == "feedItem"
+]|order(order asc, _createdAt desc){
+  _id,
+  caption,
+  link,
+  image{
+    alt,
+    asset,
+    "aspectRatio": asset->metadata.dimensions.aspectRatio
+  },
+  video{
+    "url": asset->url,
+    "mimeType": asset->mimeType
+  }
+}`;
 
 const options = { next: { revalidate: 30 } };
 
 export default async function PostsIndexPage() {
-  const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
+  const items = await client.fetch<FeedItem[]>(FEED_QUERY, {}, options);
 
   return (
     <div className="pt-32 pb-24">
@@ -25,21 +36,7 @@ export default async function PostsIndexPage() {
           </h2>
         </div>
 
-        <ul className="divide-y divide-black/10 dark:divide-white/10">
-          {posts.map((post) => (
-            <li key={post._id}>
-              <Link
-                href={`/posts/${post.slug.current}`}
-                className="flex items-center justify-between gap-6 py-6 transition-colors hover:text-black/60 dark:hover:text-white/60"
-              >
-                <h2 className="text-lg font-normal text-black dark:text-white">{post.title}</h2>
-                <p className="dot-font font-doto shrink-0 text-xs tracking-widest text-black/40 uppercase dark:text-white/60">
-                  {new Date(post.publishedAt).toLocaleDateString()}
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <FeedGrid items={items} />
       </div>
     </div>
   );
