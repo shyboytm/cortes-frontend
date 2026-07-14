@@ -12,7 +12,7 @@ export interface PageHeaderProps {
 // exact same title treatment instead of each hand-rolling their own markup.
 export default function PageHeader({ title, subtitle, className }: PageHeaderProps) {
   return (
-    <div className={cn("mb-10 flex flex-col items-start gap-2", className)}>
+    <div className={cn("mb-10 flex flex-col lg:flex-row items-start lg:justify-between gap-2 lg:gap-8", className)}>
       <h1 className="text-6xl font-normal text-black md:text-5xl dark:text-white mb-6">{title}</h1>
       {subtitle && (
         <h2 className="text-5xl text-black/40 dark:text-white/80 max-w-3xl mb-6 font-light md:text-4xl leading-[1.25]">

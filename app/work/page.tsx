@@ -32,8 +32,8 @@ export default async function WorkIndexPage() {
     <div className="pt-32 pb-24">
       <PrimaryNav />
 
-      <div className="px-12">
-        <PageHeader title="Work" subtitle="Software Product Designer" />
+      <div className="px-6">
+        <PageHeader title="Work" subtitle="Some of my featured work from over the years including full-time jobs, personal projects, and freelance contracts." />
 
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {workItems.map((work) => (

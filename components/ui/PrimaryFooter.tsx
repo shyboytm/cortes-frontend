@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Instagram, Linkedin } from "lucide-react";
-import { SiLastdotfm } from "@icons-pack/react-simple-icons";
+import { SiLastdotfm, SiBuymeacoffee } from "@icons-pack/react-simple-icons";
 import { getNowPlaying } from "@/lib/lastfm";
 import FooterScene from "@/components/ui/FooterScene";
 import GlobeIcon from "@/components/ui/GlobeIcon";
@@ -13,12 +13,14 @@ const EXPLORE_LINKS = [
   { label: "Feed", href: "/feed" },
   { label: "Blog", href: "/blog" },
   { label: "Music", href: "/music" },
+  { label: "Recs", href: "/recs" },
   { label: "Info", href: "/info" },
 ];
 
 const SOCIAL_LINKS = [
   { label: "Instagram", href: "https://www.instagram.com/shyboytm/", icon: Instagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/fromcortes/", icon: Linkedin },
+  { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/cortes", icon: SiBuymeacoffee },
 ];
 
 // Shared pill badge for the Explore/Social groups — same hairline-border,
@@ -36,7 +38,7 @@ function FooterPill({
     <Link
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/70 dark:hover:border-white/30 dark:hover:text-white"
+      className="inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/70 dark:hover:border-white/30 dark:hover:text-white"
     >
       {children}
     </Link>
@@ -51,6 +53,17 @@ export default async function PrimaryFooter() {
       {/* Large, subtle 3D shape that leans toward the cursor and randomly
           swaps its geometry — purely decorative, sits behind everything. */}
       <FooterScene />
+
+      {/* Small easter egg peeking out of the corner — purely decorative. */}
+      <Image
+        src="/gengar-pokemon-2d.gif"
+        alt="Gengar"
+        aria-hidden
+        unoptimized
+        width={500}
+        height={500}
+        className="pointer-events-none absolute right-8 bottom-0 z-11 h-20 w-20 translate-y-4 select-none opacity-90 sm:h-28 sm:w-28"
+      />
 
       <div className="relative z-10 p-6">
        
@@ -137,7 +150,7 @@ export default async function PrimaryFooter() {
               <div className="flex flex-wrap gap-2">
                 {EXPLORE_LINKS.map((link) => (
                   <FooterPill key={link.href} href={link.href}>
-                    {link.label}
+                    <span className="inline-block translate-y-[1px]">{link.label}</span>
                   </FooterPill>
                 ))}
               </div>
@@ -151,7 +164,7 @@ export default async function PrimaryFooter() {
                 {SOCIAL_LINKS.map((link) => (
                   <FooterPill key={link.href} href={link.href} external>
                     <link.icon size={13} />
-                    {link.label}
+                    <span className="inline-block translate-y-[1px]">{link.label}</span>
                   </FooterPill>
                 ))}
               </div>
@@ -159,9 +172,9 @@ export default async function PrimaryFooter() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col-reverse items-start justify-between gap-4 border-t border-black/10 pt-6 text-xs tracking-widest text-black/40 uppercase sm:flex-row sm:items-center dark:border-white/10 dark:text-white/40">
+        <div className="mt-16 flex flex-col-reverse items-start gap-4 border-t border-black/10 pt-6 text-xs tracking-widest text-black/40 uppercase sm:grid sm:grid-cols-3 sm:items-center dark:border-white/10 dark:text-white/40">
           <p className="dot-font font-doto">© {new Date().getFullYear()} Dennis Cortes</p>
-          <p className="dot-font font-doto">Design / Music / Photo / Code</p>
+          <p className="dot-font font-doto sm:text-center">Design / Music / Photo / Code</p>
         </div>
       </div>
     </footer>

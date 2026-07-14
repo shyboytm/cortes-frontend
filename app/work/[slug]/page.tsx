@@ -106,7 +106,7 @@ export default async function WorkCaseStudyPage({
           href="/#work"
           className={buttonVariants({ variant: "secondary", size: "sm" })}
         >
-          <ArrowLeft size={18} /> Back
+          <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
         </Link>
 
         <PageHeader title={work.title} subtitle={work.dateRange} className="mt-6" />

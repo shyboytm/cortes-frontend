@@ -77,7 +77,9 @@ const SONGS: Song[] = [
   },
 ];
 
-const emptyPads = (): Record<PadId, boolean> => ({ track1: false, track2: false, track3: false });
+// Track 1 is on by default whenever a song loads (initial load or a song
+// change) so there's always something audible the moment Play is hit.
+const defaultPads = (): Record<PadId, boolean> => ({ track1: true, track2: false, track3: false });
 
 // The three pads are real stems — Tone.Player instances synced to the
 // Transport so toggling a pad just mutes/unmutes it in place rather than
@@ -88,7 +90,7 @@ export default function RemixSequencer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1);
   const [grid, setGrid] = useState<Record<LaneId, boolean[]>>(DEFAULT_PATTERN);
-  const [activePads, setActivePads] = useState<Record<PadId, boolean>>(emptyPads());
+  const [activePads, setActivePads] = useState<Record<PadId, boolean>>(defaultPads());
   const [songId, setSongId] = useState<SongId>(SONGS[0].id);
 
   const gridRef = useRef(grid);
@@ -128,13 +130,17 @@ export default function RemixSequencer() {
     await Tone.loaded();
 
     loopsRef.current = players;
-    Object.values(players).forEach((player) => {
-      player.mute = true;
+    // Mute state on the actual players has to mirror `defaultPads()` (only
+    // Track 1 unmuted) — otherwise the UI would show Track 1 as selected
+    // while it's still silent until toggled off and back on.
+    const defaults = defaultPads();
+    Object.entries(players).forEach(([padId, player]) => {
+      player.mute = !defaults[padId as PadId];
       player.sync().start(0);
     });
 
     Tone.getTransport().bpm.value = song.bpm;
-    setActivePads(emptyPads());
+    setActivePads(defaults);
   }, []);
 
   // Builds the whole audio graph exactly once, on the first Play/pad click —
@@ -309,16 +315,16 @@ export default function RemixSequencer() {
           <button
             type="button"
             onClick={randomize}
-            className="flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
+            className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
           >
-            <Shuffle size={13} /> Shuffle
+            <Shuffle size={13} /> <span className="inline-block translate-y-[1px]">Shuffle</span>
           </button>
           <button
             type="button"
             onClick={clearGrid}
-            className="flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
+            className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
           >
-            <RotateCcw size={13} /> Clear
+            <RotateCcw size={13} /> <span className="inline-block translate-y-[1px]">Clear</span>
           </button>
         </div>
       </div>
@@ -341,13 +347,15 @@ export default function RemixSequencer() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="mb-6 border-t border-black/10 dark:border-white/10" />
+
+      <div className="flex flex-col gap-3">
         {LANES.map((lane) => (
-          <div key={lane.id} className="flex items-center gap-3">
-            <span className="dot-font font-doto w-12 shrink-0 text-[11px] tracking-widest text-black/40 uppercase dark:text-white/40">
+          <div key={lane.id} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+            <span className="dot-font font-doto text-[11px] tracking-widest text-black/40 uppercase sm:w-12 sm:shrink-0 dark:text-white/40">
               {lane.label}
             </span>
-            <div className="grid flex-1 grid-cols-[repeat(16,minmax(0,1fr))] gap-1">
+            <div className="grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1 sm:flex-1">
               {grid[lane.id].map((active, step) => (
                 <button
                   key={step}

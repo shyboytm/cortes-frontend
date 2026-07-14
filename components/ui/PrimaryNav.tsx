@@ -19,6 +19,7 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Feed', href: '/feed' },
   { label: 'Blog', href: '/blog' },
   { label: 'Music', href: '/music' },
+  { label: 'Recs', href: '/recs' },
   { label: 'Photos', href: '#' },
   { label: 'Info', href: '/info', accent: true },
 ]

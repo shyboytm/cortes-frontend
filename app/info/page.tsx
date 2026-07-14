@@ -54,10 +54,10 @@ export default function InfoPage() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/70 dark:hover:border-white/30 dark:hover:text-white"
+                className="inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/70 dark:hover:border-white/30 dark:hover:text-white"
               >
                 <link.icon size={13} />
-                {link.label}
+                <span className="inline-block translate-y-[1px]">{link.label}</span>
               </Link>
             ))}
           </div>
