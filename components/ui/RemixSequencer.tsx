@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Play, Square, Shuffle, RotateCcw } from 'lucide-react';
+import { Play, Square, Shuffle, RotateCcw, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const STEPS = 16;
@@ -24,30 +24,82 @@ const DEFAULT_PATTERN: Record<LaneId, boolean[]> = {
   perc: emptyLane(),
 };
 
-type PadId = 'bass' | 'chords' | 'lead';
+type PadId = 'track1' | 'track2' | 'track3';
 
-const PADS: { id: PadId; label: string }[] = [
-  { id: 'bass', label: 'Bass Loop' },
-  { id: 'chords', label: 'Chord Loop' },
-  { id: 'lead', label: 'Lead Loop' },
+const PAD_LABELS: { id: PadId; label: string }[] = [
+  { id: 'track1', label: 'Track 1' },
+  { id: 'track2', label: 'Track 2' },
+  { id: 'track3', label: 'Track 3' },
 ];
 
-// Instruments are all synthesized for now — this is a scaffold for a real
-// stem-based remix toy. Once actual Cordio loop/one-shot files are dropped
-// in, the synths below get swapped for Tone.Player instances pointed at
-// those files; the sequencing/pad-toggle logic stays the same.
+type SongId = 'chips-2une' | 'unosage' | 'refusal';
+
+type Song = {
+  id: SongId;
+  label: string;
+  bpm: number;
+  urls: Record<PadId, string>;
+};
+
+// Each song is three real stems (one per pad), all the same length and
+// tempo-locked to the song's own BPM (verified against each file's actual
+// duration when they were dropped in — 4 bars at each song's tempo).
+const SONGS: Song[] = [
+  {
+    id: 'chips-2une',
+    label: "Chip's 2une",
+    bpm: 100,
+    urls: {
+      track1: '/music/chips-2une-track-1.wav',
+      track2: '/music/chips-2une-track-2.wav',
+      track3: '/music/chips-2une-track-3.wav',
+    },
+  },
+  {
+    id: 'unosage',
+    label: 'Unosage',
+    bpm: 66,
+    urls: {
+      track1: '/music/unosage-track-1.wav',
+      track2: '/music/unosage-track-2.wav',
+      track3: '/music/unosage-track-3.wav',
+    },
+  },
+  {
+    id: 'refusal',
+    label: 'Refusal',
+    bpm: 152,
+    urls: {
+      track1: '/music/refusal-track-1.wav',
+      track2: '/music/refusal-track-2.wav',
+      track3: '/music/refusal-track-3.wav',
+    },
+  },
+];
+
+const emptyPads = (): Record<PadId, boolean> => ({ track1: false, track2: false, track3: false });
+
+// The three pads are real stems — Tone.Player instances synced to the
+// Transport so toggling a pad just mutes/unmutes it in place rather than
+// restarting playback. Which song's stems are loaded (and the Transport's
+// BPM) is driven by the dropdown; switching songs stops playback, disposes
+// the old players, and loads the new ones in at that song's own tempo.
 export default function RemixSequencer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1);
   const [grid, setGrid] = useState<Record<LaneId, boolean[]>>(DEFAULT_PATTERN);
-  const [activePads, setActivePads] = useState<Record<PadId, boolean>>({
-    bass: false,
-    chords: false,
-    lead: false,
-  });
+  const [activePads, setActivePads] = useState<Record<PadId, boolean>>(emptyPads());
+  const [songId, setSongId] = useState<SongId>(SONGS[0].id);
 
   const gridRef = useRef(grid);
   gridRef.current = grid;
+
+  // setup() below is only ever really executed once (it early-returns after
+  // that), so if it read `songId` directly it would close over whatever
+  // song was selected on the very first render — a stale value — instead
+  // of whatever's currently picked in the dropdown. A ref sidesteps that.
+  const songIdRef = useRef(songId);
+  songIdRef.current = songId;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const toneRef = useRef<any>(null);
@@ -58,6 +110,33 @@ export default function RemixSequencer() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sequenceRef = useRef<any>(null);
 
+  // (Re)creates the three stem players for whichever song is passed in,
+  // disposing any previous set first. Shared by the initial setup and by
+  // switching songs later.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const loadSong = useCallback(async (Tone: any, song: Song) => {
+    if (loopsRef.current) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.values(loopsRef.current).forEach((player: any) => player.dispose());
+      loopsRef.current = null;
+    }
+
+    const players = Object.fromEntries(
+      PAD_LABELS.map((pad) => [pad.id, new Tone.Player({ url: song.urls[pad.id], loop: true }).toDestination()])
+    ) as Record<PadId, InstanceType<typeof Tone.Player>>;
+
+    await Tone.loaded();
+
+    loopsRef.current = players;
+    Object.values(players).forEach((player) => {
+      player.mute = true;
+      player.sync().start(0);
+    });
+
+    Tone.getTransport().bpm.value = song.bpm;
+    setActivePads(emptyPads());
+  }, []);
+
   // Builds the whole audio graph exactly once, on the first Play/pad click —
   // importing Tone lazily keeps it out of the server render entirely, and
   // Tone.start() has to happen inside a real user gesture for the browser
@@ -67,71 +146,29 @@ export default function RemixSequencer() {
     const Tone = await import('tone');
     await Tone.start();
 
-    const kick = new Tone.MembraneSynth({ octaves: 4, pitchDecay: 0.02 }).toDestination();
-    const snare = new Tone.NoiseSynth({
-      noise: { type: 'white' },
-      envelope: { attack: 0.001, decay: 0.15, sustain: 0 },
-    }).toDestination();
-    const hat = new Tone.NoiseSynth({
-      noise: { type: 'white' },
-      envelope: { attack: 0.001, decay: 0.04, sustain: 0 },
-    }).toDestination();
-    const perc = new Tone.Synth({
-      oscillator: { type: 'triangle' },
-      envelope: { attack: 0.001, decay: 0.2, sustain: 0 },
-    }).toDestination();
+    // Real one-shot drum samples instead of synthesized hits. Tone.Sampler
+    // (rather than Tone.Player) is what handles rapid retriggering safely —
+    // each triggerAttack spawns its own internal voice, so a step landing
+    // on the same 16th twice in a row (or two lanes overlapping) doesn't
+    // fight over a single player instance the way reusing one Tone.Player
+    // would. Each sampler only has one sample, so the note name used to
+    // trigger it ('C1') is arbitrary — it's just a key into the urls map.
+    const kick = new Tone.Sampler({ urls: { C1: '/music/drums/kick.wav' } }).toDestination();
+    const snare = new Tone.Sampler({ urls: { C1: '/music/drums/snare.wav' } }).toDestination();
+    const hat = new Tone.Sampler({ urls: { C1: '/music/drums/hat.wav' } }).toDestination();
+    const perc = new Tone.Sampler({ urls: { C1: '/music/drums/perc.wav' } }).toDestination();
 
-    hat.volume.value = -16;
-    snare.volume.value = -6;
-    perc.volume.value = -8;
+    await Tone.loaded();
 
     synthsRef.current = { kick, snare, hat, perc };
-
-    const bassSynth = new Tone.Synth({
-      oscillator: { type: 'sawtooth' },
-      envelope: { attack: 0.02, decay: 0.2, sustain: 0.4, release: 0.3 },
-    }).toDestination();
-    bassSynth.volume.value = -10;
-
-    const chordSynth = new Tone.PolySynth(Tone.Synth).toDestination();
-    chordSynth.volume.value = -18;
-
-    const leadSynth = new Tone.Synth({
-      oscillator: { type: 'square' },
-      envelope: { attack: 0.01, decay: 0.3, sustain: 0.2, release: 0.4 },
-    }).toDestination();
-    leadSynth.volume.value = -16;
-
-    const eighth = Tone.Time('8n').toSeconds();
-
-    const bassLoop = new Tone.Loop((time: number) => {
-      bassSynth.triggerAttackRelease('E2', '8n', time);
-      bassSynth.triggerAttackRelease('E2', '8n', time + eighth * 4);
-    }, '1m');
-
-    const chordLoop = new Tone.Loop((time: number) => {
-      chordSynth.triggerAttackRelease(['E3', 'G3', 'B3'], '2n', time);
-    }, '1m');
-
-    const leadLoop = new Tone.Loop((time: number) => {
-      ['E4', 'G4', 'B4', 'D5'].forEach((note, i) => {
-        leadSynth.triggerAttackRelease(note, '16n', time + i * eighth);
-      });
-    }, '1m');
-
-    loopsRef.current = { bass: bassLoop, chords: chordLoop, lead: leadLoop };
-    [bassLoop, chordLoop, leadLoop].forEach((loop) => {
-      loop.mute = true;
-      loop.start(0);
-    });
 
     const seq = new Tone.Sequence(
       (time: number, step: number) => {
         const g = gridRef.current;
-        if (g.kick[step]) kick.triggerAttackRelease('C1', '8n', time);
-        if (g.snare[step]) snare.triggerAttackRelease('8n', time);
-        if (g.hat[step]) hat.triggerAttackRelease('16n', time);
-        if (g.perc[step]) perc.triggerAttackRelease('A4', '16n', time);
+        if (g.kick[step]) kick.triggerAttack('C1', time);
+        if (g.snare[step]) snare.triggerAttack('C1', time);
+        if (g.hat[step]) hat.triggerAttack('C1', time);
+        if (g.perc[step]) perc.triggerAttack('C1', time);
         setCurrentStep(step);
       },
       Array.from({ length: STEPS }, (_, i) => i),
@@ -140,11 +177,10 @@ export default function RemixSequencer() {
     seq.start(0);
     sequenceRef.current = seq;
 
-    Tone.getTransport().bpm.value = 100;
-
     toneRef.current = Tone;
+    await loadSong(Tone, SONGS.find((s) => s.id === songIdRef.current) ?? SONGS[0]);
     return Tone;
-  }, []);
+  }, [loadSong]);
 
   useEffect(() => {
     return () => {
@@ -190,6 +226,27 @@ export default function RemixSequencer() {
     });
   };
 
+  const changeSong = async (nextSongId: SongId) => {
+    setSongId(nextSongId);
+    const song = SONGS.find((s) => s.id === nextSongId);
+    if (!song) return;
+
+    // Switching songs mid-playback would leave stems from two different
+    // tempos/tracks briefly overlapping, so stop the transport first.
+    if (toneRef.current) {
+      const transport = toneRef.current.getTransport();
+      if (isPlaying) {
+        transport.stop();
+        setIsPlaying(false);
+        setCurrentStep(-1);
+      }
+      await loadSong(toneRef.current, song);
+    }
+    // If audio hasn't been initialized yet, setup() will load whichever
+    // song is selected (via `songId` state) the first time Play/a pad is
+    // pressed — nothing else to do here.
+  };
+
   const clearGrid = () => {
     setGrid({ kick: emptyLane(), snare: emptyLane(), hat: emptyLane(), perc: emptyLane() });
   };
@@ -221,6 +278,33 @@ export default function RemixSequencer() {
           </span>
         </div>
 
+        <label className="flex items-center gap-2">
+          <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+            Song
+          </span>
+          <div className="relative">
+            {/* Native select arrows aren't inset evenly with the rest of
+                the pill's padding — appearance-none drops the built-in one
+                so this custom chevron can sit at the same inset as the
+                left-side text. */}
+            <select
+              value={songId}
+              onChange={(e) => changeSong(e.target.value as SongId)}
+              className="appearance-none rounded-full border border-black/10 bg-transparent py-1.5 pr-8 pl-3 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 dark:border-white/10 dark:text-white/70 dark:hover:border-white/30"
+            >
+              {SONGS.map((song) => (
+                <option key={song.id} value={song.id} className="bg-white text-black dark:bg-black dark:text-white">
+                  {song.label} — {song.bpm} BPM
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={13}
+              className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/50 dark:text-white/50"
+            />
+          </div>
+        </label>
+
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -240,7 +324,7 @@ export default function RemixSequencer() {
       </div>
 
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        {PADS.map((pad) => (
+        {PAD_LABELS.map((pad) => (
           <button
             key={pad.id}
             type="button"
@@ -283,7 +367,8 @@ export default function RemixSequencer() {
       </div>
 
       <p className="mt-6 text-xs text-black/40 dark:text-white/40">
-        Toggle steps to build a beat, tap the loop pads to layer in a bassline, chords, and a lead — then hit play.
+        Toggle steps to build a beat, tap the pads to layer in the three stems from{' '}
+        {SONGS.find((s) => s.id === songId)?.label} — then hit play.
       </p>
     </div>
   );

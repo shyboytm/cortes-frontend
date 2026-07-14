@@ -24,13 +24,6 @@ export interface FeedGridProps {
   items: FeedItem[];
 }
 
-// A CSS-only masonry grid — no JS packing library, just a multi-column
-// layout where each item keeps its source image's native aspect ratio
-// (via the aspectRatio GROQ projection) instead of being cropped to a
-// uniform shape. Adding a portrait or landscape photo in Sanity just
-// changes how tall that one tile is; nothing else needs to change. Video
-// items don't carry aspect-ratio metadata the way images do, so they fall
-// back to a standard 16:9 box.
 export default function FeedGrid({ items }: FeedGridProps) {
   if (items.length === 0) {
     return (
@@ -70,8 +63,31 @@ export default function FeedGrid({ items }: FeedGridProps) {
               )
             )}
 
+            {item.caption && (
+              <>
+                {/* Dark scrim behind the caption so it stays legible no
+                    matter how bright or busy the underlying image/video is —
+                    the text alone can't rely on the page's light/dark theme
+                    here since it's sitting on arbitrary media, not the
+                    background. Both fade in together on hover, same
+                    affordance as the link arrow badge below. */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/70 via-black/25 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                />
+                <p
+                  className={`absolute bottom-3 left-3 z-10 text-sm text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
+                    isClickable ? "right-14" : "right-3"
+                  }`}
+                  style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9), 0 1px 10px rgba(0,0,0,0.6)" }}
+                >
+                  {item.caption}
+                </p>
+              </>
+            )}
+
             {isClickable && (
-              <span className="absolute right-3 bottom-3 flex h-9 w-9 scale-75 items-center justify-center rounded-full bg-black/70 text-white opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 dark:bg-white/80 dark:text-black">
+              <span className="absolute right-3 bottom-3 z-10 flex h-9 w-9 scale-75 items-center justify-center rounded-full bg-black/70 text-white opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 dark:bg-white/80 dark:text-black">
                 <ArrowRight size={18} />
               </span>
             )}
@@ -86,10 +102,6 @@ export default function FeedGrid({ items }: FeedGridProps) {
               </Link>
             ) : (
               media
-            )}
-
-            {item.caption && (
-              <p className="mt-2 text-left text-xs text-black/50 dark:text-white/50">{item.caption}</p>
             )}
           </div>
         );

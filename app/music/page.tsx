@@ -54,8 +54,8 @@ export default function MusicPage() {
           <h2 className="mb-3 text-2xl font-normal text-black dark:text-white">Remix it yourself</h2>
           <p className="mb-6 text-black/60 dark:text-white/60">
             A working sketch of a bigger idea — a browser-based remix toy built from actual pieces of
-            Cordio tracks. For now it&apos;s running on placeholder sounds while the real stems get
-            carved up. Toggle steps, layer in the loop pads, and see what you land on.
+            Cordio tracks. Pick a song from the dropdown, toggle steps, and layer in the loop pads to
+            see what you land on.
           </p>
         </div>
 

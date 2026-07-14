@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import NavDotGrid from '@/components/ui/NavDotGrid'
 
 type NavLink = {
   label: string
@@ -11,16 +12,15 @@ type NavLink = {
   accent?: boolean
 }
 
-// Photos/Contact don't have real routes yet — pointing at "#" for now until
-// those pages/sections exist.
+// Photos doesn't have a real route yet — pointing at "#" for now until that
+// section exists. Info covers both "about Dennis" and how to reach him.
 const NAV_LINKS: NavLink[] = [
   { label: 'Work', href: '/work' },
   { label: 'Feed', href: '/feed' },
   { label: 'Blog', href: '/blog' },
   { label: 'Music', href: '/music' },
   { label: 'Photos', href: '#' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '#', accent: true },
+  { label: 'Info', href: '/info', accent: true },
 ]
 
 export default function PrimaryNav() {
@@ -70,16 +70,20 @@ export default function PrimaryNav() {
       <div className="fixed inset-x-0 top-8 z-50 px-6">
         <div
           id="primary-nav"
-          className="dot-font glass mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-lg border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 px-6 py-3 font-doto text-black dark:text-white"
+          className="dot-font glass relative mx-auto flex max-w-7xl items-center justify-between gap-6 overflow-hidden rounded-lg border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 px-6 py-3 font-doto text-black dark:text-white"
         >
+          {/* Faint dot-grid texture across the nav pill's own background —
+              purely decorative, sits behind the links/logo. */}
+          <NavDotGrid />
+
           <Link
             href="/"
-            className="text-sm tracking-widest uppercase whitespace-nowrap text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white"
+            className="relative z-10 text-sm tracking-widest uppercase whitespace-nowrap text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white"
           >
             Dennis Cortes
           </Link>
 
-          <nav className="hidden lg:block">
+          <nav className="relative z-10 hidden lg:block">
             <ul className="flex items-center gap-6 text-sm tracking-widest">
               {NAV_LINKS.map((link) => (
                 <li key={link.label}>
@@ -99,7 +103,7 @@ export default function PrimaryNav() {
             onClick={() => setIsOpen((open) => !open)}
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isOpen}
-            className="relative flex h-8 w-8 shrink-0 flex-col items-center justify-center gap-1.5 lg:hidden"
+            className="relative z-10 flex h-8 w-8 shrink-0 flex-col items-center justify-center gap-1.5 lg:hidden"
           >
             <span
               className={cn(

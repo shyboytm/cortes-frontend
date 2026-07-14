@@ -6,13 +6,14 @@ import { getNowPlaying } from "@/lib/lastfm";
 import FooterScene from "@/components/ui/FooterScene";
 import GlobeIcon from "@/components/ui/GlobeIcon";
 
-// Real routes only — Photos/Contact don't have pages yet, so (unlike
-// PrimaryNav) they're left out here rather than linking to "#".
+// Real routes only — Photos doesn't have a page yet, so (unlike PrimaryNav)
+// it's left out here rather than linking to "#".
 const EXPLORE_LINKS = [
   { label: "Work", href: "/work" },
   { label: "Feed", href: "/feed" },
   { label: "Blog", href: "/blog" },
   { label: "Music", href: "/music" },
+  { label: "Info", href: "/info" },
 ];
 
 const SOCIAL_LINKS = [
@@ -65,7 +66,7 @@ export default async function PrimaryFooter() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
           <div className="flex flex-col gap-6 lg:col-span-5">
             <div>
-              <p className="dot-font font-doto text-2xl tracking-widest text-black uppercase dark:text-white">
+              <p className="text-2xl dot-font font-doto uppercase tracking-widest text-black dark:text-white">
                 Dennis Cortes
               </p>
               <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">
@@ -83,14 +84,11 @@ export default async function PrimaryFooter() {
                 rel="noopener noreferrer"
                 className="group flex w-full items-center gap-4 rounded-md border border-black/10 py-4 pr-6 pl-4 transition-colors hover:border-black/30 sm:w-[380px] dark:border-white/10 dark:hover:border-white/30"
               >
-                {/* Vinyl record: black disc + groove rings, spinning while
-                    the track is actually playing (paused otherwise), with
-                    the album art (or a Last.fm fallback icon) as the center
-                    label. */}
-                <div
-                  className="relative h-16 w-16 shrink-0 rounded-full bg-black shadow-inner [animation:spin_7s_linear_infinite] motion-reduce:animate-none dark:bg-neutral-800"
-                  style={{ animationPlayState: track.isNowPlaying ? "running" : "paused" }}
-                >
+                {/* Vinyl record: black disc + groove rings, always spinning
+                    (whether or not something's actively playing right now),
+                    with the album art (or a Last.fm fallback icon) as the
+                    center label. */}
+                <div className="relative h-16 w-16 shrink-0 rounded-full bg-black shadow-inner [animation:spin_7s_linear_infinite] motion-reduce:animate-none dark:bg-neutral-800">
                   <div
                     className="absolute inset-0 rounded-full"
                     style={{
