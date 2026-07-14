@@ -111,10 +111,6 @@ body {
   text-shadow: 0 0 3px color-mix(in oklab, currentColor 45%, transparent);
 }
 
-h1 {
-  @apply text-4xl uppercase font-doto sm:text-5xl;
-}
-
 // Custom classes
 .glass {
   backdrop-filter: blur(10px);
@@ -145,7 +141,7 @@ h1 {
 
   &:hover::after,
   &.is-active::after {
-    transform: scaleX(0.97);
+    transform: scaleX(0.99);
   }
 
   &:hover {

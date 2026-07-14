@@ -29,7 +29,7 @@ export default async function FeedIndexPage() {
     <div className="pt-32 pb-24">
       <PrimaryNav />
 
-      <div className="px-12">
+      <div className="px-6">
         <PageHeader title="Feed" subtitle="Random bits of work, experiments, and personal projects that don't have a proper place but I don't want them to live on my hard drive and not see the light of day." />
 
         <FeedGrid items={items} />

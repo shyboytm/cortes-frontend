@@ -16,6 +16,10 @@ const WORK_BY_SLUG_QUERY = `*[
   _id,
   title,
   dateRange,
+  role,
+  scope,
+  industry,
+  description,
   photos[]{
     _key,
     alt,
@@ -109,7 +113,31 @@ export default async function WorkCaseStudyPage({
           <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
         </Link>
 
-        <PageHeader title={work.title} subtitle={work.dateRange} className="mt-6" />
+        <PageHeader title={work.title} subtitle={work.description || work.dateRange} className="mt-6" />
+
+        {(() => {
+          const metaItems = [
+            { label: "Role", value: work.role },
+            { label: "Scope", value: work.scope },
+            { label: "Industry", value: work.industry },
+            { label: "Year", value: work.dateRange },
+          ].filter((item) => item.value);
+
+          if (metaItems.length === 0) return null;
+
+          return (
+            <div className="mb-10 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-black/10 bg-black/10 lg:grid-cols-2 dark:border-white/10 dark:bg-white/10">
+              {metaItems.map((item) => (
+                <div key={item.label} className="bg-white p-4 dark:bg-black">
+                  <p className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-base text-black dark:text-white">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
 
         {work.caseStudy && work.caseStudy.length > 0 ? (
           <PortableText value={work.caseStudy} components={caseStudyComponents} />

@@ -24,9 +24,10 @@ const STREAMING_LINKS = [
 ];
 
 // Newest first: by year, then the optional manual "order" tiebreaker, then
-// creation time as a last resort.
+// creation time as a last resort. Singles are left out here — this teaser
+// grid is meant to highlight full releases, not one-off tracks.
 const LATEST_RELEASES_QUERY = `*[
-  _type == "musicRelease"
+  _type == "musicRelease" && releaseType in ["album", "ep", "remix"]
 ] | order(releaseYear desc, order asc, _createdAt desc)[0...4]{
   _id, title, artist, releaseType, genre, releaseYear, link,
   artwork{ alt, asset }

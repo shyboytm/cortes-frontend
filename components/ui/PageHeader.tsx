@@ -13,9 +13,9 @@ export interface PageHeaderProps {
 export default function PageHeader({ title, subtitle, className }: PageHeaderProps) {
   return (
     <div className={cn("mb-10 flex flex-col lg:flex-row items-start lg:justify-between gap-2 lg:gap-8", className)}>
-      <h1 className="text-6xl font-normal text-black md:text-5xl dark:text-white mb-6">{title}</h1>
+      <h1 className="text-5xl font-light leading-[1.25] max-w-3xl text-black md:text-5xl dark:text-white mb-6">{title}</h1>
       {subtitle && (
-        <h2 className="text-5xl text-black/40 dark:text-white/80 max-w-3xl mb-6 font-light md:text-4xl leading-[1.25]">
+        <h2 className="text-4xl text-black/40 dark:text-white/80 max-w-3xl mb-6 font-light md:text-4xl leading-[1.25]">
           {subtitle}
         </h2>
       )}

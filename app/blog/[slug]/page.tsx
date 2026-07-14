@@ -209,19 +209,22 @@ export default async function BlogPostPage({
     <div className="pt-32 pb-24">
       <PrimaryNav />
 
-      <div className="m-auto w-full max-w-3xl px-6 md:px-10">
+      <div className="px-6">
         <Link
-          href="/blog"
-          className={buttonVariants({ variant: "secondary", size: "sm" })}
-        >
-          <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
-        </Link>
+            href="/blog"
+            className={buttonVariants({ variant: "secondary", size: "sm" })}
+          >
+            <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
+          </Link>
 
-        <PageHeader
-          title={post.title}
-          subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
-          className="mt-6"
-        />
+          <PageHeader
+            title={post.title}
+            subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
+            className="mt-6"
+          />
+      </div>
+
+      <div className="m-auto w-full max-w-3xl px-6 md:px-10">
 
         {post.image && (
           <div
