@@ -49,12 +49,15 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
       });
-      if (!res.ok) throw new Error("Request failed");
-      const data = (await res.json()) as { likes?: number };
+      const data = (await res.json().catch(() => ({}))) as { likes?: number; error?: string };
+      if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
       if (typeof data.likes === "number") setLikes(data.likes);
-    } catch {
+    } catch (error) {
       // The like didn't actually save server-side — undo the optimistic
-      // update so the count/localStorage stay honest.
+      // update so the count/localStorage stay honest. Logged (not silent)
+      // so the real reason shows up in the browser console instead of just
+      // looking like the count silently reset itself.
+      console.error("Like failed to save:", error);
       setLiked(false);
       setLikes((n) => Math.max(0, n - 1));
       window.localStorage.removeItem(STORAGE_PREFIX + id);

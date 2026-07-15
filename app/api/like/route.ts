@@ -17,6 +17,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing document id" }, { status: 400 });
   }
 
+  // Fail loudly and specifically rather than letting Sanity's client throw
+  // a generic auth error further down — this is the #1 reason writes fail
+  // (the token has to be set in *this* environment's env vars, and on most
+  // hosts that means redeploying after adding it, not just saving it).
+  if (!process.env.SANITY_API_WRITE_TOKEN) {
+    console.error("SANITY_API_WRITE_TOKEN is not set in this environment.");
+    return NextResponse.json(
+      { error: "SANITY_API_WRITE_TOKEN is not configured on the server" },
+      { status: 500 }
+    );
+  }
+
   try {
     const result = await writeClient
       .patch(id)
@@ -26,7 +38,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ likes: result.likes ?? 0 });
   } catch (error) {
-    console.error("Failed to increment likes:", error);
-    return NextResponse.json({ error: "Failed to save like" }, { status: 500 });
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Failed to increment likes:", message);
+    return NextResponse.json({ error: `Failed to save like: ${message}` }, { status: 500 });
   }
 }
