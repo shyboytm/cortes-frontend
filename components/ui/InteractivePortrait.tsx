@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-const MODES = ["normal", "dither", "ascii", "halftone", "hue"] as const;
+// "dither" is listed first so it's the default (modeIndex starts at 0) —
+// the rest of the cycle order just follows from there.
+const MODES = ["dither", "ascii", "halftone", "hue", "normal"] as const;
 type Mode = (typeof MODES)[number];
 
 const MODE_LABELS: Record<Mode, string> = {
@@ -45,10 +47,47 @@ const BUFFER_HEIGHT = Math.round(BUFFER_WIDTH / TARGET_ASPECT);
 const LIQUIFY_RADIUS = 160;
 const LIQUIFY_STRENGTH = 4.5;
 
+// When more than one photo is passed in, how long each one stays up before
+// the next one starts dissolving in, and how long that dissolve itself
+// takes — slow and deliberate rather than an instant swap.
+const CYCLE_INTERVAL_MS = 6000;
+const DISSOLVE_MS = 1200;
+
 export interface InteractivePortraitProps {
-  src: string;
+  src: string | string[];
   alt: string;
   className?: string;
+}
+
+// Crops `img` to TARGET_ASPECT (top-anchored, matching the fallback
+// <Image>'s object-top) and draws it into `canvas` at the fixed buffer
+// size, returning the resulting pixel data. Shared by the initial load and
+// by the dissolve-preload path so both bake in the exact same crop.
+function cropImageToBuffer(
+  img: HTMLImageElement,
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D
+): ImageData {
+  const srcW = img.naturalWidth;
+  const srcH = img.naturalHeight;
+  const srcAspect = srcW / srcH;
+
+  let cropW = srcW;
+  let cropH = srcH;
+  let cropX = 0;
+  const cropY = 0; // top-anchored — crop off the bottom/sides, never the top
+
+  if (srcAspect > TARGET_ASPECT) {
+    cropW = srcH * TARGET_ASPECT;
+    cropX = (srcW - cropW) / 2;
+  } else {
+    cropH = srcW / TARGET_ASPECT;
+  }
+
+  canvas.width = BUFFER_WIDTH;
+  canvas.height = BUFFER_HEIGHT;
+  ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, BUFFER_WIDTH, BUFFER_HEIGHT);
+  return ctx.getImageData(0, 0, BUFFER_WIDTH, BUFFER_HEIGHT);
 }
 
 // A photo that cycles through a few canvas-based effects on click — the
@@ -60,26 +99,46 @@ export interface InteractivePortraitProps {
 // canvas is ready), with the canvas layered on top and only shown once it
 // has something to draw.
 export default function InteractivePortrait({ src, alt, className }: InteractivePortraitProps) {
+  const srcs = useMemo(() => (Array.isArray(src) ? src : [src]), [src]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Sits directly on top of the main canvas at the exact same position —
+  // used only as a dissolve layer: preloaded with the next photo (rendered
+  // in whatever mode is currently active) at opacity 0, then faded to
+  // opacity 1 on top of the still-visible current photo. Once the fade
+  // finishes, the main canvas is updated to match and this layer resets
+  // back to hidden, ready for the next cycle.
+  const transitionCanvasRef = useRef<HTMLCanvasElement>(null);
   const originalRef = useRef<ImageData | null>(null);
   const workingRef = useRef<ImageData | null>(null);
   const rafRef = useRef<number | null>(null);
+  const dissolveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isDissolvingRef = useRef(false);
+  // The src the main canvas's buffers currently reflect — lets the load
+  // effect below tell "just finished dissolving into this photo, buffers
+  // are already correct" apart from "this is a brand new src, decode it",
+  // so a dissolve's commit doesn't trigger a redundant re-decode.
+  const lastCommittedSrcRef = useRef<string | null>(null);
   const pointerRef = useRef<{ x: number; y: number } | null>(null);
   const [modeIndex, setModeIndex] = useState(0);
+  const [srcIndex, setSrcIndex] = useState(0);
   const [ready, setReady] = useState(false);
   const mode = MODES[modeIndex];
+  const currentSrc = srcs[srcIndex % srcs.length];
   const modeRef = useRef(mode);
   useEffect(() => {
     modeRef.current = mode;
   }, [mode]);
+  const srcIndexRef = useRef(srcIndex);
+  useEffect(() => {
+    srcIndexRef.current = srcIndex;
+  }, [srcIndex]);
 
-  // Renders `source` pixel data to the canvas using whichever mode is
-  // passed in — shared by the mode-switch effect and every liquify frame,
-  // so both always draw the exact same way.
-  const renderMode = useCallback((modeToRender: Mode, source: ImageData) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (!canvas || !ctx) return;
+  // Renders `source` pixel data onto whichever canvas is passed in — shared
+  // by the mode-switch effect, every liquify frame, and the dissolve
+  // preload/commit steps, so all of them always draw the exact same way.
+  const renderMode = useCallback((modeToRender: Mode, source: ImageData, canvas: HTMLCanvasElement) => {
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     const { width, height, data } = source;
 
@@ -160,61 +219,119 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
     }
   }, []);
 
-  // Load the source image once, baking in a crop to TARGET_ASPECT (anchored
-  // to the top, matching the fallback <Image>'s object-top) so the buffer's
-  // own aspect ratio always matches the box it's displayed in.
+  // Load the source image once, baking in a crop to TARGET_ASPECT so the
+  // buffer's own aspect ratio always matches the box it's displayed in. If
+  // a dissolve already committed this exact src (see startDissolve below),
+  // the buffers are already correct — this just confirms `ready` and skips
+  // re-decoding the same photo a second time.
   useEffect(() => {
+    // A dissolve (see startDissolve below) already committed this exact
+    // photo's buffers directly — `ready` is already true from the initial
+    // load and is never reset during cycling, so there's nothing to do.
+    if (lastCommittedSrcRef.current === currentSrc && originalRef.current) {
+      return;
+    }
+
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d", { willReadFrequently: true });
     if (!canvas || !ctx) return;
 
     let cancelled = false;
     const img = new window.Image();
-    img.src = src;
+    img.src = currentSrc;
     img.onload = () => {
       if (cancelled) return;
 
-      const srcW = img.naturalWidth;
-      const srcH = img.naturalHeight;
-      const srcAspect = srcW / srcH;
-
-      let cropW = srcW;
-      let cropH = srcH;
-      let cropX = 0;
-      const cropY = 0; // top-anchored — crop off the bottom/sides, never the top
-
-      if (srcAspect > TARGET_ASPECT) {
-        cropW = srcH * TARGET_ASPECT;
-        cropX = (srcW - cropW) / 2;
-      } else {
-        cropH = srcW / TARGET_ASPECT;
-      }
-
-      canvas.width = BUFFER_WIDTH;
-      canvas.height = BUFFER_HEIGHT;
-      ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, BUFFER_WIDTH, BUFFER_HEIGHT);
-
-      const original = ctx.getImageData(0, 0, BUFFER_WIDTH, BUFFER_HEIGHT);
+      const original = cropImageToBuffer(img, canvas, ctx);
       originalRef.current = original;
       workingRef.current = new ImageData(
         new Uint8ClampedArray(original.data),
         BUFFER_WIDTH,
         BUFFER_HEIGHT
       );
+      lastCommittedSrcRef.current = currentSrc;
       setReady(true);
     };
 
     return () => {
       cancelled = true;
     };
-  }, [src]);
+  }, [currentSrc]);
 
   // Re-render (from a clean, un-swirled copy) whenever the mode changes.
   useEffect(() => {
-    if (!ready || !originalRef.current || !workingRef.current) return;
+    const canvas = canvasRef.current;
+    if (!ready || !originalRef.current || !workingRef.current || !canvas) return;
     workingRef.current.data.set(originalRef.current.data);
-    renderMode(mode, workingRef.current);
+    renderMode(mode, workingRef.current, canvas);
   }, [mode, ready, renderMode]);
+
+  // Slowly dissolves into the next photo (when more than one was passed
+  // in): preloads and crops the next image onto the transition layer,
+  // renders it in whatever mode is currently active, then fades that layer
+  // from 0 to 1 opacity on top of the still-visible current photo. Once the
+  // fade finishes, the main canvas is updated to match and the transition
+  // layer snaps back to hidden (no transition) so it's ready for next time.
+  const startDissolve = useCallback(() => {
+    if (srcs.length <= 1 || isDissolvingRef.current) return;
+    const transitionCanvas = transitionCanvasRef.current;
+    const tctx = transitionCanvas?.getContext("2d", { willReadFrequently: true });
+    if (!transitionCanvas || !tctx) return;
+
+    const nextIndex = (srcIndexRef.current + 1) % srcs.length;
+    const nextSrc = srcs[nextIndex];
+
+    isDissolvingRef.current = true;
+
+    const img = new window.Image();
+    img.src = nextSrc;
+    img.onload = () => {
+      const nextOriginal = cropImageToBuffer(img, transitionCanvas, tctx);
+      renderMode(modeRef.current, nextOriginal, transitionCanvas);
+
+      // Make sure the layer starts from a clean opacity:0 with no
+      // transition, then kick off the real fade on the next tick so the
+      // browser registers 0 as the starting point before animating to 1.
+      transitionCanvas.style.transition = "none";
+      transitionCanvas.style.opacity = "0";
+      // Force a reflow so the two style writes above and below don't get
+      // batched into a single, transition-less jump straight to opacity 1.
+      void transitionCanvas.offsetHeight;
+      transitionCanvas.style.transition = `opacity ${DISSOLVE_MS}ms ease-in-out`;
+      transitionCanvas.style.opacity = "1";
+
+      dissolveTimeoutRef.current = setTimeout(() => {
+        const mainCanvas = canvasRef.current;
+        originalRef.current = nextOriginal;
+        workingRef.current = new ImageData(
+          new Uint8ClampedArray(nextOriginal.data),
+          BUFFER_WIDTH,
+          BUFFER_HEIGHT
+        );
+        if (mainCanvas) renderMode(modeRef.current, workingRef.current, mainCanvas);
+
+        lastCommittedSrcRef.current = nextSrc;
+        setSrcIndex(nextIndex);
+
+        transitionCanvas.style.transition = "none";
+        transitionCanvas.style.opacity = "0";
+        isDissolvingRef.current = false;
+      }, DISSOLVE_MS);
+    };
+  }, [srcs, renderMode]);
+
+  useEffect(() => {
+    if (srcs.length <= 1) return;
+
+    const interval = setInterval(() => {
+      startDissolve();
+    }, CYCLE_INTERVAL_MS);
+
+    return () => {
+      clearInterval(interval);
+      if (dissolveTimeoutRef.current) clearTimeout(dissolveTimeoutRef.current);
+    };
+  }, [srcs.length, startDissolve]);
 
   // Swirls the working buffer around (cx, cy), starting fresh from the
   // pristine original each time — so the distortion follows the cursor
@@ -222,7 +339,8 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
   const applySwirl = useCallback((cx: number, cy: number) => {
     const original = originalRef.current;
     const working = workingRef.current;
-    if (!original || !working) return;
+    const canvas = canvasRef.current;
+    if (!original || !working || !canvas) return;
 
     working.data.set(original.data);
 
@@ -257,7 +375,7 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
       }
     }
 
-    renderMode(modeRef.current, working);
+    renderMode(modeRef.current, working, canvas);
   }, [renderMode]);
 
   const scheduleSwirl = useCallback(() => {
@@ -288,9 +406,10 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
-    if (!ready || !originalRef.current || !workingRef.current) return;
+    const canvas = canvasRef.current;
+    if (!ready || !originalRef.current || !workingRef.current || !canvas) return;
     workingRef.current.data.set(originalRef.current.data);
-    renderMode(mode, workingRef.current);
+    renderMode(mode, workingRef.current, canvas);
   };
 
   useEffect(() => {
@@ -308,17 +427,18 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
       onMouseMove={handlePointerMove}
       onMouseLeave={handlePointerLeave}
       className={cn(
-        "group relative block w-full cursor-pointer overflow-hidden rounded-sm border border-black/10 text-left dark:border-white/10",
+        "group relative block w-full cursor-pointer rounded-sm border border-black/10 text-left dark:border-white/10",
         className
       )}
       aria-label={`Portrait photo, click to cycle effects — currently ${MODE_LABELS[mode]}`}
     >
-      <div className="relative aspect-[3/4] w-full">
+      <div className="relative aspect-[3/4] w-full shadow-2xl">
+    
         <Image
-          src={src}
+          src={currentSrc}
           alt={alt}
           fill
-          className="object-cover object-top"
+          className="object-cover object-top opacity-0"
           sizes="(max-width: 1024px) 100vw, 340px"
         />
         <canvas
@@ -326,6 +446,18 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
           className={cn(
             "absolute inset-0 h-full w-full opacity-0 transition-opacity duration-200",
             ready && "opacity-100",
+            mode === "hue" && "animate-hue-cycle"
+          )}
+        />
+        {/* Dissolve layer — opacity is driven imperatively in startDissolve
+            above rather than via React state, since it needs a "no
+            transition" instant reset between cycles that a className swap
+            can't express cleanly. */}
+        <canvas
+          ref={transitionCanvasRef}
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-0 h-full w-full opacity-0",
             mode === "hue" && "animate-hue-cycle"
           )}
         />

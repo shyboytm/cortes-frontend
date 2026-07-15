@@ -14,6 +14,16 @@ import PageHeader from "@/components/ui/PageHeader";
 import InteractivePortrait from "@/components/ui/InteractivePortrait";
 import { buttonVariants } from "@/components/ui/button";
 
+// Slowly rotates through these on the portrait — see InteractivePortrait's
+// own cycle-interval logic for the timing.
+const PORTRAIT_PHOTOS = [
+  "/info-portrait-dennis-cortes.jpeg",
+  "/info-portrait-dennis-cortes-2.jpeg",
+  "/info-portrait-dennis-cortes-3.jpeg",
+  "/info-portrait-dennis-cortes-4.jpeg",
+  "/info-portrait-dennis-cortes-5.jpeg",
+];
+
 // Same real social links used in the footer's "/ Social" group — kept in
 // sync by hand since this is the only other place they're needed.
 const CONTACT_LINKS = [
@@ -93,7 +103,7 @@ export default async function InfoPage() {
               <h2 className="dot-font mb-4 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
                 / Socials
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 max-w-lg">
                 {CONTACT_LINKS.map((link) => (
                   <Link
                     key={link.href}
@@ -102,7 +112,7 @@ export default async function InfoPage() {
                     rel="noopener noreferrer"
                     className={buttonVariants({ variant: "secondary", size: "sm" })}
                   >
-                    <link.icon size={13} />
+                    <link.icon size={12} />
                     <span className="inline-block translate-y-[1px]">{link.label}</span>
                   </Link>
                 ))}
@@ -131,7 +141,7 @@ export default async function InfoPage() {
           </div>
 
           <InteractivePortrait
-            src="/info-portrait-dennis-cortes.jpeg"
+            src={PORTRAIT_PHOTOS}
             alt="Dennis Cortes"
             className="lg:sticky lg:top-32"
           />
@@ -140,14 +150,17 @@ export default async function InfoPage() {
         {testimonials.length > 0 && (
           <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
             <h2 className="mb-6 text-3xl font-normal tracking-wide text-black dark:text-white">What Others Say</h2>
-            <div className="grid grid-cols-1 gap-x-10 gap-y-10 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-x-10 gap-y-5 lg:grid-cols-2">
               {testimonials.map((testimonial) => (
-                <figure key={testimonial._id}>
-                  <blockquote className="text-base leading-relaxed whitespace-pre-line text-black/70 italic dark:text-white/70">
-                    &ldquo;{testimonial.quote}&rdquo;
+                <figure key={testimonial._id} className="flex w-full flex-col items-start gap-1.5">
+                  {/* "Received message" style — rounded on three corners with
+                      a squared-off bottom-left to read as a chat bubble tail,
+                      same hairline-on-black/5 treatment used elsewhere. */}
+                  <blockquote className="w-full rounded-2xl rounded-bl-xs bg-black/5 p-4 text-base leading-relaxed whitespace-pre-line text-black/80 dark:bg-white/10 dark:text-white/80">
+                    {testimonial.quote}
                   </blockquote>
-                  <figcaption className="dot-font mt-3 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
-                    &mdash; {testimonial.name}
+                  <figcaption className="dot-font ml-1 font-doto text-[10px] tracking-widest text-black/40 uppercase dark:text-white/40">
+                    {testimonial.name}
                     {testimonial.role ? `, ${testimonial.role}` : ""}
                   </figcaption>
                 </figure>

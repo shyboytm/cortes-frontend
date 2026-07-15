@@ -62,17 +62,13 @@ export default async function PrimaryFooter() {
   const track = await getNowPlaying();
 
   return (
-    <footer className="relative">
+    <footer className="relative overflow-hidden">
       {/* Large, subtle 3D shape that leans toward the cursor and randomly
           swaps its geometry — purely decorative, sits behind everything. */}
       <FooterScene />
 
-      {/* Small easter egg peeking out of the corner, with a little tooltip
-          on hover — pointer-events re-enabled just on this wrapper (unlike
-          most decorative elements in the footer) so the hover actually
-          triggers. */}
-      <div className="group absolute right-8 bottom-0 z-11 h-20 w-20 translate-y-4 sm:h-28 sm:w-28">
-        <div className="pointer-events-none absolute bottom-full font-bold left-2 text-center mb-2 w-max max-w-[160px] -translate-x-1/2 rounded-md border border-black/10 bg-purple-900 px-3 py-2 text-xs text-white opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 dark:border-white/10 dark:bg-purple-800 dark:text-white">
+      <div className="group absolute right-8 -bottom-2 z-11 h-20 w-20 translate-y-4 sm:h-28 sm:w-28">
+        <div className="pointer-events-none absolute bottom-full font-bold left-2 text-center mb-2 w-max max-w-[160px] -translate-x-1/2 rounded-md px-3 py-2 text-xs opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 dark:border-white/10 bg-violet-950 text-white">
           Fun fact&hellip; my favorite Pok&eacute;mon is Gengar!
         </div>
         <Image
@@ -117,7 +113,7 @@ export default async function PrimaryFooter() {
                 href={track.url ?? "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex w-full items-center gap-4 rounded-md border border-black/10 py-4 pr-6 pl-4 transition-colors hover:border-black/30 sm:w-[380px] dark:border-white/10 dark:hover:border-white/30"
+                className="group flex w-full items-center gap-4 rounded-md border border-black/10 py-4 pr-6 pl-4 transition-colors hover:border-black/20 sm:w-[380px] bg-transparent dark:hover:bg-white/5 hover:bg-black/10 dark:border-white/10 dark:hover:border-white/20"
               >
                 {/* Vinyl record: black disc + groove rings, always spinning
                     (whether or not something's actively playing right now),

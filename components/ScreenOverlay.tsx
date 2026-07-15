@@ -9,10 +9,8 @@ export default function ScreenOverlay() {
     <Shader className="fixed inset-0 z-50 w-screen h-screen pointer-events-none opacity-[0.2]">
         <SolidColor color="#000000" />
 
-        {/* Animated film grain, riding on top of the solid base */}
         <FilmGrain strength={1} bias={2} animated />
 
-        {/* CRT scanlines, slight color fringing, and a vignette */}
         <CRTScreen
           pixelSize={256}
           colorShift={0.8}
