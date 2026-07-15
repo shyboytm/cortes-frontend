@@ -20,7 +20,7 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Blog', href: '/blog' },
   { label: 'Music', href: '/music' },
   { label: 'Recs', href: '/recs' },
-  { label: 'Photos', href: '#' },
+  { label: 'Photos', href: 'https://glass.photo/cortes' },
   { label: 'Info', href: '/info', accent: true },
 ]
 
@@ -68,13 +68,12 @@ export default function PrimaryNav() {
           content underneath it on large screens. z-50 (higher than the
           fullscreen mobile menu below) keeps the hamburger/X clickable and
           visible above it regardless of DOM order. */}
-      <div className="fixed inset-x-0 top-8 z-50 px-6">
+      <div className="fixed inset-x-0 top-8 z-50 px-3 md:px-4 lg:px-6">
         <div
           id="primary-nav"
           className="dot-font glass relative mx-auto flex max-w-7xl items-center justify-between gap-6 overflow-hidden rounded-lg border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 px-6 py-3 font-doto text-black dark:text-white"
         >
-          {/* Faint dot-grid texture across the nav pill's own background —
-              purely decorative, sits behind the links/logo. */}
+      
           <NavDotGrid />
 
           <Link

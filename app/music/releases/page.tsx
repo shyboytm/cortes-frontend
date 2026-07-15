@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
-import MusicReleaseCard from "@/components/ui/MusicReleaseCard";
+import MusicReleasesFilter, { type ReleaseFilterItem } from "@/components/ui/MusicReleasesFilter";
 import { buttonVariants } from "@/components/ui/button";
 
 const ALL_RELEASES_QUERY = `*[
@@ -17,7 +16,7 @@ const ALL_RELEASES_QUERY = `*[
 const options = { next: { revalidate: 30 } };
 
 export default async function MusicReleasesPage() {
-  const releases = await client.fetch<SanityDocument[]>(ALL_RELEASES_QUERY, {}, options);
+  const releases = await client.fetch<ReleaseFilterItem[]>(ALL_RELEASES_QUERY, {}, options);
 
   return (
     <div className="pt-32 pb-24">
@@ -42,19 +41,8 @@ export default async function MusicReleasesPage() {
             Nothing here yet — add a release in Sanity to get started.
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-            {releases.map((release) => (
-              <MusicReleaseCard
-                key={release._id}
-                title={release.title}
-                artist={release.artist}
-                releaseType={release.releaseType}
-                genre={release.genre}
-                releaseYear={release.releaseYear}
-                link={release.link}
-                artwork={release.artwork}
-              />
-            ))}
+          <div className="mt-10">
+            <MusicReleasesFilter releases={releases} />
           </div>
         )}
       </div>

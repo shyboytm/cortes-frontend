@@ -45,8 +45,8 @@ export default function NavDotGrid() {
       <DotGrid
         color={isDark ? "#ffffff" : "#000000"}
         density={8}
-        dotSize={0.35}
-        twinkle={0.75}
+        dotSize={0.1}
+        twinkle={1}
         opacity={1}
       />
     </Shader>

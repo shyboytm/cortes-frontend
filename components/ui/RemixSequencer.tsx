@@ -274,7 +274,7 @@ export default function RemixSequencer() {
           <button
             type="button"
             onClick={togglePlay}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-green-800 text-white transition-transform hover:scale-105 dark:bg-green-500"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-800 text-white transition-transform hover:scale-105 dark:bg-purple-500"
             aria-label={isPlaying ? 'Stop' : 'Play'}
           >
             {isPlaying ? <Square size={16} /> : <Play size={16} className="ml-0.5" />}
@@ -284,32 +284,52 @@ export default function RemixSequencer() {
           </span>
         </div>
 
-        <label className="flex items-center gap-2">
-          <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
-            Song
-          </span>
-          <div className="relative">
-            {/* Native select arrows aren't inset evenly with the rest of
-                the pill's padding — appearance-none drops the built-in one
-                so this custom chevron can sit at the same inset as the
-                left-side text. */}
-            <select
-              value={songId}
-              onChange={(e) => changeSong(e.target.value as SongId)}
-              className="appearance-none rounded-full border border-black/10 bg-transparent py-1.5 pr-8 pl-3 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 dark:border-white/10 dark:text-white/70 dark:hover:border-white/30"
-            >
-              {SONGS.map((song) => (
-                <option key={song.id} value={song.id} className="bg-white text-black dark:bg-black dark:text-white">
-                  {song.label} — {song.bpm} BPM
-                </option>
-              ))}
-            </select>
-            <ChevronDown
-              size={13}
-              className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/50 dark:text-white/50"
-            />
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            {PAD_LABELS.map((pad) => (
+              <button
+                key={pad.id}
+                type="button"
+                onClick={() => togglePad(pad.id)}
+                className={cn(
+                  'rounded-full border px-3 py-1.5 text-xs tracking-widest uppercase transition-colors',
+                  activePads[pad.id]
+                    ? 'border-purple-800 bg-purple-800/10 text-purple-800 dark:border-purple-400 dark:bg-purple-400/10 dark:text-purple-400'
+                    : 'border-black/10 text-black/50 hover:text-black dark:border-white/10 dark:text-white/50 dark:hover:text-white'
+                )}
+              >
+                {pad.label}
+              </button>
+            ))}
           </div>
-        </label>
+
+          <label className="flex items-center gap-2">
+            <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+              Song
+            </span>
+            <div className="relative">
+              {/* Native select arrows aren't inset evenly with the rest of
+                  the pill's padding — appearance-none drops the built-in one
+                  so this custom chevron can sit at the same inset as the
+                  left-side text. */}
+              <select
+                value={songId}
+                onChange={(e) => changeSong(e.target.value as SongId)}
+                className="appearance-none rounded-full border border-black/10 bg-transparent py-1.5 pr-8 pl-3 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 dark:border-white/10 dark:text-white/70 dark:hover:border-white/30"
+              >
+                {SONGS.map((song) => (
+                  <option key={song.id} value={song.id} className="bg-white text-black dark:bg-black dark:text-white">
+                    {song.label} — {song.bpm} BPM
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={13}
+                className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/50 dark:text-white/50"
+              />
+            </div>
+          </label>
+        </div>
 
         <div className="flex items-center gap-2">
           <button
@@ -329,24 +349,6 @@ export default function RemixSequencer() {
         </div>
       </div>
 
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        {PAD_LABELS.map((pad) => (
-          <button
-            key={pad.id}
-            type="button"
-            onClick={() => togglePad(pad.id)}
-            className={cn(
-              'rounded-md border px-4 py-3 text-left text-sm tracking-wide transition-colors',
-              activePads[pad.id]
-                ? 'border-green-800 bg-green-800/10 text-green-800 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400'
-                : 'border-black/10 text-black/50 hover:text-black dark:border-white/10 dark:text-white/50 dark:hover:text-white'
-            )}
-          >
-            {pad.label}
-          </button>
-        ))}
-      </div>
-
       <div className="mb-6 border-t border-black/10 dark:border-white/10" />
 
       <div className="flex flex-col gap-3">
@@ -364,7 +366,7 @@ export default function RemixSequencer() {
                   aria-label={`${lane.label} step ${step + 1}`}
                   className={cn(
                     'aspect-square rounded-[3px] transition-colors',
-                    active ? 'bg-green-800 dark:bg-green-400' : 'bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20',
+                    active ? 'bg-purple-800 dark:bg-purple-400' : 'bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20',
                     currentStep === step && isPlaying && 'ring-2 ring-black/40 dark:ring-white/60'
                   )}
                 />

@@ -10,18 +10,18 @@ export default function ScreenOverlay() {
         <SolidColor color="#000000" />
 
         {/* Animated film grain, riding on top of the solid base */}
-        <FilmGrain strength={0.9} bias={2} animated />
+        <FilmGrain strength={1} bias={2} animated />
 
         {/* CRT scanlines, slight color fringing, and a vignette */}
         <CRTScreen
           pixelSize={256}
           colorShift={0.8}
-          scanlineIntensity={0.5}
-          scanlineFrequency={220}
-          brightness={1}
+          scanlineIntensity={0.7}
+          scanlineFrequency={350}
+          brightness={0.9}
           contrast={1}
-          vignetteIntensity={0.5}
-          vignetteRadius={0.6}
+          vignetteIntensity={1}
+          vignetteRadius={1}
         />
     </Shader>
   )

@@ -176,6 +176,37 @@ body {
   }
 }
 
+// Two identical, adjacent (no gap) copies of the marquee content translate
+// left by exactly one copy's width, so the loop point is invisible.
+.marquee-track {
+  animation: marquee-scroll 22s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+// "Color Shift" mode on InteractivePortrait — continuously rotates hue on
+// whatever's currently drawn to the canvas (a photo, in practice, since that
+// mode reuses the normal-mode pixels underneath).
+@keyframes hue-cycle {
+  from {
+    filter: hue-rotate(0deg) saturate(1.6);
+  }
+  to {
+    filter: hue-rotate(360deg) saturate(1.6);
+  }
+}
+
+.animate-hue-cycle {
+  animation: hue-cycle 6s linear infinite;
+}
+
 .dot-font {
   // font-variation-settings: "ROND" 100;
   font-weight: 700;

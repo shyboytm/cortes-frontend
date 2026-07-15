@@ -1,10 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Instagram, Linkedin } from "lucide-react";
-import { SiLastdotfm, SiBuymeacoffee } from "@icons-pack/react-simple-icons";
+import {
+  SiLastdotfm,
+  SiBuymeacoffee,
+  SiPatreon,
+  SiX,
+  SiDribbble,
+  SiYoutube,
+} from "@icons-pack/react-simple-icons";
 import { getNowPlaying } from "@/lib/lastfm";
 import FooterScene from "@/components/ui/FooterScene";
 import GlobeIcon from "@/components/ui/GlobeIcon";
+import WorkTogetherCTA from "@/components/ui/WorkTogetherCTA";
 
 // Real routes only — Photos doesn't have a page yet, so (unlike PrimaryNav)
 // it's left out here rather than linking to "#".
@@ -20,6 +28,10 @@ const EXPLORE_LINKS = [
 const SOCIAL_LINKS = [
   { label: "Instagram", href: "https://www.instagram.com/shyboytm/", icon: Instagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/fromcortes/", icon: Linkedin },
+  { label: "X", href: "https://x.com/shyboytm", icon: SiX },
+  { label: "Dribbble", href: "https://dribbble.com/shyboytm", icon: SiDribbble },
+  { label: "YouTube", href: "https://www.youtube.com/cortesarts", icon: SiYoutube },
+  { label: "Patreon", href: "https://www.patreon.com/c/shyboytm", icon: SiPatreon },
   { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/cortes", icon: SiBuymeacoffee },
 ];
 
@@ -49,21 +61,30 @@ export default async function PrimaryFooter() {
   const track = await getNowPlaying();
 
   return (
-    <footer className="relative overflow-hidden border-t border-black/10 dark:border-white/10">
+    <footer className="relative">
       {/* Large, subtle 3D shape that leans toward the cursor and randomly
           swaps its geometry — purely decorative, sits behind everything. */}
       <FooterScene />
 
-      {/* Small easter egg peeking out of the corner — purely decorative. */}
-      <Image
-        src="/gengar-pokemon-2d.gif"
-        alt="Gengar"
-        aria-hidden
-        unoptimized
-        width={500}
-        height={500}
-        className="pointer-events-none absolute right-8 bottom-0 z-11 h-20 w-20 translate-y-4 select-none opacity-90 sm:h-28 sm:w-28"
-      />
+      {/* Small easter egg peeking out of the corner, with a little tooltip
+          on hover — pointer-events re-enabled just on this wrapper (unlike
+          most decorative elements in the footer) so the hover actually
+          triggers. */}
+      <div className="group absolute right-8 bottom-0 z-11 h-20 w-20 translate-y-4 sm:h-28 sm:w-28">
+        <div className="pointer-events-none absolute bottom-full font-bold left-2 text-center mb-2 w-max max-w-[160px] -translate-x-1/2 rounded-md border border-black/10 bg-purple-900 px-3 py-2 text-xs text-white opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 dark:border-white/10 dark:bg-purple-800 dark:text-white">
+          Fun fact&hellip; my favorite Pok&eacute;mon is Gengar!
+        </div>
+        <Image
+          src="/gengar-pokemon-2d.gif"
+          alt="Gengar"
+          unoptimized
+          width={500}
+          height={500}
+          className="h-full w-full select-none object-contain opacity-90"
+        />
+      </div>
+
+      <WorkTogetherCTA />
 
       <div className="relative z-10 p-6">
        
@@ -79,8 +100,8 @@ export default async function PrimaryFooter() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
           <div className="flex flex-col gap-6 lg:col-span-5">
             <div>
-              <p className="text-2xl dot-font font-doto uppercase tracking-widest text-black dark:text-white">
-                Dennis Cortes
+              <p className="text-2xl text-black dark:text-white">
+                Dennis Cortés
               </p>
               <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">
                 <GlobeIcon className="h-3.5 w-auto mr-1 svg-shadow" />

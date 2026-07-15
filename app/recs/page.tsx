@@ -1,5 +1,5 @@
 import { type SanityDocument } from "next-sanity";
-import { Compass, BookOpen, Mic, Video, Newspaper, Smartphone, Music, type LucideIcon } from "lucide-react";
+import { Compass, BookOpen, Mic, Video, Newspaper, Smartphone, Music, Package, type LucideIcon } from "lucide-react";
 import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
@@ -30,6 +30,7 @@ const CATEGORY_SECTIONS: { value: string; label: string; icon: LucideIcon }[] = 
   { value: "app", label: "Apps", icon: Smartphone },
   { value: "blog", label: "Blogs & Articles", icon: Newspaper },
   { value: "book", label: "Books", icon: BookOpen },
+  { value: "gear", label: "Gear", icon: Package },
   { value: "music", label: "Music", icon: Music },
   { value: "podcast", label: "Podcasts", icon: Mic },
   { value: "resource", label: "Resources", icon: Compass },
