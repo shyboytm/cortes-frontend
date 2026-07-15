@@ -9,6 +9,7 @@ const FEED_QUERY = `*[
   _id,
   caption,
   link,
+  likes,
   image{
     alt,
     asset,

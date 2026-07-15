@@ -4,11 +4,13 @@ import { ArrowRight } from "lucide-react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
 import FeedVideo from "@/components/ui/FeedVideo";
+import LikeButton from "@/components/ui/LikeButton";
 
 export interface FeedItem {
   _id: string;
   caption?: string;
   link?: string;
+  likes?: number;
   image?: {
     alt?: string;
     asset?: SanityImageSource;
@@ -91,6 +93,8 @@ export default function FeedGrid({ items }: FeedGridProps) {
                 <ArrowRight size={18} />
               </span>
             )}
+
+            <LikeButton id={item._id} initialLikes={item.likes ?? 0} variant="corner" />
           </div>
         );
 

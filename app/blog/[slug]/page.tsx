@@ -10,6 +10,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { formatPostDate } from "@/lib/utils";
+import LikeButton from "@/components/ui/LikeButton";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -18,6 +19,7 @@ const POST_QUERY = `*[
   _id,
   title,
   publishedAt,
+  likes,
   image,
   body[]{
     ...,
@@ -210,18 +212,22 @@ export default async function BlogPostPage({
       <PrimaryNav />
 
       <div className="px-6">
-        <Link
+        <div className="flex items-center justify-between gap-4">
+          <Link
             href="/blog"
             className={buttonVariants({ variant: "secondary", size: "sm" })}
           >
             <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
           </Link>
 
-          <PageHeader
-            title={post.title}
-            subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
-            className="mt-6"
-          />
+          <LikeButton id={post._id} initialLikes={post.likes ?? 0} />
+        </div>
+
+        <PageHeader
+          title={post.title}
+          subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
+          className="mt-6"
+        />
       </div>
 
       <div className="m-auto w-full max-w-3xl px-6 md:px-10">
