@@ -13,6 +13,7 @@ import { getNowPlaying } from "@/lib/lastfm";
 import FooterScene from "@/components/ui/FooterScene";
 import GlobeIcon from "@/components/ui/GlobeIcon";
 import WorkTogetherCTA from "@/components/ui/WorkTogetherCTA";
+import { buttonVariants } from "@/components/ui/button";
 
 // Real routes only — Photos doesn't have a page yet, so (unlike PrimaryNav)
 // it's left out here rather than linking to "#".
@@ -50,7 +51,7 @@ function FooterPill({
     <Link
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/70 dark:hover:border-white/30 dark:hover:text-white"
+      className={buttonVariants({ variant: "secondary", size: "sm" })}
     >
       {children}
     </Link>

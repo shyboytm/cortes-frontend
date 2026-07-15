@@ -21,10 +21,10 @@ export default function WorkTogetherCTA() {
         aria-hidden
         className="marquee-track absolute inset-y-0 left-0 z-0 flex items-center whitespace-nowrap"
       >
-        <span className="dot-font shrink-0 pr-12 font-doto text-6xl font-bold tracking-tight text-black/[0.05] uppercase sm:text-8xl lg:text-[240px] dark:text-white/[0.08]">
+        <span className="dot-font shrink-0 pr-12 font-doto font-bold tracking-tight text-black/[0.05] uppercase text-8xl lg:text-[240px] dark:text-white/[0.08]">
           {MARQUEE_PHRASE}
         </span>
-        <span className="dot-font shrink-0 pr-12 font-doto text-6xl font-bold tracking-tight text-black/[0.05] uppercase sm:text-8xl lg:text-[240px] dark:text-white/[0.08]">
+        <span className="dot-font shrink-0 pr-12 font-doto font-bold tracking-tight text-black/[0.05] uppercase text-8xl lg:text-[240px] dark:text-white/[0.08]">
           {MARQUEE_PHRASE}
         </span>
       </div>

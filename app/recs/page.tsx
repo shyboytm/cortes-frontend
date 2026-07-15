@@ -5,6 +5,7 @@ import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import RecRow, { type Platform } from "@/components/ui/RecRow";
+import { buttonVariants } from "@/components/ui/button";
 
 const RECS_QUERY = `*[
   _type == "recommendation"
@@ -80,7 +81,7 @@ export default async function RecsPage() {
                 <a
                   key={value}
                   href={`#${value}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/70 dark:hover:border-white/30 dark:hover:text-white"
+                  className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   <Icon size={14} />
                   <span className="inline-block translate-y-[1px]">{label}</span>
@@ -107,6 +108,7 @@ export default async function RecsPage() {
                           : undefined
                       }
                       imageAlt={rec.image?.alt}
+                      imageVariant={value === "music" ? "cd" : undefined}
                     />
                   ))}
                 </ul>

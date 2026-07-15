@@ -45,13 +45,6 @@ export default async function MusicPage() {
       <div className="px-6">
         <PageHeader title="Cordio" subtitle="Music that scores the moments in between." />
 
-        <p className="max-w-3xl text-xl leading-relaxed text-black/70 dark:text-white/70">
-          Cordio is where the Figma file closes and the synth opens ambient textures,
-          half-remembered melodies, and rhythms built for scenes that haven&apos;t happened yet.
-          Made for film, games, and podcasts, and for anyone who just wants something to
-          disappear into.
-        </p>
-
         <nav
           aria-label="Listen on"
           className="mt-10 flex flex-wrap gap-3 border-b border-black/10 pb-10 dark:border-white/10"
@@ -67,6 +60,35 @@ export default async function MusicPage() {
             </Link>
           ))}
         </nav>
+
+        <div className="border-b border-black/10 pb-10 dark:border-white/10 columns-1 gap-x-10 text-base leading-relaxed mt-6 text-black/70 md:columns-2 dark:text-white/70">
+          <p className="mb-4 break-inside-avoid-column">
+            In addition to my work as a designer, I&apos;m a musician and music producer known for my unique blend of ambient,
+            hip-hop-inspired, electronic, sample-heavy music, released under the name Cordio.
+            With a deep passion for creating captivating immersive soundscapes and melodies,
+            I&apos;ve carved out a distinct sound I use to tell a story to listeners with room for
+            their own interpretation.
+          </p>
+          <p className="mb-4 break-inside-avoid-column">
+            With a background in classical music training, I bring a unique perspective to modern
+            electronic music. I grew up in a Hispanic household listening to rap, R&B, salsa,
+            bachata, reggaeton, and jazz from an early age, which has stuck with me to this day
+            and consistently drives my passion for music.
+          </p>
+          <p className="mb-4 break-inside-avoid-column">
+            Drawing inspiration and methods from renowned electronic artists such as Flying Lotus,
+            Baths, Shigeto, Shlohmo, and Lemon Jelly, I bring a personal perspective to the music
+            scene. My compositions are a fusion of intricate electronic elements, soulful samples,
+            unique drum patterns, anime references, video game nods, and infectious rhythms,
+            creating a sonic experience that transcends genres. A wide range of musical interests can be heard throughout my discography, and can be
+            seen as well in my other musical group with a close friend, HORIZON ✶ RADAR.
+          </p>
+          <p className="mb-4 break-inside-avoid-column">
+            If you&apos;re a fan of immersive compositions that are hip-hop-inspired, ambient,
+            electronic, and sample-heavy, I invite you to explore my music and experience the unique soundscapes I create.
+            You can find my music on all major streaming platforms, and you can directly support my work by purchasing my music on <Link href="https://cordio.bandcamp.com" className="link-underline">Bandcamp</Link>.
+          </p>
+        </div>
 
         {releases.length > 0 && (
           <div className="mt-14">

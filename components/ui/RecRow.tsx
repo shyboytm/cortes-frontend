@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export type Platform = "ios" | "ipad" | "mac" | "android" | "web" | "all";
 
@@ -20,6 +21,9 @@ export interface RecRowProps {
   imageUrl?: string;
   imageAlt?: string;
   platform?: Platform;
+  // "cd" gives the thumbnail a jewel-case look (square corners, a glossy
+  // diagonal sheen, and a spine line) — used for the Music section on Recs.
+  imageVariant?: "default" | "cd";
 }
 
 // One recommendation's row: optional thumbnail, name (external link), and
@@ -34,8 +38,11 @@ export default function RecRow({
   imageUrl,
   imageAlt,
   platform,
+  imageVariant = "default",
 }: RecRowProps) {
   if (!url) return null;
+
+  const isCd = imageVariant === "cd";
 
   return (
     <li className="border-b border-black/10 dark:border-white/10">
@@ -46,8 +53,27 @@ export default function RecRow({
         className="group -mx-3 flex items-start gap-4 rounded-md px-4 py-4 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
       >
         {imageUrl && (
-          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-black/10 bg-black/5 dark:border-white/10 dark:bg-white/5">
+          <div
+            className={cn(
+              "relative h-12 w-12 shrink-0 overflow-hidden border bg-black/5 dark:bg-white/5",
+              isCd
+                ? "rounded-[2px] border-black/15 shadow-[1px_2px_5px_rgba(0,0,0,0.35)] dark:border-white/20"
+                : "rounded-xl border-black/10 dark:border-white/10"
+            )}
+          >
             <Image src={imageUrl} alt={imageAlt || title} fill className="object-cover" sizes="48px" />
+            {isCd && (
+              <>
+                {/* Plastic-case gloss — a soft diagonal highlight across the
+                    artwork, like light catching a jewel case's cover. */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-white/0 via-white/50 to-white/0 opacity-40 mix-blend-overlay" />
+                {/* Black plastic spine along the left edge, like a jewel
+                    case's hinge — solid in both themes since real CD spines
+                    are always opaque black regardless of the artwork. */}
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-black" />
+                <div className="pointer-events-none absolute inset-y-0 left-[3px] w-px bg-white/10" />
+              </>
+            )}
           </div>
         )}
 

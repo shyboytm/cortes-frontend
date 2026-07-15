@@ -12,6 +12,7 @@ import { client } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import InteractivePortrait from "@/components/ui/InteractivePortrait";
+import { buttonVariants } from "@/components/ui/button";
 
 // Same real social links used in the footer's "/ Social" group — kept in
 // sync by hand since this is the only other place they're needed.
@@ -53,7 +54,14 @@ export default async function InfoPage() {
       <PrimaryNav />
 
       <div className="m-auto w-full px-6">
-        <PageHeader title="Info" subtitle="Software Product Designer" />
+        <PageHeader
+          title="Info"
+          subtitle={
+            <Link href="mailto:hi@cortes.us" className="transition-colors link-underline hover:text-black dark:hover:text-white">
+              hi@cortes.us
+            </Link>
+          }
+        />
 
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_320px] lg:gap-16">
           <div>
@@ -92,7 +100,7 @@ export default async function InfoPage() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/70 dark:hover:border-white/30 dark:hover:text-white"
+                    className={buttonVariants({ variant: "secondary", size: "sm" })}
                   >
                     <link.icon size={13} />
                     <span className="inline-block translate-y-[1px]">{link.label}</span>
