@@ -13,6 +13,8 @@ import { getNowPlaying } from "@/lib/lastfm";
 import FooterScene from "@/components/ui/FooterScene";
 import GlobeIcon from "@/components/ui/GlobeIcon";
 import WorkTogetherCTA from "@/components/ui/WorkTogetherCTA";
+import ViewportSize from "@/components/ui/ViewportSize";
+import NashvilleStatus from "@/components/ui/NashvilleStatus";
 import { buttonVariants } from "@/components/ui/button";
 
 // Real routes only — Photos doesn't have a page yet, so (unlike PrimaryNav)
@@ -24,6 +26,22 @@ const EXPLORE_LINKS = [
   { label: "Music", href: "/music" },
   { label: "Recs", href: "/recs" },
   { label: "Info", href: "/info" },
+];
+
+// Decorative pixel-art marks Dennis dropped into /public — purely a visual
+// flourish along the very bottom of the footer, not linked to anything.
+// Real width/height (from each file's own viewBox) keeps aspect ratio
+// correct when only a height is set via className.
+const ACCENT_GRAPHICS = [
+  { file: "accent-graphic-01.svg", width: 496, height: 133 },
+  { file: "accent-graphic-02.svg", width: 123, height: 69 },
+  { file: "accent-graphic-03.svg", width: 71, height: 61 },
+  { file: "accent-graphic-04.svg", width: 66, height: 66 },
+  { file: "accent-graphic-05.svg", width: 56, height: 67 },
+  { file: "accent-graphic-06.svg", width: 78, height: 69 },
+  { file: "accent-graphic-07.svg", width: 40, height: 73 },
+  { file: "accent-graphic-08.svg", width: 53, height: 69 },
+  { file: "accent-graphic-09.svg", width: 111, height: 69 },
 ];
 
 const SOCIAL_LINKS = [
@@ -95,17 +113,18 @@ export default async function PrimaryFooter() {
         </div>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-          <div className="flex flex-col gap-6 lg:col-span-5">
-            <div>
+          <div className="flex flex-col gap-12 lg:col-span-5">
+            <div className="flex flex-col gap-2">
               <p className="text-2xl tracking-wide text-black dark:text-white">
                 Dennis Cortés
               </p>
               <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">
                 <GlobeIcon className="h-3.5 w-auto mr-1 svg-shadow" />
-                <p className="dot-font my-2 font-doto text-xs tracking-widest text-black/50 uppercase dark:text-white/50">
+                <p className="dot-font my-2 font-doto text-xs tracking-widest text-black/80 uppercase dark:text-white/80">
                   36.1627° N, 86.7816° W
                 </p>
               </div>
+              <NashvilleStatus className="dot-font font-doto text-xs tracking-widest text-black/80 uppercase dark:text-white/80" />
             </div>
 
             {track && (
@@ -145,15 +164,15 @@ export default async function PrimaryFooter() {
                   <div className="absolute top-1/2 left-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70" />
                 </div>
 
-                <div className="flex flex-col overflow-hidden">
-                  <span className="dot-font font-doto text-[10px] tracking-widest text-green-800 uppercase dark:text-green-400">
+                <div className="flex flex-col gap-1 overflow-hidden tracking-wider">
+                  <span className="dot-font font-doto text-xs tracking-widest text-green-800 uppercase dark:text-green-400">
                     {track.isNowPlaying ? "Now Playing" : "Last Played"}
                   </span>
                   <span className="max-w-[300px] truncate text-sm text-black dark:text-white">
                     {track.title}
                   </span>
                   <span className="max-w-[300px] truncate text-xs text-black/50 dark:text-white/50">
-                    {track.artist}
+                    by {track.artist}
                   </span>
                 </div>
               </Link>
@@ -190,9 +209,30 @@ export default async function PrimaryFooter() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col-reverse items-start gap-2 border-t border-black/10 pt-6 text-xs tracking-widest text-black/40 uppercase sm:grid sm:grid-cols-3 sm:items-center dark:border-white/10 dark:text-white/40">
+        <div className="mt-16 flex flex-col items-start gap-2 border-t border-black/10 pt-6 text-xs tracking-widest text-black/60 uppercase dark:border-white/10 dark:text-white/60">
           <p className="dot-font font-doto">© {new Date().getFullYear()} Dennis Cortes</p>
-          <p className="dot-font font-doto sm:text-center leading-[1.5]">Made w/ Next.js, TypeScript, Tailwind, Shaders, Vercel, Three.js</p>
+          <p className="dot-font font-doto leading-[1.5]">CRTS v1.0.0 | Next.js, TypeScript, Tailwind, Shaders, Vercel, Three.js</p>
+          <ViewportSize className="dot-font font-doto" />
+
+          {/* Each mark is drawn as solid white in its source file — `invert`
+              flips that to black for light mode, and `dark:invert-0`
+              cancels the flip back to white once the page is dark, so the
+              same asset works against either background. */}
+          <div aria-hidden className="mt-4 flex flex-wrap items-end gap-4 opacity-25 sm:gap-2">
+            {ACCENT_GRAPHICS.map(({ file, width, height }) => (
+              /* eslint-disable-next-line @next/next/no-img-element -- next/image's
+                 optimizer refuses local SVGs without dangerouslyAllowSVG, and
+                 these are purely decorative, non-optimized marks anyway. */
+              <img
+                key={file}
+                src={`/${file}`}
+                alt=""
+                width={width}
+                height={height}
+                className="h-4 w-auto invert dark:invert-0 sm:h-6"
+              />
+            ))}
+          </div>
         </div>
       </div>
     </footer>

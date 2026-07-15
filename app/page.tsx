@@ -61,17 +61,16 @@ export default async function IndexPage() {
           </div>
         </div>
 
-        <div className="font-light my-6 space-y-4 text-6xl leading-20 text-black dark:text-white/80 ">
-          <h2 className="mb-12">I'm a Principal Product Designer at Aboon, previously at Instagram on the Growth Web team.</h2>
-          <h2 className="mb-12">Outside of work, I build GamePal, restore and mod old consoles, take photos, and make music as <Link className="link-underline opacity-50" href="#">Cordio</Link> and <Link className="link-underline opacity-50" href="#">Horizon Radar</Link> — you can stream it anywhere or grab it on Bandcamp.</h2>
-          <h2 className="mb-12">I'm available for design consulting at early-stage startups, or sound design and music projects for video games, apps, podcasts, and films.</h2>
+        <div className="font-light my-6 space-y-4 sm:text-5xl text-4xl leading-[1.25] border-b border-black/10 pb-6 dark:border-white/10 dark:text-white/80 ">
+          <h2 className="mb-12">I'm a software designer, musician, and photographer. Currently a Principal Designer at <Link className="link-underline opacity-50" href="https://www.aboon.com">Aboon</Link>, previously at <Link className="link-underline opacity-50" href="https://www.instagram.com">Instagram</Link>.</h2>
+          <h2 className="mb-12">Outside of work, I build <Link className="link-underline opacity-50" href="https://apple.co/4gUqHBR">GamePal</Link>, restore and mod old consoles, take photos, and make music as <Link className="link-underline opacity-50" href="#">Cordio</Link> and <Link className="link-underline opacity-50" href="#">Horizon Radar</Link> which you can stream anywhere or support me on <Link className="link-underline opacity-50" href="https://cordio.bandcamp.com">Bandcamp</Link>.</h2>
         </div>
 
       </div>
 
       <div
         id="work"
-        className="grid grid-cols-1 gap-x-8 gap-y-12 px-12 pt-6 pb-24 sm:grid-cols-2 lg:grid-cols-3"
+        className="grid grid-cols-1 gap-x-8 gap-y-12 px-6 pt-6 pb-24 sm:grid-cols-2 lg:grid-cols-3"
       >
         <h1 className="col-span-full text-4xl font-normal text-black dark:text-white">Featured Work</h1>
 

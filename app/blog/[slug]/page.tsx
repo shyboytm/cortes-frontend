@@ -11,6 +11,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { formatPostDate } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
+import BlogStickyBar from "@/components/ui/BlogStickyBar";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -210,6 +211,7 @@ export default async function BlogPostPage({
   return (
     <div className="pt-32 pb-24">
       <PrimaryNav />
+      <BlogStickyBar id={post._id} title={post.title} likes={post.likes ?? 0} />
 
       <div className="px-6">
         <div className="flex items-center justify-between gap-4">
@@ -228,6 +230,10 @@ export default async function BlogPostPage({
           subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
           className="mt-6"
         />
+        {/* Marks where the real title ends — BlogStickyBar watches this via
+            IntersectionObserver and reveals itself once it scrolls out of
+            view, rather than tracking a hardcoded scroll offset. */}
+        <div id="post-title-sentinel" />
       </div>
 
       <div className="m-auto w-full max-w-3xl px-6 md:px-10">
