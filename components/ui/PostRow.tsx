@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { formatPostDate } from "@/lib/utils";
+import LikeButton from "@/components/ui/LikeButton";
 
 export interface PostRowProps {
+  _id: string;
   title: string;
   slug?: string;
   publishedAt?: string;
+  likes?: number;
 }
 
 // One blog post's teaser row: title on the left, published date on the
@@ -14,7 +17,7 @@ export interface PostRowProps {
 // hover. Renders nothing if the post has no slug yet (shouldn't happen in
 // practice, but keeps this safe to reuse anywhere post data might be
 // incomplete).
-export default function PostRow({ title, slug, publishedAt }: PostRowProps) {
+export default function PostRow({ _id, title, slug, publishedAt, likes }: PostRowProps) {
   if (!slug) return null;
 
   return (
@@ -31,6 +34,7 @@ export default function PostRow({ title, slug, publishedAt }: PostRowProps) {
               {formatPostDate(publishedAt)}
             </p>
           )}
+          <LikeButton id={_id} initialLikes={likes ?? 0} variant="minimal" />
           <ArrowRight
             size={16}
             className="-translate-x-1 text-black/40 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 dark:text-white/40"

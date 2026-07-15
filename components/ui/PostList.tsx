@@ -5,6 +5,7 @@ export interface PostListItem {
   title: string;
   slug?: string;
   publishedAt?: string;
+  likes?: number;
 }
 
 export interface PostListProps {
@@ -22,7 +23,14 @@ export default function PostList({ posts }: PostListProps) {
   return (
     <ul className="divide-y divide-black/10 dark:divide-white/10">
       {posts.map((post) => (
-        <PostRow key={post._id} title={post.title} slug={post.slug} publishedAt={post.publishedAt} />
+        <PostRow
+          key={post._id}
+          _id={post._id}
+          title={post.title}
+          slug={post.slug}
+          publishedAt={post.publishedAt}
+          likes={post.likes}
+        />
       ))}
     </ul>
   );

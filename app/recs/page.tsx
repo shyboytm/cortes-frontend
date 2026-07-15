@@ -17,6 +17,7 @@ const RECS_QUERY = `*[
   url,
   order,
   platform,
+  likes,
   image{
     alt,
     asset
@@ -98,13 +99,20 @@ export default async function RecsPage() {
                   {items.map((rec) => (
                     <RecRow
                       key={rec._id}
+                      id={rec._id}
                       title={rec.title}
                       description={rec.description}
                       url={rec.url}
                       platform={rec.platform as Platform | undefined}
+                      likes={rec.likes}
                       imageUrl={
                         rec.image?.asset
                           ? urlFor(rec.image.asset).width(96).height(96).fit("crop").url()
+                          : undefined
+                      }
+                      previewImageUrl={
+                        rec.image?.asset
+                          ? urlFor(rec.image.asset).width(240).height(240).fit("crop").url()
                           : undefined
                       }
                       imageAlt={rec.image?.alt}

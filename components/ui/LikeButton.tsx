@@ -7,10 +7,13 @@ import { cn } from "@/lib/utils";
 export interface LikeButtonProps {
   id: string;
   initialLikes: number;
-  // "inline" — a standalone pill, used on the blog post detail page.
-  // "corner" — a small badge pinned to the top-right of a card, hidden
-  // until hover, used on Feed grid items.
-  variant?: "inline" | "corner";
+  // "inline" — a standalone bordered pill, used on the blog post detail
+  // page. "corner" — a badge pinned to the top-right of a card, used on
+  // Feed grid items (always visible on touch/tablet, hover-revealed on
+  // desktop). "minimal" — a bare heart + count with no chrome, used inline
+  // in list rows (Recs, the Blog index) that already have their own
+  // hover/arrow affordance.
+  variant?: "inline" | "corner" | "minimal";
   className?: string;
 }
 
@@ -68,22 +71,26 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
 
   const label = liked ? `${likes} likes — you liked this` : `Like this post (${likes} likes so far)`;
 
+  // Rows/cards using "corner" or "minimal" are usually themselves wrapped
+  // in a Link (a whole row/card is clickable) — stopping propagation here
+  // keeps a like tap from also triggering that navigation. Harmless for
+  // "inline", which never sits inside a Link.
+  const onClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleClick();
+  };
+
   if (variant === "corner") {
     return (
       <button
         type="button"
-        onClick={(e) => {
-          // Feed items with a link wrap this whole card — stop the click
-          // from also triggering that navigation.
-          e.preventDefault();
-          e.stopPropagation();
-          handleClick();
-        }}
+        onClick={onClick}
         disabled={liked || pending}
         aria-label={label}
         className={cn(
-          "absolute top-3 right-3 z-10 flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-xs text-white opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:opacity-100 disabled:cursor-default dark:bg-white/80 dark:text-black",
-          liked && "opacity-100",
+          "absolute top-3 right-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-xs text-white backdrop-blur-sm transition-all duration-200 disabled:cursor-not-allowed dark:bg-white/80 dark:text-black lg:opacity-0 lg:group-hover:opacity-100",
+          liked && "lg:opacity-100",
           justLiked && "scale-110",
           className
         )}
@@ -94,14 +101,36 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
     );
   }
 
+  if (variant === "minimal") {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={liked || pending}
+        aria-label={label}
+        className={cn(
+          "inline-flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-black/40 transition-colors hover:text-black disabled:cursor-not-allowed dark:text-white/40 dark:hover:text-white",
+          liked && "text-red-800 hover:text-red-800 dark:text-red-400 dark:hover:text-red-400",
+          className
+        )}
+      >
+        <Heart
+          size={13}
+          className={cn("shrink-0 transition-transform", liked && "fill-current", justLiked && "scale-125")}
+        />
+        <span className="tabular-nums">{likes}</span>
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
-      onClick={handleClick}
+      onClick={onClick}
       disabled={liked || pending}
       aria-label={label}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:bg-black/[0.06] hover:text-black disabled:cursor-default dark:border-white/10 dark:bg-white/[0.03] dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white",
+        "inline-flex cursor-pointer items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:bg-black/[0.06] hover:text-black disabled:cursor-not-allowed dark:border-white/10 dark:bg-white/[0.03] dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white",
         liked && "border-red-800/30 text-red-800 hover:bg-red-800/10 hover:text-red-800 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10 dark:hover:text-red-400",
         className
       )}
