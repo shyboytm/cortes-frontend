@@ -12,6 +12,8 @@ import { client } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import InteractivePortrait from "@/components/ui/InteractivePortrait";
+import ClientsSection from "@/components/ui/ClientsSection";
+import PressSection from "@/components/ui/PressSection";
 import { buttonVariants } from "@/components/ui/button";
 
 // Slowly rotates through these on the portrait — see InteractivePortrait's
@@ -100,7 +102,7 @@ export default async function InfoPage() {
             </div>
 
             <div className="mt-14 max-w-3xl border-t border-black/10 pt-8 dark:border-white/10">
-              <h2 className="dot-font mb-4 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+              <h2 className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                 / Socials
               </h2>
               <div className="flex flex-wrap gap-2 max-w-lg">
@@ -121,7 +123,7 @@ export default async function InfoPage() {
 
             {services.length > 0 && (
               <div className="mt-14 max-w-3xl border-t border-black/10 pt-8 dark:border-white/10">
-                <h2 className="dot-font mb-6 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+                <h2 className="dot-font mb-6 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                   / Services
                 </h2>
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -147,6 +149,9 @@ export default async function InfoPage() {
           />
         </div>
 
+        <ClientsSection />
+        <PressSection />
+
         {testimonials.length > 0 && (
           <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
             <h2 className="mb-6 text-3xl font-normal tracking-wide text-black dark:text-white">What Others Say</h2>
@@ -159,7 +164,7 @@ export default async function InfoPage() {
                   <blockquote className="w-full rounded-2xl rounded-bl-xs bg-black/5 p-4 text-base leading-relaxed whitespace-pre-line text-black/80 dark:bg-white/10 dark:text-white/80">
                     {testimonial.quote}
                   </blockquote>
-                  <figcaption className="dot-font ml-1 font-doto text-[10px] tracking-widest text-black/40 uppercase dark:text-white/40">
+                  <figcaption className="dot-font ml-1 font-doto text-[10px] tracking-widest text-black/60 uppercase dark:text-white/60">
                     {testimonial.name}
                     {testimonial.role ? `, ${testimonial.role}` : ""}
                   </figcaption>

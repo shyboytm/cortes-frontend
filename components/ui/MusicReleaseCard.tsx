@@ -3,14 +3,17 @@ import Link from "next/link";
 import { ArrowUpRight, Disc3 } from "lucide-react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
+import LikeButton from "@/components/ui/LikeButton";
 
 export interface MusicReleaseCardProps {
+  id: string;
   title: string;
   artist: string;
   releaseType?: string;
   genre?: string;
   releaseYear?: string;
   link?: string;
+  likes?: number;
   artwork?: {
     alt?: string;
     asset?: SanityImageSource;
@@ -29,12 +32,14 @@ const RELEASE_TYPE_LABELS: Record<string, string> = {
 // and a small meta line — artist, release type, and year. The whole card
 // links out to wherever the release actually lives (Bandcamp, Spotify, etc).
 export default function MusicReleaseCard({
+  id,
   title,
   artist,
   releaseType,
   genre,
   releaseYear,
   link,
+  likes,
   artwork,
 }: MusicReleaseCardProps) {
   const meta = [artist, releaseType && (RELEASE_TYPE_LABELS[releaseType] ?? releaseType), releaseYear]
@@ -63,17 +68,19 @@ export default function MusicReleaseCard({
             <ArrowUpRight size={16} />
           </span>
         )}
+
+        <LikeButton id={id} initialLikes={likes ?? 0} variant="corner" className="opacity-0 group-hover:opacity-100" />
       </div>
 
       <div>
         <h3 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h3>
         {meta && (
-          <p className="dot-font font-doto mt-1 text-xs tracking-widest text-black/50 uppercase dark:text-white/50">
+          <p className="dot-font font-doto mt-1 text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
             {meta}
           </p>
         )}
         {genre && (
-          <p className="mt-2 text-xs uppercase tracking-widest text-black/40 dark:text-white/40">{genre}</p>
+          <p className="mt-2 text-xs uppercase tracking-widest text-black/60 dark:text-white/60">{genre}</p>
         )}
       </div>
     </div>

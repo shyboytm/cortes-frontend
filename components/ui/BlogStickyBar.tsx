@@ -42,13 +42,13 @@ export default function BlogStickyBar({ id, title, likes }: BlogStickyBarProps) 
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-lg border border-black/10 bg-white/80 px-6 py-3 font-doto dark:border-white/10 dark:bg-black/80">
         <div className="flex min-w-0 items-center gap-4">
-          <Link href="/blog" className={buttonVariants({ variant: "secondary", size: "sm" })}>
+          <Link href="/blog" className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "font-sans")}>
             <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
           </Link>
           <p className="truncate text-sm tracking-wide text-black dark:text-white">{title}</p>
         </div>
 
-        <LikeButton id={id} initialLikes={likes ?? 0} />
+        <LikeButton id={id} initialLikes={likes ?? 0} className="font-sans" />
       </div>
     </div>
   );

@@ -9,10 +9,13 @@ import {
 } from '@icons-pack/react-simple-icons';
 import { type SanityDocument } from 'next-sanity';
 import { client } from '@/sanity/client';
+import { urlFor } from '@/sanity/image';
 import PrimaryNav from '@/components/ui/PrimaryNav';
 import PageHeader from '@/components/ui/PageHeader';
 import RemixSequencer from '@/components/ui/RemixSequencer';
 import MusicReleaseCard from '@/components/ui/MusicReleaseCard';
+import VinylDisc from '@/components/ui/VinylDisc';
+import StickySubNav from '@/components/ui/StickySubNav';
 import { buttonVariants } from '@/components/ui/button';
 
 const STREAMING_LINKS = [
@@ -29,14 +32,40 @@ const STREAMING_LINKS = [
 const LATEST_RELEASES_QUERY = `*[
   _type == "musicRelease" && releaseType in ["album", "ep", "remix"]
 ] | order(releaseYear desc, order asc, _createdAt desc)[0...4]{
-  _id, title, artist, releaseType, genre, releaseYear, link,
+  _id, title, artist, releaseType, genre, releaseYear, link, likes,
+  artwork{ alt, asset }
+}`;
+
+// Just enough fields to draw the vinyl's label — a separate, unfiltered
+// query (unlike LATEST_RELEASES_QUERY above, singles count here too) since
+// this is picking a random release to show off, not curating a "best of"
+// grid.
+const RELEASE_ARTWORK_QUERY = `*[
+  _type == "musicRelease" && defined(artwork.asset)
+]{
+  title, artist,
   artwork{ alt, asset }
 }`;
 
 const options = { next: { revalidate: 30 } };
 
+// Kept outside the component — the impure Math.random() call needs to live
+// somewhere that isn't a component/hook body (React's rules of components
+// require render to be pure), and this is a plain, non-component function.
+// A fresh pick on every request/page load is the intent here, not a stable
+// "featured release", so that non-determinism is fine.
+function pickRandomRelease<T>(list: T[]): T | null {
+  if (list.length === 0) return null;
+  return list[Math.floor(Math.random() * list.length)];
+}
+
 export default async function MusicPage() {
-  const releases = await client.fetch<SanityDocument[]>(LATEST_RELEASES_QUERY, {}, options);
+  const [releases, releasesWithArt] = await Promise.all([
+    client.fetch<SanityDocument[]>(LATEST_RELEASES_QUERY, {}, options),
+    client.fetch<SanityDocument[]>(RELEASE_ARTWORK_QUERY, {}, options),
+  ]);
+
+  const vinylRelease = pickRandomRelease(releasesWithArt);
 
   return (
     <div className="pt-32 pb-24">
@@ -60,6 +89,22 @@ export default async function MusicPage() {
             </Link>
           ))}
         </nav>
+        {/* Marks where the in-page "Listen on" nav ends — StickySubNav
+            watches this via IntersectionObserver and mirrors the same
+            links into a bar under PrimaryNav once it scrolls out of view. */}
+        <div id="music-nav-sentinel" />
+        <StickySubNav sentinelId="music-nav-sentinel" ariaLabel="Listen on">
+          {STREAMING_LINKS.map(({ label, href, Icon }) => (
+            <Link
+              key={label}
+              href={href}
+              className={buttonVariants({ variant: "secondary", size: "sm" })}
+            >
+              <Icon size={16} />
+              <span className="inline-block translate-y-[1px]">{label}</span>
+            </Link>
+          ))}
+        </StickySubNav>
 
         <div className="border-b border-black/10 pb-10 dark:border-white/10 columns-1 gap-x-10 text-base leading-relaxed mt-6 text-black/70 md:columns-2 dark:text-white/70">
           <p className="mb-4 break-inside-avoid-column">
@@ -106,12 +151,14 @@ export default async function MusicPage() {
               {releases.map((release) => (
                 <MusicReleaseCard
                   key={release._id}
+                  id={release._id}
                   title={release.title}
                   artist={release.artist}
                   releaseType={release.releaseType}
                   genre={release.genre}
                   releaseYear={release.releaseYear}
                   link={release.link}
+                  likes={release.likes}
                   artwork={release.artwork}
                 />
               ))}
@@ -121,6 +168,19 @@ export default async function MusicPage() {
 
         <div className="mt-16 border-t border-black/10 dark:border-white/10">
           <div className="my-16 max-w-3xl m-auto tracking-wide">
+            {vinylRelease && (
+              <div className="mb-8 flex justify-center">
+                <VinylDisc
+                  size={160}
+                  imageUrl={
+                    vinylRelease.artwork?.asset
+                      ? urlFor(vinylRelease.artwork.asset).width(600).height(600).fit("crop").url()
+                      : undefined
+                  }
+                  imageAlt={vinylRelease.artwork?.alt || vinylRelease.title}
+                />
+              </div>
+            )}
             <h2 className="mb-3 text-2xl font-normal text-black dark:text-white text-center">Make your own Cordio remix</h2>
             <p className="mb-6 text-black/60 dark:text-white/60 text-center">
               Ever wanted to make your own music? Let's collab right here, right now with this browser-based remix toy built from 

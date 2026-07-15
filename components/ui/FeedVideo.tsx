@@ -16,7 +16,7 @@ export default function FeedVideo({ url, mimeType }: FeedVideoProps) {
 
   if (failed) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-xs text-black/40 dark:text-white/40">
+      <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-xs text-black/60 dark:text-white/60">
         This video format isn&apos;t playable in this browser.
       </div>
     );

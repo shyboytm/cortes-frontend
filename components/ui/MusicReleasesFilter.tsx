@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { SanityImageSource } from "@sanity/image-url";
 import MusicReleaseCard from "@/components/ui/MusicReleaseCard";
+import StickySubNav from "@/components/ui/StickySubNav";
 import { cn } from "@/lib/utils";
 
 export interface ReleaseFilterItem {
@@ -13,6 +14,7 @@ export interface ReleaseFilterItem {
   genre?: string;
   releaseYear?: string;
   link?: string;
+  likes?: number;
   artwork?: {
     alt?: string;
     asset?: SanityImageSource;
@@ -77,10 +79,10 @@ export default function MusicReleasesFilter({ releases }: { releases: ReleaseFil
 
   return (
     <div>
-      <div className="mb-10 space-y-4">
+      <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-12">
         {artists.length > 1 && (
           <div>
-            <h2 className="dot-font mb-3 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+            <h2 className="dot-font mb-3 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
               / Artist
             </h2>
             <div className="flex flex-wrap gap-2">
@@ -98,7 +100,7 @@ export default function MusicReleasesFilter({ releases }: { releases: ReleaseFil
 
         {releaseTypes.length > 1 && (
           <div>
-            <h2 className="dot-font mb-3 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+            <h2 className="dot-font mb-3 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
               / Type
             </h2>
             <div className="flex flex-wrap gap-2">
@@ -119,6 +121,42 @@ export default function MusicReleasesFilter({ releases }: { releases: ReleaseFil
         )}
       </div>
 
+      {/* Marks where the in-page filter row ends — StickySubNav watches
+          this via IntersectionObserver and mirrors the same filter pills
+          into a bar under PrimaryNav once it scrolls out of view. These are
+          the *same* buttons (same onClick/state), just rendered a second
+          time in a different spot — clicking either copy filters the grid. */}
+      <div id="releases-filter-sentinel" />
+      <StickySubNav sentinelId="releases-filter-sentinel" ariaLabel="Filter releases">
+        {artists.length > 1 && (
+          <>
+            <FilterPill active={artist === null} onClick={() => setArtist(null)}>
+              All Artists
+            </FilterPill>
+            {artists.map((a) => (
+              <FilterPill key={a} active={artist === a} onClick={() => setArtist(a)}>
+                {a}
+              </FilterPill>
+            ))}
+          </>
+        )}
+        {artists.length > 1 && releaseTypes.length > 1 && (
+          <span aria-hidden className="mx-1 h-4 w-px bg-black/10 dark:bg-white/10" />
+        )}
+        {releaseTypes.length > 1 && (
+          <>
+            <FilterPill active={releaseType === null} onClick={() => setReleaseType(null)}>
+              All Types
+            </FilterPill>
+            {releaseTypes.map((t) => (
+              <FilterPill key={t} active={releaseType === t} onClick={() => setReleaseType(t)}>
+                {RELEASE_TYPE_LABELS[t] ?? t}
+              </FilterPill>
+            ))}
+          </>
+        )}
+      </StickySubNav>
+
       {filtered.length === 0 ? (
         <p className="text-black/60 dark:text-white/60">No releases match those filters.</p>
       ) : (
@@ -126,12 +164,14 @@ export default function MusicReleasesFilter({ releases }: { releases: ReleaseFil
           {filtered.map((release) => (
             <MusicReleaseCard
               key={release._id}
+              id={release._id}
               title={release.title}
               artist={release.artist}
               releaseType={release.releaseType}
               genre={release.genre}
               releaseYear={release.releaseYear}
               link={release.link}
+              likes={release.likes}
               artwork={release.artwork}
             />
           ))}

@@ -129,7 +129,7 @@ export default async function WorkCaseStudyPage({
             <div className="mb-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-black/10 bg-black/10 lg:grid-cols-2 dark:border-white/10 dark:bg-white/10">
               {metaItems.map((item) => (
                 <div key={item.label} className="bg-white p-4 dark:bg-black">
-                  <p className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+                  <p className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                     {item.label}
                   </p>
                   <p className="mt-1 text-base text-black dark:text-white">{item.value}</p>

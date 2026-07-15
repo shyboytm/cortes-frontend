@@ -3,6 +3,7 @@ import { client } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import PostList, { type PostListItem } from "@/components/ui/PostList";
+import StickySubNav from "@/components/ui/StickySubNav";
 import { buttonVariants } from "@/components/ui/button";
 
 const POSTS_QUERY = `*[
@@ -79,10 +80,27 @@ export default async function BlogIndexPage() {
                 </a>
               ))}
             </nav>
+            {/* Marks where the in-page year nav ends — StickySubNav watches
+                this via IntersectionObserver and mirrors the same links
+                into a bar under PrimaryNav once it scrolls out of view. */}
+            <div id="blog-nav-sentinel" />
+            <StickySubNav sentinelId="blog-nav-sentinel" ariaLabel="Jump to year">
+              {years.map(([year]) => (
+                <a
+                  key={year}
+                  href={`#${year}`}
+                  className={buttonVariants({ variant: "secondary", size: "sm" })}
+                >
+                  <span className="inline-block translate-y-[1px]">
+                    {year === "undated" ? "Undated" : year}
+                  </span>
+                </a>
+              ))}
+            </StickySubNav>
 
             {years.map(([year, yearPosts]) => (
               <div key={year} id={String(year)} className="mb-12 scroll-mt-32">
-                <h2 className="dot-font mb-2 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+                <h2 className="dot-font mb-2 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                   / {year === "undated" ? "Undated" : year}
                 </h2>
                 <PostList posts={yearPosts} />

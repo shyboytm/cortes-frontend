@@ -118,7 +118,7 @@ export default async function PrimaryFooter() {
               <p className="text-2xl tracking-wide text-black dark:text-white">
                 Dennis Cortés
               </p>
-              <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">
+              <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/60">
                 <GlobeIcon className="h-3.5 w-auto mr-1 svg-shadow" />
                 <p className="dot-font my-2 font-doto text-xs tracking-widest text-black/80 uppercase dark:text-white/80">
                   36.1627° N, 86.7816° W
@@ -156,7 +156,7 @@ export default async function PrimaryFooter() {
                         sizes="28px"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center text-white/40">
+                      <div className="flex h-full w-full items-center justify-center text-white/60">
                         <SiLastdotfm size={12} />
                       </div>
                     )}
@@ -171,7 +171,7 @@ export default async function PrimaryFooter() {
                   <span className="max-w-[300px] truncate text-sm text-black dark:text-white">
                     {track.title}
                   </span>
-                  <span className="max-w-[300px] truncate text-xs text-black/50 dark:text-white/50">
+                  <span className="max-w-[300px] truncate text-xs text-black/60 dark:text-white/60">
                     by {track.artist}
                   </span>
                 </div>
@@ -181,7 +181,7 @@ export default async function PrimaryFooter() {
 
           <div className="grid grid-cols-2 gap-8 lg:col-span-7">
             <div>
-              <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+              <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                 / Explore
               </p>
               <div className="flex flex-wrap gap-2">
@@ -194,7 +194,7 @@ export default async function PrimaryFooter() {
             </div>
 
             <div>
-              <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+              <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                 / Social
               </p>
               <div className="flex flex-wrap gap-2">

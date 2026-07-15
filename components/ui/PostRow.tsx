@@ -24,7 +24,7 @@ export default function PostRow({ _id, title, slug, publishedAt, likes }: PostRo
     <li>
       <Link
         href={`/blog/${slug}`}
-        className="group -mx-3 flex items-center justify-between gap-6 rounded-md px-4 py-4 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
+        className="group -mx-3 flex flex-col items-start gap-2 rounded-md px-4 py-4 transition-colors hover:bg-black/[0.03] sm:flex-row sm:items-center sm:justify-between sm:gap-6 dark:hover:bg-white/[0.03]"
       >
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h2>
@@ -33,13 +33,13 @@ export default function PostRow({ _id, title, slug, publishedAt, likes }: PostRo
 
         <div className="flex shrink-0 items-center gap-3">
           {publishedAt && (
-            <p className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/60">
+            <p className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
               {formatPostDate(publishedAt)}
             </p>
           )}
           <ArrowRight
             size={16}
-            className="-translate-x-1 text-black/40 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 dark:text-white/40"
+            className="-translate-x-1 text-black/60 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 dark:text-white/60"
           />
         </div>
       </Link>

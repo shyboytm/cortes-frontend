@@ -293,7 +293,7 @@ export default function RemixSequencer() {
             >
               {isPlaying ? <Square size={16} /> : <Play size={16} className="ml-0.5" />}
             </button>
-            <span className="dot-font font-doto text-xs tracking-widest text-black/50 uppercase dark:text-white/50">
+            <span className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
               {isPlaying ? 'Playing' : 'Stopped'}
             </span>
           </div>
@@ -318,7 +318,7 @@ export default function RemixSequencer() {
 
         <div className="mb-6 flex flex-wrap items-center gap-4">
           <label className="flex shrink-0 items-center gap-2">
-            <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+            <span className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
               Song
             </span>
             <div className="relative">
@@ -339,7 +339,7 @@ export default function RemixSequencer() {
               </select>
               <ChevronDown
                 size={13}
-                className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/50 dark:text-white/50"
+                className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/60 dark:text-white/60"
               />
             </div>
           </label>
@@ -347,7 +347,7 @@ export default function RemixSequencer() {
           <div aria-hidden className="hidden h-6 w-px bg-black/10 sm:block dark:bg-white/10" />
 
           <div className="flex flex-1 items-center gap-2">
-            <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+            <span className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
               Stems
             </span>
             {PAD_LABELS.map((pad) => (
@@ -359,7 +359,7 @@ export default function RemixSequencer() {
                   'flex-1 rounded-full border px-3 py-1.5 text-center text-xs tracking-widest uppercase transition-colors',
                   activePads[pad.id]
                     ? 'border-purple-800 bg-purple-800/10 text-purple-800 dark:border-purple-400 dark:bg-purple-400/10 dark:text-purple-400'
-                    : 'border-black/10 text-black/50 hover:text-black dark:border-white/10 dark:text-white/50 dark:hover:text-white'
+                    : 'border-black/10 text-black/60 hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white'
                 )}
               >
                 {pad.label}
@@ -373,7 +373,7 @@ export default function RemixSequencer() {
         <div className="flex flex-col gap-3">
           {LANES.map((lane) => (
             <div key={lane.id} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span className="dot-font font-doto text-[11px] tracking-widest text-black/40 uppercase sm:w-12 sm:shrink-0 dark:text-white/40">
+              <span className="dot-font font-doto text-[11px] tracking-widest text-black/60 uppercase sm:w-12 sm:shrink-0 dark:text-white/60">
                 {lane.label}
               </span>
               <div className="grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1 sm:flex-1">
@@ -397,8 +397,8 @@ export default function RemixSequencer() {
 
       </div>
       
-      <p className="mt-6 text-xs text-center text-black/40 dark:text-white/40">
-        <b className="text-white mr-2">How do I use this?</b> Choose a song, turn on or off stems from the song{' '}
+      <p className="mt-6 text-xs text-center text-black/60 dark:text-white/60">
+        <b className="dark:text-white text-black mr-2">How do I use this?</b> Choose a song, turn on or off stems from the song{' '}
         {SONGS.find((s) => s.id === songId)?.label}, toggle pads to build a drum beat, then hit play.
       </p>
 

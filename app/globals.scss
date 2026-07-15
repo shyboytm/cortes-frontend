@@ -71,6 +71,13 @@
     --gradient-5: oklch(0.718 0.202 349.761); // pink-400
     --gradient-6: oklch(0.714 0.203 305.504); // purple-400
   }
+
+  // Original, slightly stronger glow — kept as-is for dark mode, since the
+  // reduced version above was only ever too heavy against light
+  // backgrounds.
+  body {
+    text-shadow: 0 0 3px color-mix(in oklab, currentColor 45%, transparent);
+  }
 }
 
 @theme inline {
@@ -107,8 +114,11 @@ body {
   @apply antialiased;
   // Subtle site-wide glow — text-shadow is inherited, and currentColor
   // re-resolves per element, so every element glows in its own color
-  // without needing to touch individual components.
-  text-shadow: 0 0 3px color-mix(in oklab, currentColor 45%, transparent);
+  // without needing to touch individual components. Dialed back a touch in
+  // light mode specifically, where the same intensity read as slightly too
+  // heavy against light backgrounds; dark mode keeps the original strength
+  // (see the prefers-color-scheme: dark override below).
+  text-shadow: 0 0 2px color-mix(in oklab, currentColor 35%, transparent);
 }
 
 // Custom classes
@@ -249,6 +259,83 @@ body {
   );
   background-size: 400% 400%;
   animation: gradient-animation 16s ease-in-out infinite;
+}
+
+// Hover-only treatment for the "hi@cortes.us" pill in WorkTogetherCTA — a
+// fast-moving version of the same multi-hue wash `.gradient-background`
+// uses behind it, plus a soft theme-aware glow. Idle state is untouched
+// (plain black/white pill from Tailwind classes); the color only shows up
+// as an intentional response to hovering (or focusing, for keyboard users).
+//
+// `background-image` can't be transitioned directly (browsers can't
+// interpolate between "none" and a gradient), which is what made an earlier
+// version of this snap in/out instead of animating. Instead, the gradient
+// lives on an always-present `::before` layer sitting between the button's
+// own solid background and its text, and hover/focus only crossfades that
+// layer's opacity — which *does* animate smoothly.
+.cta-gradient-hover {
+  position: relative;
+  // `transition` is a shorthand — declaring it here for box-shadow alone
+  // was silently replacing the Tailwind `transition-transform` utility
+  // class already on this element (last declaration for a given property
+  // wins), which is what made the hover:scale-105 jump instead of easing.
+  // Folding transform in here too keeps both smooth.
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s ease;
+}
+
+.cta-gradient-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  // Negative z-index paints this behind the button's own text (which is
+  // in-flow inline content) while still sitting in front of the button's
+  // own solid background-color (a box's own background always paints
+  // first, before any descendant regardless of z-index) — without this,
+  // the pseudo-element's default stacking order (a positioned descendant)
+  // painted *above* the text, which is what made "hi@cortes.us" vanish
+  // into the gradient on hover.
+  z-index: -1;
+  border-radius: inherit;
+  background-image: linear-gradient(
+    -45deg,
+    var(--gradient-1),
+    var(--gradient-2),
+    var(--gradient-3),
+    var(--gradient-4),
+    var(--gradient-5),
+    var(--gradient-6)
+  );
+  background-size: 400% 400%;
+  animation: gradient-animation 4s ease infinite;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.cta-gradient-hover:hover::before,
+.cta-gradient-hover:focus-visible::before {
+  opacity: 1;
+}
+
+// Plain theme-aware glow instead of a colorful drop shadow — black in light
+// mode (reads against the light page background), white in dark mode
+// (reads against the dark page background), matching the button's own
+// light/dark bg-black/bg-white pairing.
+.cta-gradient-hover:hover,
+.cta-gradient-hover:focus-visible {
+  box-shadow:
+    0 0 24px 4px rgba(0, 0, 0, 0.35),
+    0 0 8px 1px rgba(0, 0, 0, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .cta-gradient-hover:hover,
+  .cta-gradient-hover:focus-visible {
+    box-shadow:
+      0 0 24px 4px rgba(255, 255, 255, 0.35),
+      0 0 8px 1px rgba(255, 255, 255, 0.25);
+  }
 }
 
 .svg-shadow {

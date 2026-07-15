@@ -4,6 +4,8 @@ import {client} from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import WorkRow from "@/components/ui/WorkRow";
 import GlobeIcon from "@/components/ui/GlobeIcon";
+import ClientsSection from "@/components/ui/ClientsSection";
+import PressSection from "@/components/ui/PressSection";
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -45,7 +47,7 @@ export default async function IndexPage() {
       <div id="main-content" className="m-auto w-full px-6">
 
         <div className="dot-font mb-6 flex flex-col gap-3 py-4 font-doto text-black dark:text-white">
-          <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">
+          <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/60">
             <GlobeIcon className="h-3.5 w-auto mr-2 svg-shadow" />
             <span>36.1627° N, 86.7816° W</span>
           </div>
@@ -66,6 +68,11 @@ export default async function IndexPage() {
           <h2 className="mb-12">Outside of work, I build <Link className="link-underline opacity-50" href="https://apple.co/4gUqHBR">GamePal</Link>, restore and mod old consoles, take photos, and make music as <Link className="link-underline opacity-50" href="#">Cordio</Link> and <Link className="link-underline opacity-50" href="#">Horizon Radar</Link> which you can stream anywhere or support me on <Link className="link-underline opacity-50" href="https://cordio.bandcamp.com">Bandcamp</Link>.</h2>
         </div>
 
+      </div>
+
+      <div className="px-6">
+        <ClientsSection />
+        <PressSection />
       </div>
 
       <div

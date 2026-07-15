@@ -31,7 +31,7 @@ export default function WorkTogetherCTA() {
 
       <Link
         href="mailto:hi@cortes.us"
-        className="relative z-10 rounded-full bg-black px-8 py-4 text-base tracking-wide text-white transition-transform hover:scale-105 sm:text-lg dark:bg-white dark:text-black"
+        className="cta-gradient-hover relative z-10 rounded-full bg-black px-8 py-4 text-base tracking-wide text-white transition-transform hover:scale-105 sm:text-lg dark:bg-white dark:text-black"
       >
         hi@cortes.us
       </Link>

@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 const ALL_RELEASES_QUERY = `*[
   _type == "musicRelease"
 ] | order(releaseYear desc, order asc, _createdAt desc){
-  _id, title, artist, releaseType, genre, releaseYear, link,
+  _id, title, artist, releaseType, genre, releaseYear, link, likes,
   artwork{ alt, asset }
 }`;
 

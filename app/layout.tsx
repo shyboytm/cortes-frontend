@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
 import PrimaryFooter from '@/components/ui/PrimaryFooter'
+import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
 
 import "./globals.scss";
 
@@ -56,6 +57,9 @@ export default function RootLayout({
 
         {/* Film grain + CRT overlay, above all content on every page */}
         <ScreenOverlay />
+
+        {/* Back-to-top, every page */}
+        <ScrollToTopButton />
       </body>
     </html>
   );

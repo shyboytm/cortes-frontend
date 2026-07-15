@@ -5,6 +5,7 @@ import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import RecRow, { type Platform } from "@/components/ui/RecRow";
+import StickySubNav from "@/components/ui/StickySubNav";
 import { buttonVariants } from "@/components/ui/button";
 
 const RECS_QUERY = `*[
@@ -89,10 +90,26 @@ export default async function RecsPage() {
                 </a>
               ))}
             </nav>
+            {/* Marks where the in-page jump nav ends — StickySubNav watches
+                this via IntersectionObserver and mirrors the same links
+                into a bar under PrimaryNav once it scrolls out of view. */}
+            <div id="recs-nav-sentinel" />
+            <StickySubNav sentinelId="recs-nav-sentinel" ariaLabel="Jump to section">
+              {sections.map(({ value, label, icon: Icon }) => (
+                <a
+                  key={value}
+                  href={`#${value}`}
+                  className={buttonVariants({ variant: "secondary", size: "sm" })}
+                >
+                  <Icon size={14} />
+                  <span className="inline-block translate-y-[1px]">{label}</span>
+                </a>
+              ))}
+            </StickySubNav>
 
             {sections.map(({ value, label, icon: Icon, items }) => (
               <div key={value} id={value} className="mb-12 scroll-mt-32">
-                <h2 className="dot-font mb-2 flex items-center gap-2 font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+                <h2 className="dot-font mb-2 flex items-center gap-2 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                   <Icon size={14} />/ {label}
                 </h2>
                 <ul className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
@@ -118,7 +135,7 @@ export default async function RecsPage() {
               </div>
             ))}
 
-            <p className="m-auto py-6 text-xs leading-relaxed text-center text-black/40 dark:text-white/40 max-w-3xl">
+            <p className="m-auto py-6 text-xs leading-relaxed text-center text-black/60 dark:text-white/60 max-w-3xl">
               Links here may contain affiliate links, which support me as a creator through
               the projects and teaching mediums I work on. However, no one has paid me to put
               any of these on this list and I genuinely recommend all of these.

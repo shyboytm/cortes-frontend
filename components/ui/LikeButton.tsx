@@ -89,8 +89,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
         disabled={liked || pending}
         aria-label={label}
         className={cn(
-          "absolute top-3 right-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-xs text-white backdrop-blur-sm transition-all duration-200 disabled:cursor-not-allowed dark:bg-white/80 dark:text-black lg:opacity-0 lg:group-hover:opacity-100",
-          liked && "lg:opacity-100",
+          "absolute top-3 right-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-xs text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/85 disabled:cursor-not-allowed dark:bg-white/80 dark:hover:bg-white/95 dark:text-black lg:opacity-0 lg:group-hover:opacity-100",
           justLiked && "scale-110",
           className
         )}
@@ -109,7 +108,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
         disabled={liked || pending}
         aria-label={label}
         className={cn(
-          "inline-flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-black/40 transition-colors hover:text-black disabled:cursor-not-allowed dark:text-white/40 dark:hover:text-white",
+          "inline-flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-black/60 transition-colors hover:text-black disabled:cursor-not-allowed dark:text-white/60 dark:hover:text-white",
           liked && "text-red-800 hover:text-red-800 dark:text-red-400 dark:hover:text-red-400",
           className
         )}
