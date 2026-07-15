@@ -67,9 +67,9 @@ export default async function PrimaryFooter() {
           swaps its geometry — purely decorative, sits behind everything. */}
       <FooterScene />
 
-      <div className="group absolute right-8 -bottom-2 z-11 h-20 w-20 translate-y-4 sm:h-28 sm:w-28">
-        <div className="pointer-events-none absolute bottom-full font-bold left-2 text-center mb-2 w-max max-w-[160px] -translate-x-1/2 rounded-md px-3 py-2 text-xs opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 dark:border-white/10 bg-violet-950 text-white">
-          Fun fact&hellip; my favorite Pok&eacute;mon is Gengar!
+      <div className="group absolute right-8 bottom-2 z-11 h-20 w-20 translate-y-4 sm:h-28 sm:w-28">
+        <div className="pointer-events-none absolute bottom-full font-bold left-2 text-center mb-2 w-max max-w-[150px] -translate-x-1/2 rounded-md p-2 text-xs opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 dark:border-white/10 bg-violet-950 text-white">
+          Fun fact, my favorite Pok&eacute;mon is Gengar!
         </div>
         <Image
           src="/gengar-pokemon-2d.gif"
@@ -190,9 +190,9 @@ export default async function PrimaryFooter() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col-reverse items-start gap-4 border-t border-black/10 pt-6 text-xs tracking-widest text-black/40 uppercase sm:grid sm:grid-cols-3 sm:items-center dark:border-white/10 dark:text-white/40">
+        <div className="mt-16 flex flex-col-reverse items-start gap-2 border-t border-black/10 pt-6 text-xs tracking-widest text-black/40 uppercase sm:grid sm:grid-cols-3 sm:items-center dark:border-white/10 dark:text-white/40">
           <p className="dot-font font-doto">© {new Date().getFullYear()} Dennis Cortes</p>
-          <p className="dot-font font-doto sm:text-center">Design / Music / Photo / Code</p>
+          <p className="dot-font font-doto sm:text-center leading-[1.5]">Made w/ Next.js, TypeScript, Tailwind, Shaders, Vercel, Three.js</p>
         </div>
       </div>
     </footer>

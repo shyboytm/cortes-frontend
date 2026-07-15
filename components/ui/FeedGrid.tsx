@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Link2 } from "lucide-react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
 import FeedVideo from "@/components/ui/FeedVideo";
@@ -66,31 +66,23 @@ export default function FeedGrid({ items }: FeedGridProps) {
             )}
 
             {item.caption && (
-              <>
-                {/* Dark scrim behind the caption so it stays legible no
-                    matter how bright or busy the underlying image/video is —
-                    the text alone can't rely on the page's light/dark theme
-                    here since it's sitting on arbitrary media, not the
-                    background. Both fade in together on hover, same
-                    affordance as the link arrow badge below. */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/70 via-black/25 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                />
-                <p
-                  className={`absolute bottom-3 left-3 z-10 text-sm text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
-                    isClickable ? "right-14" : "right-3"
-                  }`}
-                  style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9), 0 1px 10px rgba(0,0,0,0.6)" }}
-                >
-                  {item.caption}
-                </p>
-              </>
+              // Solid drawer that slides up from the bottom edge on hover,
+              // rather than a gradient scrim + drop-shadowed text sitting
+              // on top of the media. Reads cleanly against any photo/video
+              // since it's an opaque, theme-aware panel (not dependent on
+              // what's underneath), and clips to the card's rounded
+              // corners courtesy of the parent's overflow-hidden.
+              <div className="absolute inset-x-0 bottom-0 z-10 flex translate-y-full items-center justify-between gap-4 border-t border-black/10 bg-white px-3 py-2.5 transition-transform duration-200 ease-out group-hover:translate-y-0 dark:border-white/10 dark:bg-black">
+                <p className="line-clamp-2 text-sm text-black dark:text-white">{item.caption}</p>
+                {isClickable && (
+                  <Link2 size={20} className="shrink-0 text-black/40 dark:text-white/40" />
+                )}
+              </div>
             )}
 
-            {isClickable && (
+            {isClickable && !item.caption && (
               <span className="absolute right-3 bottom-3 z-10 flex h-9 w-9 scale-75 items-center justify-center rounded-full bg-black/70 text-white opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 dark:bg-white/80 dark:text-black">
-                <ArrowRight size={18} />
+                <Link2 size={20} />
               </span>
             )}
 

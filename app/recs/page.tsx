@@ -110,11 +110,6 @@ export default async function RecsPage() {
                           ? urlFor(rec.image.asset).width(96).height(96).fit("crop").url()
                           : undefined
                       }
-                      previewImageUrl={
-                        rec.image?.asset
-                          ? urlFor(rec.image.asset).width(240).height(240).fit("crop").url()
-                          : undefined
-                      }
                       imageAlt={rec.image?.alt}
                       imageVariant={value === "music" ? "cd" : undefined}
                     />
