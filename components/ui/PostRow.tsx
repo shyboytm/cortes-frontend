@@ -21,9 +21,9 @@ export default function PostRow({ title, slug, publishedAt }: PostRowProps) {
     <li>
       <Link
         href={`/blog/${slug}`}
-        className="group -mx-3 flex items-center justify-between gap-6 rounded-sm px-3 py-6 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
+        className="group -mx-3 flex items-center justify-between gap-6 rounded-md px-4 py-4 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
       >
-        <h2 className="text-lg font-normal text-black dark:text-white">{title}</h2>
+        <h2 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h2>
 
         <div className="flex shrink-0 items-center gap-3">
           {publishedAt && (

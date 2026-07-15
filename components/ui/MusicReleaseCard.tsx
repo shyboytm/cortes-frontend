@@ -66,7 +66,7 @@ export default function MusicReleaseCard({
       </div>
 
       <div>
-        <h3 className="text-lg font-normal text-black dark:text-white">{title}</h3>
+        <h3 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h3>
         {meta && (
           <p className="dot-font font-doto mt-1 text-xs tracking-widest text-black/50 uppercase dark:text-white/50">
             {meta}

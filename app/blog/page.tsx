@@ -24,7 +24,7 @@ export default async function BlogIndexPage() {
       <PrimaryNav />
 
       <div className="px-6">
-        <PageHeader title="Blog" subtitle="Software Product Designer" />
+        <PageHeader title="Blog" subtitle="Sometimes I write about design, hobbies, and other random thoughts." />
 
         <PostList
           posts={posts.map((post) => ({

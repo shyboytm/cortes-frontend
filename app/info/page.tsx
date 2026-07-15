@@ -109,7 +109,7 @@ export default async function InfoPage() {
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   {services.map((service) => (
                     <div key={service._id}>
-                      <h3 className="text-lg font-normal text-black dark:text-white">
+                      <h3 className="text-lg font-normal tracking-wide text-black dark:text-white">
                         {service.title}
                       </h3>
                       <p className="mt-1 text-sm leading-relaxed text-black/60 dark:text-white/60">
@@ -131,7 +131,7 @@ export default async function InfoPage() {
 
         {testimonials.length > 0 && (
           <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
-            <h2 className="mb-6 text-3xl font-normal text-black dark:text-white">What Others Say</h2>
+            <h2 className="mb-6 text-3xl font-normal tracking-wide text-black dark:text-white">What Others Say</h2>
             <div className="grid grid-cols-1 gap-x-10 gap-y-10 lg:grid-cols-2">
               {testimonials.map((testimonial) => (
                 <figure key={testimonial._id}>

@@ -77,7 +77,7 @@ export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug,
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-lg font-normal text-black dark:text-white">{title}</h2>
+        <h2 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h2>
         {dateRange && (
           <p className="dot-font font-doto shrink-0 text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
             {dateRange}

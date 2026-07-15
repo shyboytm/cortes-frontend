@@ -182,10 +182,10 @@ function createPostComponents(): PortableTextComponents {
         return <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>;
       },
       h2: ({ children }) => (
-        <h2 className="mt-10 mb-4 text-2xl font-normal text-black dark:text-white">{children}</h2>
+        <h2 className="mt-10 mb-4 text-2xl font-normal tracking-wide text-black dark:text-white">{children}</h2>
       ),
       h3: ({ children }) => (
-        <h3 className="mt-8 mb-3 text-xl font-normal text-black dark:text-white">{children}</h3>
+        <h3 className="mt-8 mb-3 text-xl font-normal tracking-wide text-black dark:text-white">{children}</h3>
       ),
     },
   };

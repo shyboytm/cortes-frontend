@@ -71,7 +71,7 @@ export default async function MusicPage() {
         {releases.length > 0 && (
           <div className="mt-14">
             <div className="mb-6 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-normal text-black dark:text-white">Latest releases</h2>
+              <h2 className="text-2xl font-normal tracking-wide text-black dark:text-white">Latest releases</h2>
               <Link
                 href="/music/releases"
                 className={buttonVariants({ variant: 'secondary', size: 'sm' })}
@@ -98,7 +98,7 @@ export default async function MusicPage() {
         )}
 
         <div className="mt-20 max-w-3xl">
-          <h2 className="mb-3 text-2xl font-normal text-black dark:text-white">Remix it yourself</h2>
+          <h2 className="mb-3 text-2xl font-normal tracking-wide text-black dark:text-white">Remix it yourself</h2>
           <p className="mb-6 text-black/60 dark:text-white/60">
             A working sketch of a bigger idea a browser-based remix toy built from actual pieces of
             Cordio tracks. Pick a song from the dropdown, toggle steps, and layer in the loop pads to

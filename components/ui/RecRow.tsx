@@ -53,7 +53,7 @@ export default function RecRow({
 
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-normal text-black dark:text-white">{title}</h3>
+            <h3 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h3>
             {platform && (
               <span className="rounded-full border border-black/10 px-2 py-0.5 text-[10px] tracking-widest text-black/50 uppercase dark:border-white/10 dark:text-white/50">
                 <span className="inline-block translate-y-[1px]">{PLATFORM_LABELS[platform]}</span>

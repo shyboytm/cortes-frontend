@@ -100,7 +100,7 @@ export default async function PrimaryFooter() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
           <div className="flex flex-col gap-6 lg:col-span-5">
             <div>
-              <p className="text-2xl text-black dark:text-white">
+              <p className="text-2xl tracking-wide text-black dark:text-white">
                 Dennis Cortés
               </p>
               <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/50">

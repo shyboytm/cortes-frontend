@@ -81,10 +81,10 @@ const caseStudyComponents: PortableTextComponents = {
       <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>
     ),
     h2: ({ children }) => (
-      <h2 className="mt-10 mb-4 text-2xl font-normal text-black dark:text-white">{children}</h2>
+      <h2 className="mt-10 mb-4 text-2xl font-normal tracking-wide text-black dark:text-white">{children}</h2>
     ),
     h3: ({ children }) => (
-      <h3 className="mt-8 mb-3 text-xl font-normal text-black dark:text-white">{children}</h3>
+      <h3 className="mt-8 mb-3 text-xl font-normal tracking-wide text-black dark:text-white">{children}</h3>
     ),
   },
 };
@@ -110,7 +110,7 @@ export default async function WorkCaseStudyPage({
           href="/#work"
           className={buttonVariants({ variant: "secondary", size: "sm" })}
         >
-          <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
+          <ArrowLeft size={16} /> <span className="inline-block translate-y-[1px]">Back</span>
         </Link>
 
         <PageHeader title={work.title} subtitle={work.description || work.dateRange} className="mt-6" />
@@ -120,13 +120,13 @@ export default async function WorkCaseStudyPage({
             { label: "Role", value: work.role },
             { label: "Scope", value: work.scope },
             { label: "Industry", value: work.industry },
-            { label: "Year", value: work.dateRange },
+            { label: "When", value: work.dateRange },
           ].filter((item) => item.value);
 
           if (metaItems.length === 0) return null;
 
           return (
-            <div className="mb-10 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-black/10 bg-black/10 lg:grid-cols-2 dark:border-white/10 dark:bg-white/10">
+            <div className="mb-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-black/10 bg-black/10 lg:grid-cols-2 dark:border-white/10 dark:bg-white/10">
               {metaItems.map((item) => (
                 <div key={item.label} className="bg-white p-4 dark:bg-black">
                   <p className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">

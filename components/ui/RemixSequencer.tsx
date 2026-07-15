@@ -67,8 +67,8 @@ const SONGS: Song[] = [
   },
   {
     id: 'refusal',
-    label: 'Refusal',
-    bpm: 152,
+    label: 'R3fusal',
+    bpm: 76,
     urls: {
       track1: '/music/refusal-track-1.wav',
       track2: '/music/refusal-track-2.wav',
@@ -188,6 +188,19 @@ export default function RemixSequencer() {
     return Tone;
   }, [loadSong]);
 
+  // Warms up the 'tone' dynamic import as soon as this component mounts,
+  // well before anyone presses Play. Without this, the very first Play
+  // click's `await import('tone')` inside setup() is a real network-bound
+  // import — that delay pushes `Tone.start()` outside the browser's
+  // "user gesture" window, so the AudioContext never actually resumes and
+  // the first press is silent even though nothing throws. Once the module's
+  // already cached here, that same `await import('tone')` resolves as an
+  // instant microtask instead, keeping Tone.start() inside the gesture and
+  // letting audio play immediately.
+  useEffect(() => {
+    import('tone').catch(() => {});
+  }, []);
+
   useEffect(() => {
     return () => {
       sequenceRef.current?.dispose();
@@ -284,53 +297,6 @@ export default function RemixSequencer() {
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            {PAD_LABELS.map((pad) => (
-              <button
-                key={pad.id}
-                type="button"
-                onClick={() => togglePad(pad.id)}
-                className={cn(
-                  'rounded-full border px-3 py-1.5 text-xs tracking-widest uppercase transition-colors',
-                  activePads[pad.id]
-                    ? 'border-purple-800 bg-purple-800/10 text-purple-800 dark:border-purple-400 dark:bg-purple-400/10 dark:text-purple-400'
-                    : 'border-black/10 text-black/50 hover:text-black dark:border-white/10 dark:text-white/50 dark:hover:text-white'
-                )}
-              >
-                {pad.label}
-              </button>
-            ))}
-          </div>
-
-          <label className="flex items-center gap-2">
-            <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
-              Song
-            </span>
-            <div className="relative">
-              {/* Native select arrows aren't inset evenly with the rest of
-                  the pill's padding — appearance-none drops the built-in one
-                  so this custom chevron can sit at the same inset as the
-                  left-side text. */}
-              <select
-                value={songId}
-                onChange={(e) => changeSong(e.target.value as SongId)}
-                className="appearance-none rounded-full border border-black/10 bg-transparent py-1.5 pr-8 pl-3 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 dark:border-white/10 dark:text-white/70 dark:hover:border-white/30"
-              >
-                {SONGS.map((song) => (
-                  <option key={song.id} value={song.id} className="bg-white text-black dark:bg-black dark:text-white">
-                    {song.label} — {song.bpm} BPM
-                  </option>
-                ))}
-              </select>
-              <ChevronDown
-                size={13}
-                className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/50 dark:text-white/50"
-              />
-            </div>
-          </label>
-        </div>
-
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -346,6 +312,58 @@ export default function RemixSequencer() {
           >
             <RotateCcw size={13} /> <span className="inline-block translate-y-[1px]">Clear</span>
           </button>
+        </div>
+      </div>
+
+      <div className="mb-6 flex flex-wrap items-center gap-4">
+        <label className="flex shrink-0 items-center gap-2">
+          <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+            Song
+          </span>
+          <div className="relative">
+            {/* Native select arrows aren't inset evenly with the rest of
+                the pill's padding — appearance-none drops the built-in one
+                so this custom chevron can sit at the same inset as the
+                left-side text. */}
+            <select
+              value={songId}
+              onChange={(e) => changeSong(e.target.value as SongId)}
+              className="appearance-none rounded-full border border-black/10 bg-transparent py-1.5 pr-8 pl-3 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 dark:border-white/10 dark:text-white/70 dark:hover:border-white/30"
+            >
+              {SONGS.map((song) => (
+                <option key={song.id} value={song.id} className="bg-white text-black dark:bg-black dark:text-white">
+                  {song.label} — {song.bpm} BPM
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={13}
+              className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/50 dark:text-white/50"
+            />
+          </div>
+        </label>
+
+        <div aria-hidden className="hidden h-6 w-px bg-black/10 sm:block dark:bg-white/10" />
+
+        <div className="flex flex-1 items-center gap-2">
+          <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+            Stems
+          </span>
+          {PAD_LABELS.map((pad) => (
+            <button
+              key={pad.id}
+              type="button"
+              onClick={() => togglePad(pad.id)}
+              className={cn(
+                'flex-1 rounded-full border px-3 py-1.5 text-center text-xs tracking-widest uppercase transition-colors',
+                activePads[pad.id]
+                  ? 'border-purple-800 bg-purple-800/10 text-purple-800 dark:border-purple-400 dark:bg-purple-400/10 dark:text-purple-400'
+                  : 'border-black/10 text-black/50 hover:text-black dark:border-white/10 dark:text-white/50 dark:hover:text-white'
+              )}
+            >
+              {pad.label}
+            </button>
+          ))}
         </div>
       </div>
 
