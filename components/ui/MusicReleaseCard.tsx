@@ -73,7 +73,7 @@ export default function MusicReleaseCard({
           </p>
         )}
         {genre && (
-          <p className="mt-2 text-xs text-black/40 dark:text-white/40">{genre}</p>
+          <p className="mt-2 text-xs uppercase tracking-widest text-black/40 dark:text-white/40">{genre}</p>
         )}
       </div>
     </div>

@@ -281,123 +281,127 @@ export default function RemixSequencer() {
   };
 
   return (
-    <div className="rounded-lg border border-black/10 bg-black/[0.02] p-4 sm:p-6 dark:border-white/10 dark:bg-white/[0.03]">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={togglePlay}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-800 text-white transition-transform hover:scale-105 dark:bg-purple-500"
-            aria-label={isPlaying ? 'Stop' : 'Play'}
-          >
-            {isPlaying ? <Square size={16} /> : <Play size={16} className="ml-0.5" />}
-          </button>
-          <span className="dot-font font-doto text-xs tracking-widest text-black/50 uppercase dark:text-white/50">
-            {isPlaying ? 'Playing' : 'Stopped'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={randomize}
-            className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
-          >
-            <Shuffle size={13} /> <span className="inline-block translate-y-[1px]">Shuffle</span>
-          </button>
-          <button
-            type="button"
-            onClick={clearGrid}
-            className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
-          >
-            <RotateCcw size={13} /> <span className="inline-block translate-y-[1px]">Clear</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="mb-6 flex flex-wrap items-center gap-4">
-        <label className="flex shrink-0 items-center gap-2">
-          <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
-            Song
-          </span>
-          <div className="relative">
-            {/* Native select arrows aren't inset evenly with the rest of
-                the pill's padding — appearance-none drops the built-in one
-                so this custom chevron can sit at the same inset as the
-                left-side text. */}
-            <select
-              value={songId}
-              onChange={(e) => changeSong(e.target.value as SongId)}
-              className="appearance-none rounded-full border border-black/10 bg-transparent py-1.5 pr-8 pl-3 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 dark:border-white/10 dark:text-white/70 dark:hover:border-white/30"
-            >
-              {SONGS.map((song) => (
-                <option key={song.id} value={song.id} className="bg-white text-black dark:bg-black dark:text-white">
-                  {song.label} — {song.bpm} BPM
-                </option>
-              ))}
-            </select>
-            <ChevronDown
-              size={13}
-              className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/50 dark:text-white/50"
-            />
-          </div>
-        </label>
-
-        <div aria-hidden className="hidden h-6 w-px bg-black/10 sm:block dark:bg-white/10" />
-
-        <div className="flex flex-1 items-center gap-2">
-          <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
-            Stems
-          </span>
-          {PAD_LABELS.map((pad) => (
+    <div>
+      <div className="rounded-lg border border-black/10 bg-black/[0.02] p-4 sm:p-6 dark:border-white/10 dark:bg-white/[0.03] shadow-2xl">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
             <button
-              key={pad.id}
               type="button"
-              onClick={() => togglePad(pad.id)}
-              className={cn(
-                'flex-1 rounded-full border px-3 py-1.5 text-center text-xs tracking-widest uppercase transition-colors',
-                activePads[pad.id]
-                  ? 'border-purple-800 bg-purple-800/10 text-purple-800 dark:border-purple-400 dark:bg-purple-400/10 dark:text-purple-400'
-                  : 'border-black/10 text-black/50 hover:text-black dark:border-white/10 dark:text-white/50 dark:hover:text-white'
-              )}
+              onClick={togglePlay}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-800 text-white transition-transform hover:scale-105 dark:bg-purple-500"
+              aria-label={isPlaying ? 'Stop' : 'Play'}
             >
-              {pad.label}
+              {isPlaying ? <Square size={16} /> : <Play size={16} className="ml-0.5" />}
             </button>
+            <span className="dot-font font-doto text-xs tracking-widest text-black/50 uppercase dark:text-white/50">
+              {isPlaying ? 'Playing' : 'Stopped'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={randomize}
+              className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
+            >
+              <Shuffle size={13} /> <span className="inline-block translate-y-[1px]">Shuffle</span>
+            </button>
+            <button
+              type="button"
+              onClick={clearGrid}
+              className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
+            >
+              <RotateCcw size={13} /> <span className="inline-block translate-y-[1px]">Clear</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-6 flex flex-wrap items-center gap-4">
+          <label className="flex shrink-0 items-center gap-2">
+            <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+              Song
+            </span>
+            <div className="relative">
+              {/* Native select arrows aren't inset evenly with the rest of
+                  the pill's padding — appearance-none drops the built-in one
+                  so this custom chevron can sit at the same inset as the
+                  left-side text. */}
+              <select
+                value={songId}
+                onChange={(e) => changeSong(e.target.value as SongId)}
+                className="appearance-none rounded-full border border-black/10 bg-transparent py-1.5 pr-8 pl-3 text-xs tracking-widest text-black/70 uppercase transition-colors hover:border-black/30 dark:border-white/10 dark:text-white/70 dark:hover:border-white/30"
+              >
+                {SONGS.map((song) => (
+                  <option key={song.id} value={song.id} className="bg-white text-black dark:bg-black dark:text-white">
+                    {song.label} — {song.bpm} BPM
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={13}
+                className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-black/50 dark:text-white/50"
+              />
+            </div>
+          </label>
+
+          <div aria-hidden className="hidden h-6 w-px bg-black/10 sm:block dark:bg-white/10" />
+
+          <div className="flex flex-1 items-center gap-2">
+            <span className="dot-font font-doto text-xs tracking-widest text-black/40 uppercase dark:text-white/40">
+              Stems
+            </span>
+            {PAD_LABELS.map((pad) => (
+              <button
+                key={pad.id}
+                type="button"
+                onClick={() => togglePad(pad.id)}
+                className={cn(
+                  'flex-1 rounded-full border px-3 py-1.5 text-center text-xs tracking-widest uppercase transition-colors',
+                  activePads[pad.id]
+                    ? 'border-purple-800 bg-purple-800/10 text-purple-800 dark:border-purple-400 dark:bg-purple-400/10 dark:text-purple-400'
+                    : 'border-black/10 text-black/50 hover:text-black dark:border-white/10 dark:text-white/50 dark:hover:text-white'
+                )}
+              >
+                {pad.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6 border-t border-black/10 dark:border-white/10" />
+
+        <div className="flex flex-col gap-3">
+          {LANES.map((lane) => (
+            <div key={lane.id} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="dot-font font-doto text-[11px] tracking-widest text-black/40 uppercase sm:w-12 sm:shrink-0 dark:text-white/40">
+                {lane.label}
+              </span>
+              <div className="grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1 sm:flex-1">
+                {grid[lane.id].map((active, step) => (
+                  <button
+                    key={step}
+                    type="button"
+                    onClick={() => toggleStep(lane.id, step)}
+                    aria-label={`${lane.label} step ${step + 1}`}
+                    className={cn(
+                      'aspect-square rounded-[3px] transition-colors',
+                      active ? 'bg-purple-800 dark:bg-purple-400' : 'bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20',
+                      currentStep === step && isPlaying && 'ring-2 ring-black/40 dark:ring-white/60'
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
+
       </div>
-
-      <div className="mb-6 border-t border-black/10 dark:border-white/10" />
-
-      <div className="flex flex-col gap-3">
-        {LANES.map((lane) => (
-          <div key={lane.id} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-            <span className="dot-font font-doto text-[11px] tracking-widest text-black/40 uppercase sm:w-12 sm:shrink-0 dark:text-white/40">
-              {lane.label}
-            </span>
-            <div className="grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1 sm:flex-1">
-              {grid[lane.id].map((active, step) => (
-                <button
-                  key={step}
-                  type="button"
-                  onClick={() => toggleStep(lane.id, step)}
-                  aria-label={`${lane.label} step ${step + 1}`}
-                  className={cn(
-                    'aspect-square rounded-[3px] transition-colors',
-                    active ? 'bg-purple-800 dark:bg-purple-400' : 'bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20',
-                    currentStep === step && isPlaying && 'ring-2 ring-black/40 dark:ring-white/60'
-                  )}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <p className="mt-6 text-xs text-black/40 dark:text-white/40">
-        Toggle steps to build a beat, tap the pads to layer in the three stems from{' '}
-        {SONGS.find((s) => s.id === songId)?.label} — then hit play.
+      
+      <p className="mt-6 text-xs text-center text-black/40 dark:text-white/40">
+        <b className="text-white mr-2">How do I use this?</b> Choose a song, turn on or off stems from the song{' '}
+        {SONGS.find((s) => s.id === songId)?.label}, toggle pads to build a drum beat, then hit play.
       </p>
+
     </div>
   );
 }
