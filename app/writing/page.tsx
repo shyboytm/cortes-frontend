@@ -40,7 +40,7 @@ function groupPostsByYear(posts: PostListItem[]) {
   });
 }
 
-export default async function BlogIndexPage() {
+export default async function WritingIndexPage() {
   const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
 
   const postItems: PostListItem[] = posts.map((post) => ({
@@ -58,7 +58,7 @@ export default async function BlogIndexPage() {
       <PrimaryNav />
 
       <div className="px-6">
-        <PageHeader title="Blog" subtitle="Sometimes I write about design, hobbies, and other random thoughts." />
+        <PageHeader title="Writing" subtitle="Sometimes I write about design, hobbies, and other random thoughts." />
 
         {years.length === 0 ? (
           <p className="text-black/60 dark:text-white/60">No posts yet — write one in Sanity.</p>
@@ -83,8 +83,8 @@ export default async function BlogIndexPage() {
             {/* Marks where the in-page year nav ends — StickySubNav watches
                 this via IntersectionObserver and mirrors the same links
                 into a bar under PrimaryNav once it scrolls out of view. */}
-            <div id="blog-nav-sentinel" />
-            <StickySubNav sentinelId="blog-nav-sentinel" ariaLabel="Jump to year">
+            <div id="writing-nav-sentinel" />
+            <StickySubNav sentinelId="writing-nav-sentinel" ariaLabel="Jump to year">
               {years.map(([year]) => (
                 <a
                   key={year}

@@ -89,7 +89,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
         disabled={liked || pending}
         aria-label={label}
         className={cn(
-          "absolute top-3 right-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-xs text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/85 disabled:cursor-not-allowed dark:bg-white/80 dark:hover:bg-white/95 dark:text-black lg:opacity-0 lg:group-hover:opacity-100",
+          "absolute top-3 right-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full border border-black/20 bg-white/80 px-3 py-1.5 text-xs text-black backdrop-blur-sm transition-all duration-200 hover:bg-white/95 disabled:cursor-not-allowed dark:border-white/20 dark:bg-black/70 dark:text-white dark:hover:bg-black/85 lg:opacity-0 lg:group-hover:opacity-100",
           justLiked && "scale-110",
           className
         )}

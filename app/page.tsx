@@ -79,7 +79,7 @@ export default async function IndexPage() {
         id="work"
         className="grid grid-cols-1 gap-x-8 gap-y-12 px-6 pt-6 pb-24 sm:grid-cols-2 lg:grid-cols-3"
       >
-        <h1 className="col-span-full text-4xl font-normal text-black dark:text-white">Featured Work</h1>
+        <h1 className="col-span-full text-4xl font-normal text-black dark:text-white">Featured Projects</h1>
 
         {workItems.map((work) => (
           <WorkRow

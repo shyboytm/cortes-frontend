@@ -4,7 +4,6 @@ import { Instagram, Linkedin } from "lucide-react";
 import {
   SiLastdotfm,
   SiBuymeacoffee,
-  SiPatreon,
   SiX,
   SiDribbble,
   SiYoutube,
@@ -18,14 +17,15 @@ import NashvilleStatus from "@/components/ui/NashvilleStatus";
 import { buttonVariants } from "@/components/ui/button";
 
 // Real routes only — Photos doesn't have a page yet, so (unlike PrimaryNav)
-// it's left out here rather than linking to "#".
+// it's left out here rather than linking to "#". Feed no longer has its
+// own route — that section now lives under Work.
 const EXPLORE_LINKS = [
   { label: "Work", href: "/work" },
-  { label: "Feed", href: "/feed" },
-  { label: "Blog", href: "/blog" },
+  { label: "Writing", href: "/writing" },
   { label: "Music", href: "/music" },
   { label: "Recs", href: "/recs" },
-  { label: "Info", href: "/info" },
+  { label: "Shop", href: "/shop" },
+  { label: "About", href: "/about" },
 ];
 
 // Decorative pixel-art marks Dennis dropped into /public — purely a visual
@@ -50,7 +50,6 @@ const SOCIAL_LINKS = [
   { label: "X", href: "https://x.com/shyboytm", icon: SiX },
   { label: "Dribbble", href: "https://dribbble.com/shyboytm", icon: SiDribbble },
   { label: "YouTube", href: "https://www.youtube.com/cortesarts", icon: SiYoutube },
-  { label: "Patreon", href: "https://www.patreon.com/c/shyboytm", icon: SiPatreon },
   { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/cortes", icon: SiBuymeacoffee },
 ];
 
@@ -197,12 +196,21 @@ export default async function PrimaryFooter() {
               <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                 / Social
               </p>
-              <div className="flex flex-wrap gap-2">
+              {/* Bare icons (no pill/label) — matches the treatment in the
+                  primary nav's fullscreen menu rather than the labeled
+                  pills used for Explore. */}
+              <div className="flex flex-wrap gap-4">
                 {SOCIAL_LINKS.map((link) => (
-                  <FooterPill key={link.href} href={link.href} external>
-                    <link.icon size={13} />
-                    <span className="inline-block translate-y-[1px]">{link.label}</span>
-                  </FooterPill>
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.label}
+                    className="text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
+                  >
+                    <link.icon size={18} />
+                  </Link>
                 ))}
               </div>
             </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Newspaper, Video, Mic, Award, ExternalLink, type LucideIcon } from "lucide-react";
+import { Newspaper, Video, Mic, Award, ArrowUpRight, type LucideIcon } from "lucide-react";
 import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 
@@ -26,9 +26,10 @@ function formatPressDate(date?: string) {
 
 // Self-contained like ClientsSection — fetches its own data, renders
 // nothing (not even the heading/border) until there's at least one
-// pressMention in Sanity. A simple divided list rather than a card grid,
-// since articles/videos/awards don't all have (or need) an image, and this
-// reads fine with just an icon + title + outlet.
+// pressMention in Sanity. A simple divided list (2 columns on large
+// screens) rather than a card grid, since articles/videos/awards don't all
+// have (or need) an image, and this reads fine with just an icon + title +
+// outlet.
 export default async function PressSection() {
   const mentions = await client.fetch<SanityDocument[]>(PRESS_QUERY, {}, options);
 
@@ -39,7 +40,7 @@ export default async function PressSection() {
       <h2 className="dot-font mb-6 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
         / In the Press
       </h2>
-      <ul className="divide-y divide-black/10 dark:divide-white/10">
+      <ul className="grid grid-cols-1 gap-x-8 lg:grid-cols-2">
         {mentions.map((mention) => {
           const Icon = TYPE_ICONS[mention.type as string] ?? Newspaper;
           const formattedDate = formatPressDate(mention.date);
@@ -57,22 +58,22 @@ export default async function PressSection() {
                 </div>
               </div>
               {mention.url && (
-                <ExternalLink
+                <ArrowUpRight
                   size={16}
-                  className="shrink-0 text-black/60 opacity-0 transition-opacity group-hover:opacity-100 dark:text-white/60"
+                  className="-translate-x-1 shrink-0 text-black/60 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 dark:text-white/60"
                 />
               )}
             </div>
           );
 
           return (
-            <li key={mention._id}>
+            <li key={mention._id} className="border-b border-black/10 last:border-b-0 lg:[&:nth-last-child(2)]:border-b-0 dark:border-white/10">
               {mention.url ? (
                 <Link
                   href={mention.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group -mx-3 block rounded-md px-3 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
+                  className="group -mx-4 block rounded-md px-4 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
                 >
                   {content}
                 </Link>

@@ -36,13 +36,19 @@ export default function BlogStickyBar({ id, title, likes }: BlogStickyBarProps) 
     <div
       aria-hidden={!visible}
       className={cn(
-        "dot-font glass fixed inset-x-0 top-20 z-40 px-3 transition-all duration-200 ease-out md:px-4 lg:px-6",
+        // Hidden below sm — same reasoning as StickySubNav: not enough
+        // vertical room right under PrimaryNav on phones for a second bar.
+        //
+        // top-[92px] at every breakpoint, same as StickySubNav: PrimaryNav
+        // is now just Logo + hamburger everywhere, so its height no longer
+        // shrinks at lg the way it did when a text-link row lived there.
+        "dot-font glass fixed inset-x-0 top-[92px] z-40 hidden px-3 transition-all duration-200 ease-out sm:block md:px-4 lg:px-6",
         visible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-lg border border-black/10 bg-white/80 px-6 py-3 font-doto dark:border-white/10 dark:bg-black/80">
         <div className="flex min-w-0 items-center gap-4">
-          <Link href="/blog" className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "font-sans")}>
+          <Link href="/writing" className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "font-sans")}>
             <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
           </Link>
           <p className="truncate text-sm tracking-wide text-black dark:text-white">{title}</p>

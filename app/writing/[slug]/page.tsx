@@ -194,7 +194,7 @@ function createPostComponents(): PortableTextComponents {
   };
 }
 
-export default async function BlogPostPage({
+export default async function WritingPostPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -216,7 +216,7 @@ export default async function BlogPostPage({
       <div className="px-6">
         <div className="flex items-center justify-between gap-4">
           <Link
-            href="/blog"
+            href="/writing"
             className={buttonVariants({ variant: "secondary", size: "sm" })}
           >
             <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>

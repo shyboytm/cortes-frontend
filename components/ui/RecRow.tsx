@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
-import RecLinkPreviewImage from "@/components/ui/RecLinkPreviewImage";
 
 export type Platform = "ios" | "ipad" | "mac" | "android" | "web" | "all";
 
@@ -25,6 +24,11 @@ export interface RecRowProps {
   imageAlt?: string;
   platform?: Platform;
   likes?: number;
+  // Optional "Hover Preview" image set in Sanity — shown in the little
+  // browser-window card on hover. No auto-generated screenshot fallback:
+  // if this isn't set, the hover card just doesn't render for that item.
+  hoverPreviewUrl?: string;
+  hoverPreviewAlt?: string;
   // "cd" gives the thumbnail a jewel-case look (square corners, a glossy
   // diagonal sheen, and a spine line) — used for the Music section on Recs.
   imageVariant?: "default" | "cd";
@@ -35,8 +39,8 @@ export interface RecRowProps {
 // arrow affordance PostRow uses, just pointed off-site instead of to a
 // detail page. Renders nothing without a link since there's nowhere for it
 // to go. `platform` renders a small tag (only apps set this). Hovering
-// reveals a live preview of the destination page itself, framed like a
-// little browser window.
+// reveals a preview of the destination page itself (a "Hover Preview" image
+// set on the recommendation in Sanity), framed like a little browser window.
 export default function RecRow({
   id,
   title,
@@ -47,6 +51,8 @@ export default function RecRow({
   platform,
   likes,
   imageVariant = "default",
+  hoverPreviewUrl,
+  hoverPreviewAlt,
 }: RecRowProps) {
   if (!url) return null;
 
@@ -60,32 +66,39 @@ export default function RecRow({
   }
 
   return (
-    <li className="border-b border-black/10 dark:border-white/10">
+    // The list this renders into is a single column on mobile and a
+    // 2-column grid at md+ (see RecsPage). A row-major 2-col grid means an
+    // item has nothing below it in its own column once you're within the
+    // last two DOM children — true regardless of whether the total count is
+    // even or odd — so the border only needs to disappear on the true last
+    // child below md, and on the last two children at md+.
+    <li className="border-b border-black/10 last:border-b-0 md:[&:nth-last-child(2)]:border-b-0 dark:border-white/10">
       <Link
         href={url}
         target="_blank"
         rel="noopener noreferrer"
         className="group relative -mx-3 flex items-start gap-4 rounded-md px-4 py-4 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
       >
-    
-        <div
-          aria-hidden
-          className="pointer-events-none absolute bottom-full left-4 z-30 mb-2 w-72 origin-bottom-left scale-95 overflow-hidden rounded-lg border border-black/10 bg-white opacity-0 shadow-xl transition-all duration-150 group-hover:scale-100 group-hover:opacity-100 sm:w-80 dark:border-white/10 dark:bg-black"
-        >
-          <div className="flex items-center gap-1.5 border-b border-black/10 bg-black/5 px-3 py-2 dark:border-white/10 dark:bg-white/5">
-            <span className="h-2 w-2 rounded-full bg-red-400/70" />
-            <span className="h-2 w-2 rounded-full bg-yellow-400/70" />
-            <span className="h-2 w-2 rounded-full bg-green-400/70" />
-            {hostname && (
-              <span className="ml-2 truncate rounded-sm bg-black/5 px-2 py-0.5 text-[10px] text-black/60 dark:bg-white/10 dark:text-white/60">
-                {hostname}
-              </span>
-            )}
+        {hoverPreviewUrl && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bottom-full left-4 z-30 mb-2 w-72 origin-bottom-left scale-95 overflow-hidden rounded-lg border border-black/10 bg-white opacity-0 shadow-xl transition-all duration-150 group-hover:scale-100 group-hover:opacity-100 sm:w-80 dark:border-white/10 dark:bg-black"
+          >
+            <div className="flex items-center gap-1.5 border-b border-black/10 bg-black/5 px-3 py-2 dark:border-white/10 dark:bg-white/5">
+              <span className="h-2 w-2 rounded-full bg-red-400/70" />
+              <span className="h-2 w-2 rounded-full bg-yellow-400/70" />
+              <span className="h-2 w-2 rounded-full bg-green-400/70" />
+              {hostname && (
+                <span className="ml-2 truncate rounded-sm bg-black/5 px-2 py-0.5 text-[10px] text-black/60 dark:bg-white/10 dark:text-white/60">
+                  {hostname}
+                </span>
+              )}
+            </div>
+            <div className="relative aspect-[16/10] w-full bg-black/5 dark:bg-white/5">
+              <Image src={hoverPreviewUrl} alt={hoverPreviewAlt || ""} fill className="object-cover object-top" sizes="320px" />
+            </div>
           </div>
-          <div className="relative aspect-[16/10] w-full bg-black/5 dark:bg-white/5">
-            <RecLinkPreviewImage url={url} />
-          </div>
-        </div>
+        )}
 
         {imageUrl && (
           <div

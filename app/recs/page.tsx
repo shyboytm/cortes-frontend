@@ -1,5 +1,5 @@
 import { type SanityDocument } from "next-sanity";
-import { Compass, BookOpen, Mic, Video, Newspaper, Smartphone, Music, Package, type LucideIcon } from "lucide-react";
+import { Compass, BookOpen, Mic, Video, Newspaper, Smartphone, Music, Package, Globe, type LucideIcon } from "lucide-react";
 import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
@@ -22,6 +22,10 @@ const RECS_QUERY = `*[
   image{
     alt,
     asset
+  },
+  hoverPreview{
+    alt,
+    asset
   }
 }`;
 
@@ -38,6 +42,7 @@ const CATEGORY_SECTIONS: { value: string; label: string; icon: LucideIcon }[] = 
   { value: "podcast", label: "Podcasts", icon: Mic },
   { value: "resource", label: "Resources", icon: Compass },
   { value: "video", label: "Videos", icon: Video },
+  { value: "website", label: "Websites", icon: Globe },
 ];
 
 export default async function RecsPage() {
@@ -129,6 +134,12 @@ export default async function RecsPage() {
                       }
                       imageAlt={rec.image?.alt}
                       imageVariant={value === "music" ? "cd" : undefined}
+                      hoverPreviewUrl={
+                        rec.hoverPreview?.asset
+                          ? urlFor(rec.hoverPreview.asset).width(720).fit("max").url()
+                          : undefined
+                      }
+                      hoverPreviewAlt={rec.hoverPreview?.alt}
                     />
                   ))}
                 </ul>

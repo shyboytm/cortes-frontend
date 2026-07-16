@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Link2 } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
 import FeedVideo from "@/components/ui/FeedVideo";
@@ -75,14 +75,14 @@ export default function FeedGrid({ items }: FeedGridProps) {
               <div className="absolute inset-x-0 bottom-0 z-10 flex translate-y-full items-center justify-between gap-4 border-t border-black/10 bg-white px-3 py-2.5 transition-transform duration-200 ease-out group-hover:translate-y-0 dark:border-white/10 dark:bg-black">
                 <p className="line-clamp-2 text-sm text-black dark:text-white">{item.caption}</p>
                 {isClickable && (
-                  <Link2 size={20} className="shrink-0 text-black/60 dark:text-white/60" />
+                  <ArrowUpRight size={20} className="shrink-0 text-black/60 dark:text-white/60" />
                 )}
               </div>
             )}
 
             {isClickable && !item.caption && (
-              <span className="absolute right-3 bottom-3 z-10 flex h-9 w-9 scale-75 items-center justify-center rounded-full bg-black/70 text-white opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 dark:bg-white/80 dark:text-black">
-                <Link2 size={20} />
+              <span className="absolute right-3 bottom-3 z-10 flex h-9 w-9 scale-75 items-center justify-center rounded-full border border-black/20 bg-white/80 text-black opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 dark:border-white/20 dark:bg-black/70 dark:text-white">
+                <ArrowUpRight size={20} />
               </span>
             )}
 

@@ -13,7 +13,7 @@ const MARQUEE_PHRASE = Array.from({ length: 1 }, () => "Let's Chat // Contact //
 // only interactive/meaningful part.
 export default function WorkTogetherCTA() {
   return (
-    <div className="relative z-10 mx-6 mt-6 flex h-48 items-center justify-center overflow-hidden bg-white/20 dark:bg-black/20 rounded-2xl border border-black/10 sm:h-64 dark:border-white/10">
+    <div className="relative z-10 mx-6 mt-6 flex h-48 items-center justify-center overflow-hidden bg-white/40 dark:bg-black/40 rounded-2xl border border-black/10 sm:h-64 dark:border-white/10">
 
       <NavDotGrid />
 

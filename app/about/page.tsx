@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Instagram, Linkedin } from "lucide-react";
 import {
-  SiPatreon,
   SiX,
   SiDribbble,
   SiYoutube,
@@ -34,7 +33,6 @@ const CONTACT_LINKS = [
   { label: "X", href: "https://x.com/shyboytm", icon: SiX },
   { label: "Dribbble", href: "https://dribbble.com/shyboytm", icon: SiDribbble },
   { label: "YouTube", href: "https://www.youtube.com/cortesarts", icon: SiYoutube },
-  { label: "Patreon", href: "https://www.patreon.com/c/shyboytm", icon: SiPatreon },
   { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/cortes", icon: SiBuymeacoffee },
 ];
 
@@ -55,7 +53,9 @@ const options = { next: { revalidate: 30 } };
 // Replaces the old standalone /about page and the placeholder "Contact" nav
 // link — this single page now covers both "who is Dennis" and "how do I
 // reach him", plus the Services and testimonials Sanity content below.
-export default async function InfoPage() {
+// (Previously named/routed as "Info" — renamed to "About" everywhere, this
+// route included.)
+export default async function AboutPage() {
   const [services, testimonials] = await Promise.all([
     client.fetch<SanityDocument[]>(SERVICES_QUERY, {}, options),
     client.fetch<SanityDocument[]>(TESTIMONIALS_QUERY, {}, options),
@@ -67,9 +67,12 @@ export default async function InfoPage() {
 
       <div className="m-auto w-full px-6">
         <PageHeader
-          title="Info"
+          title="About"
           subtitle={
-            <Link href="mailto:hi@cortes.us" className="transition-colors link-underline hover:text-black dark:hover:text-white">
+            <Link
+              href="mailto:hi@cortes.us"
+              className="transition-colors link-underline hover:text-black dark:hover:text-white"
+            >
               hi@cortes.us
             </Link>
           }
@@ -140,6 +143,9 @@ export default async function InfoPage() {
                 </div>
               </div>
             )}
+
+            <ClientsSection />
+            <PressSection />
           </div>
 
           <InteractivePortrait
@@ -148,9 +154,6 @@ export default async function InfoPage() {
             className="lg:sticky lg:top-32"
           />
         </div>
-
-        <ClientsSection />
-        <PressSection />
 
         {testimonials.length > 0 && (
           <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">

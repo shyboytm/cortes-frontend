@@ -29,7 +29,7 @@ const RELEASE_TYPE_LABELS: Record<string, string> = {
 };
 
 // Shared pill button used for both filter rows — active state mirrors the
-// site's other pill toggles (Footer/Info socials, sequencer pads).
+// site's other pill toggles (Footer/About socials, sequencer pads).
 function FilterPill({
   active,
   onClick,
