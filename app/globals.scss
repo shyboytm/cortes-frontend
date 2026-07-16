@@ -103,8 +103,9 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  // Ufficio first, Inter if it ever fails to load, system font stack after that.
-  --font-sans: var(--font-ufficio), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  // TRIAL SWAP: IBM Plex Sans first (was Ufficio), Inter if it ever fails
+  // to load, system font stack after that.
+  --font-sans: var(--font-ibm-plex-sans), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   // The old monospace typeface has been retired — font-mono now renders in Doto.
   --font-mono: var(--font-doto);
   --font-doto: var(--font-doto);

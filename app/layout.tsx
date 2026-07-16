@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Doto, Inter } from "next/font/google";
-import localFont from "next/font/local";
+import { IBM_Plex_Sans, Doto, Inter } from "next/font/google";
 import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
 import PrimaryFooter from '@/components/ui/PrimaryFooter'
@@ -8,17 +7,15 @@ import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
 
 import "./globals.scss";
 
-// Primary sans typeface. Local weight files, no variable axis, so each
-// static weight is registered separately.
-const ufficio = localFont({
-  variable: "--font-ufficio",
-  display: "swap",
-  src: [
-    { path: "./fonts/Ufficio-300.ttf", weight: "300", style: "normal" },
-    { path: "./fonts/Ufficio-400.ttf", weight: "400", style: "normal" },
-    { path: "./fonts/Ufficio-500.ttf", weight: "500", style: "normal" },
-    { path: "./fonts/Ufficio-600.ttf", weight: "600", style: "normal" },
-  ],
+// TRIAL SWAP — Ufficio (local font files) swapped for IBM Plex Sans, so
+// Dennis can preview the change. Same static weights Ufficio used
+// (300/400/500/600), just Google-hosted instead of local .ttf files. Revert
+// by restoring the old `localFont` Ufficio block + the previous variable
+// name in globals.scss's --font-sans line.
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
 });
 
 const inter = Inter({
@@ -44,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${ufficio.variable} ${inter.variable} ${doto.variable} antialiased`}>
+    <html lang="en" className={`${ibmPlexSans.variable} ${inter.variable} ${doto.variable} antialiased`}>
       <body className="bg-white text-black dark:bg-black dark:text-white gradient-background">
         {/* The DOM the shader samples — all pages render inside this */}
         <div id="site-content" className="mx-auto w-full max-w-7xl">
