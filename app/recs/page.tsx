@@ -91,7 +91,7 @@ export default async function RecsPage() {
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   <Icon size={14} />
-                  <span className="inline-block translate-y-[1px]">{label}</span>
+                  {label}
                 </a>
               ))}
             </nav>
@@ -107,7 +107,7 @@ export default async function RecsPage() {
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   <Icon size={14} />
-                  <span className="inline-block translate-y-[1px]">{label}</span>
+                  {label}
                 </a>
               ))}
             </StickySubNav>

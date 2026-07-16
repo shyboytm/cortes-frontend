@@ -304,14 +304,14 @@ export default function RemixSequencer() {
               onClick={randomize}
               className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
             >
-              <Shuffle size={13} /> <span className="inline-block translate-y-[1px]">Shuffle</span>
+              <Shuffle size={13} /> Shuffle
             </button>
             <button
               type="button"
               onClick={clearGrid}
               className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
             >
-              <RotateCcw size={13} /> <span className="inline-block translate-y-[1px]">Clear</span>
+              <RotateCcw size={13} /> Clear
             </button>
           </div>
         </div>

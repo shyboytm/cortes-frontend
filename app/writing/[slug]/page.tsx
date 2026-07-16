@@ -219,7 +219,7 @@ export default async function WritingPostPage({
             href="/writing"
             className={buttonVariants({ variant: "secondary", size: "sm" })}
           >
-            <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
+            <ArrowLeft size={18} /> Back
           </Link>
 
           <LikeButton id={post._id} initialLikes={post.likes ?? 0} />

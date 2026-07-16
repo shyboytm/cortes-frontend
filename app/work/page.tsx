@@ -76,8 +76,8 @@ export default async function WorkIndexPage() {
         </div>
 
         {/* Feed used to be its own page — folded in here underneath the
-            featured projects instead, since it's the same "things Dennis
-            has made" idea at a smaller/more informal scale. */}
+            featured projects instead, since it's the same "things made"
+            idea at a smaller/more informal scale. */}
         <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
           <PageHeader
             title="Feed"

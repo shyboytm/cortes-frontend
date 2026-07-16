@@ -130,7 +130,7 @@ export default function RecRow({
             <h3 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h3>
             {platform && (
               <span className="rounded-full border border-black/10 px-2 py-0.5 text-[10px] tracking-widest text-black/60 uppercase dark:border-white/10 dark:text-white/60">
-                <span className="inline-block translate-y-[1px]">{PLATFORM_LABELS[platform]}</span>
+                {PLATFORM_LABELS[platform]}
               </span>
             )}
             <LikeButton id={id} initialLikes={likes ?? 0} variant="minimal" />

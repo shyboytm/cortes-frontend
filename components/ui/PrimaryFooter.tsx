@@ -4,6 +4,7 @@ import { Instagram, Linkedin } from "lucide-react";
 import {
   SiLastdotfm,
   SiBuymeacoffee,
+  SiGithub,
   SiX,
   SiDribbble,
   SiYoutube,
@@ -28,7 +29,7 @@ const EXPLORE_LINKS = [
   { label: "About", href: "/about" },
 ];
 
-// Decorative pixel-art marks Dennis dropped into /public — purely a visual
+// Decorative pixel-art marks dropped into /public — purely a visual
 // flourish along the very bottom of the footer, not linked to anything.
 // Real width/height (from each file's own viewBox) keeps aspect ratio
 // correct when only a height is set via className.
@@ -47,6 +48,7 @@ const ACCENT_GRAPHICS = [
 const SOCIAL_LINKS = [
   { label: "Instagram", href: "https://www.instagram.com/shyboytm/", icon: Instagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/fromcortes/", icon: Linkedin },
+  { label: "GitHub", href: "https://github.com/shyboytm", icon: SiGithub },
   { label: "X", href: "https://x.com/shyboytm", icon: SiX },
   { label: "Dribbble", href: "https://dribbble.com/shyboytm", icon: SiDribbble },
   { label: "YouTube", href: "https://www.youtube.com/cortesarts", icon: SiYoutube },
@@ -186,7 +188,7 @@ export default async function PrimaryFooter() {
               <div className="flex flex-wrap gap-2">
                 {EXPLORE_LINKS.map((link) => (
                   <FooterPill key={link.href} href={link.href}>
-                    <span className="inline-block translate-y-[1px]">{link.label}</span>
+                    {link.label}
                   </FooterPill>
                 ))}
               </div>

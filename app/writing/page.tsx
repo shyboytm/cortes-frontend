@@ -74,9 +74,7 @@ export default async function WritingIndexPage() {
                   href={`#${year}`}
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
-                  <span className="inline-block translate-y-[1px]">
-                    {year === "undated" ? "Undated" : year}
-                  </span>
+                  {year === "undated" ? "Undated" : year}
                 </a>
               ))}
             </nav>
@@ -91,9 +89,7 @@ export default async function WritingIndexPage() {
                   href={`#${year}`}
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
-                  <span className="inline-block translate-y-[1px]">
-                    {year === "undated" ? "Undated" : year}
-                  </span>
+                  {year === "undated" ? "Undated" : year}
                 </a>
               ))}
             </StickySubNav>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Instagram } from 'lucide-react';
 import {
   SiSpotify,
   SiApplemusic,
@@ -15,10 +15,12 @@ import PageHeader from '@/components/ui/PageHeader';
 import RemixSequencer from '@/components/ui/RemixSequencer';
 import MusicReleaseCard from '@/components/ui/MusicReleaseCard';
 import VinylDisc from '@/components/ui/VinylDisc';
+import DraggableVinyl from '@/components/ui/DraggableVinyl';
 import StickySubNav from '@/components/ui/StickySubNav';
 import { buttonVariants } from '@/components/ui/button';
 
 const STREAMING_LINKS = [
+  { label: '@cordiofm', href: 'https://www.instagram.com/cordiofm', Icon: Instagram },
   { label: 'Spotify', href: '#', Icon: SiSpotify },
   { label: 'Apple Music', href: '#', Icon: SiApplemusic },
   { label: 'Bandcamp', href: '#', Icon: SiBandcamp },
@@ -85,7 +87,7 @@ export default async function MusicPage() {
               className={buttonVariants({ variant: "secondary", size: "sm" })}
             >
               <Icon size={16} />
-              <span className="inline-block translate-y-[1px]">{label}</span>
+              {label}
             </Link>
           ))}
         </nav>
@@ -101,7 +103,7 @@ export default async function MusicPage() {
               className={buttonVariants({ variant: "secondary", size: "sm" })}
             >
               <Icon size={16} />
-              <span className="inline-block translate-y-[1px]">{label}</span>
+              {label}
             </Link>
           ))}
         </StickySubNav>
@@ -143,7 +145,7 @@ export default async function MusicPage() {
                 href="/music/releases"
                 className={buttonVariants({ variant: 'secondary', size: 'sm' })}
               >
-                <span className="inline-block translate-y-[1px]">View All</span>
+                View All
                 <ArrowRight size={16} />
               </Link>
             </div>
@@ -170,15 +172,17 @@ export default async function MusicPage() {
           <div className="my-16 max-w-3xl m-auto tracking-wide">
             {vinylRelease && (
               <div className="mb-8 flex justify-center">
-                <VinylDisc
-                  size={160}
-                  imageUrl={
-                    vinylRelease.artwork?.asset
-                      ? urlFor(vinylRelease.artwork.asset).width(600).height(600).fit("crop").url()
-                      : undefined
-                  }
-                  imageAlt={vinylRelease.artwork?.alt || vinylRelease.title}
-                />
+                <DraggableVinyl>
+                  <VinylDisc
+                    size={160}
+                    imageUrl={
+                      vinylRelease.artwork?.asset
+                        ? urlFor(vinylRelease.artwork.asset).width(600).height(600).fit("crop").url()
+                        : undefined
+                    }
+                    imageAlt={vinylRelease.artwork?.alt || vinylRelease.title}
+                  />
+                </DraggableVinyl>
               </div>
             )}
             <h2 className="mb-3 text-2xl font-normal text-black dark:text-white text-center">Make your own Cordio remix</h2>

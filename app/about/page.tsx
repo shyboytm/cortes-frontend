@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Instagram, Linkedin } from "lucide-react";
 import {
+  SiGithub,
   SiX,
   SiDribbble,
   SiYoutube,
@@ -30,6 +31,7 @@ const PORTRAIT_PHOTOS = [
 const CONTACT_LINKS = [
   { label: "Instagram", href: "https://www.instagram.com/shyboytm/", icon: Instagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/fromcortes/", icon: Linkedin },
+  { label: "GitHub", href: "https://github.com/shyboytm", icon: SiGithub },
   { label: "X", href: "https://x.com/shyboytm", icon: SiX },
   { label: "Dribbble", href: "https://dribbble.com/shyboytm", icon: SiDribbble },
   { label: "YouTube", href: "https://www.youtube.com/cortesarts", icon: SiYoutube },
@@ -51,8 +53,8 @@ const TESTIMONIALS_QUERY = `*[
 const options = { next: { revalidate: 30 } };
 
 // Replaces the old standalone /about page and the placeholder "Contact" nav
-// link — this single page now covers both "who is Dennis" and "how do I
-// reach him", plus the Services and testimonials Sanity content below.
+// link — this single page now covers both "who is this" and "how do I get
+// in touch", plus the Services and testimonials Sanity content below.
 // (Previously named/routed as "Info" — renamed to "About" everywhere, this
 // route included.)
 export default async function AboutPage() {
@@ -118,7 +120,7 @@ export default async function AboutPage() {
                     className={buttonVariants({ variant: "secondary", size: "sm" })}
                   >
                     <link.icon size={12} />
-                    <span className="inline-block translate-y-[1px]">{link.label}</span>
+                    {link.label}
                   </Link>
                 ))}
               </div>

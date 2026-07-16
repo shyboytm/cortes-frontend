@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Disc3 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,7 +42,15 @@ export default function VinylDisc({ imageUrl, imageAlt, size = 64, className }: 
         style={{ width: labelSize, height: labelSize }}
       >
         {imageUrl ? (
-          <Image src={imageUrl} alt={imageAlt || ""} fill className="object-cover" sizes={`${labelSize}px`} />
+          <Image
+            src={imageUrl}
+            alt={imageAlt || ""}
+            fill
+            draggable={false}
+            onDragStart={(e) => e.preventDefault()}
+            className="pointer-events-none object-cover select-none"
+            sizes={`${labelSize}px`}
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-white/60">
             <Disc3 size={Math.round(labelSize * 0.4)} />

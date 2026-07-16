@@ -27,7 +27,7 @@ export default async function MusicReleasesPage() {
           href="/music"
           className={buttonVariants({ variant: "secondary", size: "sm" })}
         >
-          <ArrowLeft size={18} /> <span className="inline-block translate-y-[1px]">Back</span>
+          <ArrowLeft size={18} /> Back
         </Link>
 
         <PageHeader

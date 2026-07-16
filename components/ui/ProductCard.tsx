@@ -20,7 +20,7 @@ export interface ProductCardProps {
 }
 
 // One product's card on the Shop page — a 4:3 landscape image (matching
-// the wide product-shot mockups Dennis uses, e.g. side-by-side phone
+// the wide product-shot mockups used, e.g. side-by-side phone
 // screenshots), title, and a price/storefront meta line. Same visual
 // language as MusicReleaseCard/FeedGrid: hover arrow badge in the corner,
 // plus a like button (always visible below lg, hover-revealed at lg, same
