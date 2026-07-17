@@ -10,8 +10,10 @@ export interface LikeButtonProps {
   // "inline" renders a standalone bordered pill. "corner" renders a badge
   // pinned to the top-right of a card, visible always on touch/tablet and
   // revealed on hover on desktop. "minimal" renders a bare heart and count
-  // with no border, used inline in list rows.
-  variant?: "inline" | "corner" | "minimal";
+  // with no border, used inline in list rows. "toolbar" renders a bordered
+  // circular-height pill matching the lightbox's arrow/close buttons, for
+  // use inline in a row of icon buttons rather than absolutely positioned.
+  variant?: "inline" | "corner" | "minimal" | "toolbar";
   className?: string;
 }
 
@@ -86,6 +88,25 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       >
         <Heart size={13} className={cn("transition-transform", liked && "fill-current text-red-500")} />
         {likes > 0 && <span className="tabular-nums">{likes}</span>}
+      </button>
+    );
+  }
+
+  if (variant === "toolbar") {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={liked || pending}
+        aria-label={label}
+        className={cn(
+          "flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-black/20 bg-white/80 px-3 text-black/70 backdrop-blur-sm transition-colors hover:text-black disabled:cursor-not-allowed dark:border-white/20 dark:bg-black/70 dark:text-white/70 dark:hover:text-white",
+          justLiked && "scale-110",
+          className
+        )}
+      >
+        <Heart size={16} className={cn("shrink-0 transition-transform", liked && "fill-current text-red-500")} />
+        {likes > 0 && <span className="text-sm tabular-nums">{likes}</span>}
       </button>
     );
   }

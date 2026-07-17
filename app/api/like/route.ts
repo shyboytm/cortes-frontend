@@ -4,7 +4,7 @@ import { writeClient } from "@/sanity/writeClient";
 
 // Document types with a `likes` field. The increment target's `_type` is
 // checked against this list before any write happens.
-const LIKEABLE_TYPES = ["post", "feedItem", "recommendation", "musicRelease", "product"];
+const LIKEABLE_TYPES = ["post", "feedItem", "recommendation", "musicRelease", "product", "photo"];
 
 // Increments a post or feedItem's `likes` field by 1 and returns the new total.
 // The id is only ever used as the target of that increment.

@@ -11,10 +11,14 @@ interface PhotoDocument {
   camera?: string;
   lens?: string;
   dateTaken?: string;
+  settings?: string;
+  location?: string;
+  likes?: number;
   image?: {
     alt?: string;
     asset?: SanityImageSource;
     aspectRatio?: number | null;
+    lqip?: string | null;
   } | null;
 }
 
@@ -27,10 +31,14 @@ const PHOTOS_QUERY = `*[
   camera,
   lens,
   dateTaken,
+  settings,
+  location,
+  likes,
   image{
     alt,
     asset,
-    "aspectRatio": asset->metadata.dimensions.aspectRatio
+    "aspectRatio": asset->metadata.dimensions.aspectRatio,
+    "lqip": asset->metadata.lqip
   }
 }`;
 
@@ -38,7 +46,9 @@ const options = sanityFetchOptions(900);
 
 // Full-bleed masonry photo gallery with a click-to-open lightbox, replacing
 // the previous external link out to glass.photo. Shows an empty-state
-// message until photos are uploaded in Sanity.
+// message until photos are uploaded in Sanity. Each photo resolves to two
+// sizes: a small one for the grid tile and lightbox filmstrip, and a larger
+// one only downloaded once that photo is actually open in the lightbox.
 export default async function PhotosPage() {
   const photos = await client.fetch<PhotoDocument[]>(PHOTOS_QUERY, {}, options);
 
@@ -46,12 +56,17 @@ export default async function PhotosPage() {
     .filter((photo) => photo.image?.asset)
     .map((photo) => ({
       _id: photo._id,
-      src: urlFor(photo.image!.asset!).width(1600).fit("max").url(),
+      thumbSrc: urlFor(photo.image!.asset!).width(800).fit("max").url(),
+      fullSrc: urlFor(photo.image!.asset!).width(3200).fit("max").url(),
+      blurDataURL: photo.image?.lqip || undefined,
       alt: photo.image?.alt || photo.caption || "Photo",
       caption: photo.caption,
       camera: photo.camera,
       lens: photo.lens,
       dateTaken: photo.dateTaken,
+      settings: photo.settings,
+      location: photo.location,
+      likes: photo.likes,
       aspectRatio:
         photo.image?.aspectRatio && photo.image.aspectRatio > 0 ? photo.image.aspectRatio : 4 / 5,
     }));
@@ -61,7 +76,7 @@ export default async function PhotosPage() {
       <PrimaryNav />
 
       <div className="px-6">
-        <PageHeader title="Photos" subtitle="A collection of photography I've shot over the years." />
+        <PageHeader title="Photos" subtitle="A collection of my favorite photography I've shot over the years, with camera and lens details included." />
 
         <PhotoGrid photos={items} />
       </div>

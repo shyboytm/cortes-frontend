@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from "react"
 import Image from "next/image"
-import { Aperture, Calendar, ChevronLeft, ChevronRight, Camera as CameraIcon, X } from "lucide-react"
+import { Aperture, Calendar, ChevronLeft, ChevronRight, Camera as CameraIcon, MapPin, Settings2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import LikeButton from "@/components/ui/LikeButton"
 import type { PhotoItem } from "@/components/ui/PhotoGrid"
 
 export interface PhotoLightboxProps {
@@ -14,10 +15,12 @@ export interface PhotoLightboxProps {
 }
 
 // Full-screen photo viewer: a scrollable filmstrip of every photo down the
-// left edge, the selected photo large and centered, and its caption/camera/
-// lens/date underneath. Closes on Escape, backdrop click, or the close
-// button; steps through photos via the arrow buttons, Left/Right keys, or
-// clicking a filmstrip thumbnail.
+// left edge, and the selected photo alongside its caption/camera/lens/date
+// (stacked on mobile, side by side to the right of the image on desktop).
+// Closes on Escape, backdrop click, or the close button; steps through
+// photos via the arrow buttons, Left/Right keys, or clicking a filmstrip
+// thumbnail. Each photo has a small thumbnail size (used here and in the
+// grid) and a larger size that's only downloaded once it's the one open.
 export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect }: PhotoLightboxProps) {
   const activeThumbRef = useRef<HTMLButtonElement>(null)
   const photo = photos[selectedIndex]
@@ -49,19 +52,21 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
 
   const formattedDate = photo.dateTaken
     ? new Date(`${photo.dateTaken}T00:00:00`).toLocaleDateString("en-US", {
-        month: "long",
+        month: "short",
         day: "numeric",
         year: "numeric",
       })
     : null
 
-  const hasMeta = Boolean(photo.caption || photo.camera || photo.lens || formattedDate)
+  const hasMeta = Boolean(
+    photo.caption || photo.camera || photo.lens || photo.settings || photo.location || formattedDate
+  )
 
   return (
-    <div className="fixed inset-0 z-[60] flex bg-white/95 backdrop-blur-md dark:bg-black/95" onClick={onClose}>
+    <div className="glass fixed inset-0 z-[60] flex bg-white/80 dark:bg-black/80" onClick={onClose}>
       <div
         onClick={(event) => event.stopPropagation()}
-        className="scrollbar-hide h-full w-20 shrink-0 overflow-y-auto px-2 py-4 sm:w-24"
+        className="scrollbar-hide h-full w-20 shrink-0 overflow-y-auto py-4 pl-2 pr-6 sm:w-24 lg:w-32 xl:w-36"
       >
         <div className="flex flex-col gap-2">
           {photos.map((thumb, index) => (
@@ -73,13 +78,21 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
               className={cn(
                 "relative block w-full shrink-0 cursor-pointer overflow-hidden rounded-sm border transition-all duration-200 ease-out",
                 index === selectedIndex
-                  ? "translate-x-2 border-black opacity-100 dark:border-white"
+                  ? "translate-x-4 border-black opacity-100 dark:border-white"
                   : "translate-x-0 border-black/10 opacity-50 hover:opacity-80 dark:border-white/10"
               )}
               style={{ aspectRatio: thumb.aspectRatio }}
               aria-label={`Show ${thumb.alt}`}
             >
-              <Image src={thumb.src} alt={thumb.alt} fill className="object-cover" sizes="96px" />
+              <Image
+                src={thumb.thumbSrc}
+                alt={thumb.alt}
+                fill
+                placeholder={thumb.blurDataURL ? "blur" : undefined}
+                blurDataURL={thumb.blurDataURL}
+                className="object-cover"
+                sizes="144px"
+              />
             </button>
           ))}
         </div>
@@ -87,23 +100,34 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
 
       <div
         onClick={(event) => event.stopPropagation()}
-        className="flex flex-1 flex-col items-center justify-center gap-4 p-6 sm:p-10"
+        className="flex flex-1 flex-col items-center justify-center gap-6 p-6 sm:p-10 lg:flex-row lg:gap-10"
       >
-        <div className="relative max-h-[70vh] w-full max-w-4xl" style={{ aspectRatio: photo.aspectRatio }}>
+        <div
+          className="relative max-h-[80vh] w-full max-w-4xl overflow-hidden lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
+          style={{ aspectRatio: photo.aspectRatio }}
+        >
           <Image
-            src={photo.src}
+            src={photo.fullSrc}
             alt={photo.alt}
             fill
+            placeholder={photo.blurDataURL ? "blur" : undefined}
+            blurDataURL={photo.blurDataURL}
             className="object-contain"
-            sizes="(max-width: 1024px) 90vw, 70vw"
+            sizes="(max-width: 1024px) 90vw, 75vw"
             priority
           />
         </div>
 
         {hasMeta && (
-          <div className="flex w-full max-w-md flex-col gap-2">
+          <div className="flex w-full max-w-md flex-col gap-2 lg:w-72 lg:max-w-none lg:shrink-0">
             {photo.caption && (
               <p className="text-base text-black dark:text-white">{photo.caption}</p>
+            )}
+            {photo.location && (
+              <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
+                <MapPin size={16} className="shrink-0" />
+                <span>{photo.location}</span>
+              </div>
             )}
             {photo.camera && (
               <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
@@ -115,6 +139,12 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
               <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
                 <Aperture size={16} className="shrink-0" />
                 <span>{photo.lens}</span>
+              </div>
+            )}
+            {photo.settings && (
+              <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
+                <Settings2 size={16} className="shrink-0" />
+                <span>{photo.settings}</span>
               </div>
             )}
             {formattedDate && (
@@ -131,12 +161,12 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
         onClick={(event) => event.stopPropagation()}
         className="absolute top-6 right-6 flex items-center gap-2"
       >
-        <div className="flex items-center gap-1 rounded-full border border-black/20 bg-white/80 p-1 text-black backdrop-blur-sm dark:border-white/20 dark:bg-black/70 dark:text-white">
+        <div className="flex items-center gap-1 rounded-full border border-black/20 bg-white/80 p-1 text-black/70 backdrop-blur-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
           <button
             type="button"
             onClick={() => onSelect((selectedIndex - 1 + photos.length) % photos.length)}
             aria-label="Previous photo"
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/10 hover:text-black dark:hover:bg-white/10 dark:hover:text-white"
           >
             <ChevronLeft size={18} />
           </button>
@@ -144,17 +174,19 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
             type="button"
             onClick={() => onSelect((selectedIndex + 1) % photos.length)}
             aria-label="Next photo"
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/10 hover:text-black dark:hover:bg-white/10 dark:hover:text-white"
           >
             <ChevronRight size={18} />
           </button>
         </div>
 
+        <LikeButton id={photo._id} initialLikes={photo.likes ?? 0} variant="toolbar" />
+
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/20 bg-white/80 text-black transition-colors hover:text-black dark:border-white/20 dark:bg-black/70 dark:text-white"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/20 bg-white/80 text-black/70 transition-colors hover:text-black dark:border-white/20 dark:bg-black/70 dark:text-white/70 dark:hover:text-white"
         >
           <X size={18} />
         </button>

@@ -3,15 +3,25 @@
 import { useState } from "react"
 import Image from "next/image"
 import PhotoLightbox from "@/components/ui/PhotoLightbox"
+import LikeButton from "@/components/ui/LikeButton"
 
 export interface PhotoItem {
   _id: string
-  src: string
+  // Small size used for the grid tile and lightbox filmstrip thumbnail.
+  thumbSrc: string
+  // Larger size only downloaded once this photo is open in the lightbox.
+  fullSrc: string
+  // Base64 low-quality placeholder (Sanity's auto-generated LQIP), shown
+  // as a blurred preview while the real image loads in.
+  blurDataURL?: string
   alt: string
   caption?: string
   camera?: string
   lens?: string
   dateTaken?: string
+  settings?: string
+  location?: string
+  likes?: number
   aspectRatio: number
 }
 
@@ -34,24 +44,38 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
 
   return (
     <>
-      <div className="columns-2 gap-4 sm:columns-3 lg:columns-4">
+      <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
         {photos.map((photo, index) => (
-          <button
+          // A <div> rather than a <button>, since it contains the nested
+          // LikeButton — browsers don't allow interactive elements inside a
+          // <button>. Keyboard-activatable via role/tabIndex/onKeyDown.
+          <div
             key={photo._id}
-            type="button"
+            role="button"
+            tabIndex={0}
             onClick={() => setSelectedIndex(index)}
-            className="group relative mb-4 block w-full cursor-zoom-in overflow-hidden rounded-sm border border-black/10 bg-black/5 break-inside-avoid dark:border-white/10 dark:bg-white/5"
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault()
+                setSelectedIndex(index)
+              }
+            }}
+            className="group relative mb-6 block w-full cursor-zoom-in overflow-hidden rounded-sm border border-black/10 bg-black/5 break-inside-avoid dark:border-white/10 dark:bg-white/5"
             style={{ aspectRatio: photo.aspectRatio }}
             aria-label={`Open ${photo.alt} full screen`}
           >
             <Image
-              src={photo.src}
+              src={photo.thumbSrc}
               alt={photo.alt}
               fill
+              placeholder={photo.blurDataURL ? "blur" : undefined}
+              blurDataURL={photo.blurDataURL}
               className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 420px"
             />
-          </button>
+
+            <LikeButton id={photo._id} initialLikes={photo.likes ?? 0} variant="corner" />
+          </div>
         ))}
       </div>
 
