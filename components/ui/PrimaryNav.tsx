@@ -22,7 +22,7 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Recs', href: '/recs' },
   { label: 'Shop', href: '/shop' },
   { label: 'Writing', href: '/writing' },
-  { label: 'Photos', href: 'https://glass.photo/cortes' },
+  { label: 'Photos', href: '/photos' },
 ]
 
 export default function PrimaryNav() {
