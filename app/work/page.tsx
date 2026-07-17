@@ -4,6 +4,7 @@ import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import WorkGrid, { type WorkGridItem } from "@/components/ui/WorkGrid";
 import FeedGrid, { type FeedItem } from "@/components/ui/FeedGrid";
+import { Analytics } from '@vercel/analytics/next';
 
 const FEED_QUERY = `*[
   _type == "feedItem"
@@ -36,6 +37,7 @@ export default async function WorkIndexPage() {
 
   return (
     <div className="pt-32 pb-24">
+      <Analytics />
       <PrimaryNav />
 
       <div className="px-6">
