@@ -5,6 +5,7 @@ import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
 import PrimaryFooter from '@/components/ui/PrimaryFooter'
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
+import { Analytics } from '@vercel/analytics/next';
 
 import "./globals.scss";
 
@@ -24,7 +25,7 @@ const doto = Doto({
 
 export const metadata: Metadata = {
   title: "Dennis Cortés - Designer & Music Producer",
-  description: "Software Product Designer",
+  description: "Software Designer, Musician, and Photographer based in Nashville, TN",
 };
 
 export default function RootLayout({
@@ -38,6 +39,7 @@ export default function RootLayout({
         {/* The DOM the shader samples — all pages render inside this */}
         <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}
+          <Analytics />
           {/* PrimaryFooter awaits a Last.fm fetch server-side; Suspense keeps
               that from blocking the initial HTML flush for every route. */}
           <Suspense fallback={<div className="h-[400px]" />}>

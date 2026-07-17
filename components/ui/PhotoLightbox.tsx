@@ -103,8 +103,18 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
         className="flex flex-1 flex-col items-center justify-center gap-6 p-6 sm:p-10 lg:flex-row lg:gap-10"
       >
         <div
-          className="relative max-h-[80vh] w-full max-w-4xl overflow-hidden lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
-          style={{ aspectRatio: photo.aspectRatio }}
+          className="relative max-h-[80vh] max-w-4xl overflow-hidden lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
+          // Width is derived from the photo's real aspect ratio and the 80vh
+          // height budget (rather than stretching to w-full), so the box
+          // itself is always the right shape for the photo, even before the
+          // image has loaded in. Previously the box was always full-width,
+          // so aspect-ratio had to shrink it after the fact via max-height,
+          // which the blur placeholder (rendered with cover-style sizing)
+          // didn't respect, making portrait photos look like a square blob
+          // while loading. Landscape photos still get capped by max-w-*, and
+          // the shorter/narrower dimension follows automatically since both
+          // are tied together by aspect-ratio.
+          style={{ aspectRatio: photo.aspectRatio, width: `min(100%, calc(${photo.aspectRatio} * 80vh))` }}
         >
           <Image
             src={photo.fullSrc}
