@@ -1,17 +1,16 @@
-import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { type SanityDocument } from "next-sanity";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { BackLink } from "@/components/ui/LinkPill";
 import { formatPostDate } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
 import BlogStickyBar from "@/components/ui/BlogStickyBar";
+import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -30,7 +29,7 @@ const POST_QUERY = `*[
   }
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(30);
 
 type PostImageBlock = {
   _type: "image";
@@ -128,19 +127,7 @@ function createPostComponents(): PortableTextComponents {
 
   return {
     marks: {
-      link: ({ value, children }) => {
-        const href = value?.href || "#";
-        const isExternal = /^https?:\/\//.test(href);
-        return (
-          <a
-            href={href}
-            className="link-underline opacity-50"
-            {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          >
-            {children}
-          </a>
-        );
-      },
+      link: portableTextLinkMark,
     },
     types: {
       image: ({ value }: { value: PostImageBlock }) => {
@@ -182,12 +169,7 @@ function createPostComponents(): PortableTextComponents {
         }
         return <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>;
       },
-      h2: ({ children }) => (
-        <h2 className="mt-10 mb-4 text-2xl font-normal tracking-wide text-black dark:text-white">{children}</h2>
-      ),
-      h3: ({ children }) => (
-        <h3 className="mt-8 mb-3 text-xl font-normal tracking-wide text-black dark:text-white">{children}</h3>
-      ),
+      ...portableTextHeadings,
     },
   };
 }
@@ -213,12 +195,7 @@ export default async function WritingPostPage({
 
       <div className="px-6">
         <div className="flex items-center justify-between gap-4">
-          <Link
-            href="/writing"
-            className={buttonVariants({ variant: "secondary", size: "sm" })}
-          >
-            <ArrowLeft size={18} /> Back
-          </Link>
+          <BackLink href="/writing" iconSize={18} />
 
           <LikeButton id={post._id} initialLikes={post.likes ?? 0} />
         </div>

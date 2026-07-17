@@ -15,6 +15,24 @@ const PLATFORM_LABELS: Record<Platform, string> = {
   all: "All Platforms",
 };
 
+// Per-variant thumbnail styling: container classes (shape/border/shadow)
+// and the <Image sizes> value that matches that box. The CD variant's
+// gloss/spine overlay is genuinely extra markup (not just a style string),
+// so it stays as a separate isCd-gated block in the render below instead
+// of living in this lookup.
+const IMAGE_VARIANT_STYLES: Record<NonNullable<RecRowProps["imageVariant"]>, { containerClassName: string; imageSizes: string }> = {
+  default: { containerClassName: "h-12 w-12 rounded-xl border-black/10 dark:border-white/10", imageSizes: "48px" },
+  cd: {
+    containerClassName:
+      "h-12 w-12 rounded-[2px] border-black/15 shadow-[1px_2px_5px_rgba(0,0,0,0.35)] dark:border-white/20",
+    imageSizes: "48px",
+  },
+  book: {
+    containerClassName: "h-16 w-11 rounded-l-md rounded-r-xs border-black/10 shadow-md dark:border-white/10",
+    imageSizes: "44px",
+  },
+};
+
 export interface RecRowProps {
   id: string;
   title: string;
@@ -59,7 +77,7 @@ export default function RecRow({
   if (!url) return null;
 
   const isCd = imageVariant === "cd";
-  const isBook = imageVariant === "book";
+  const variantStyles = IMAGE_VARIANT_STYLES[imageVariant];
 
   let hostname: string | null = null;
   try {
@@ -104,14 +122,7 @@ export default function RecRow({
           <div
             className={cn(
               "relative shrink-0 overflow-hidden border bg-black/5 dark:bg-white/5",
-              isBook
-                ? // Taller-than-wide, like a book cover, with the left
-                  // (spine-side) corners rounded more than the right
-                  // (page-edge) corners, plus a drop shadow.
-                  "h-16 w-11 rounded-l-md rounded-r-xs border-black/10 shadow-md dark:border-white/10"
-                : isCd
-                  ? "h-12 w-12 rounded-[2px] border-black/15 shadow-[1px_2px_5px_rgba(0,0,0,0.35)] dark:border-white/20"
-                  : "h-12 w-12 rounded-xl border-black/10 dark:border-white/10"
+              variantStyles.containerClassName
             )}
           >
             <Image
@@ -119,7 +130,7 @@ export default function RecRow({
               alt={imageAlt || title}
               fill
               className="object-cover"
-              sizes={isBook ? "44px" : "48px"}
+              sizes={variantStyles.imageSizes}
             />
             {isCd && (
               <>

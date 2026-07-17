@@ -1,13 +1,12 @@
-import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { BackLink } from "@/components/ui/LinkPill";
+import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
 
 const WORK_BY_SLUG_QUERY = `*[
   _type == "work"
@@ -34,25 +33,13 @@ const WORK_BY_SLUG_QUERY = `*[
   }
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(30);
 
 // Renders the mixed text/image case-study body from Sanity. Each image
 // carries a projected aspect ratio so it doesn't shift as it loads.
 const caseStudyComponents: PortableTextComponents = {
   marks: {
-    link: ({ value, children }) => {
-      const href = value?.href || "#";
-      const isExternal = /^https?:\/\//.test(href);
-      return (
-        <a
-          href={href}
-          className="link-underline opacity-50"
-          {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        >
-          {children}
-        </a>
-      );
-    },
+    link: portableTextLinkMark,
   },
   types: {
     image: ({ value }) => {
@@ -69,7 +56,7 @@ const caseStudyComponents: PortableTextComponents = {
             alt={value.alt || ""}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, 800px"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
           />
         </div>
       );
@@ -79,12 +66,7 @@ const caseStudyComponents: PortableTextComponents = {
     normal: ({ children }) => (
       <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>
     ),
-    h2: ({ children }) => (
-      <h2 className="mt-10 mb-4 text-2xl font-normal tracking-wide text-black dark:text-white">{children}</h2>
-    ),
-    h3: ({ children }) => (
-      <h3 className="mt-8 mb-3 text-xl font-normal tracking-wide text-black dark:text-white">{children}</h3>
-    ),
+    ...portableTextHeadings,
   },
 };
 
@@ -105,12 +87,7 @@ export default async function WorkCaseStudyPage({
       <PrimaryNav />
 
       <div className="m-auto w-full max-w-7xl px-6 md:px-10">
-        <Link
-          href="/#work"
-          className={buttonVariants({ variant: "secondary", size: "sm" })}
-        >
-          <ArrowLeft size={16} /> Back
-        </Link>
+        <BackLink href="/#work" iconSize={16} />
 
         <PageHeader title={work.title} subtitle={work.description || work.dateRange} className="mt-6" />
 

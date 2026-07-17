@@ -1,20 +1,13 @@
 import Link from "next/link";
-import { Instagram, Linkedin } from "lucide-react";
-import {
-  SiGithub,
-  SiX,
-  SiDribbble,
-  SiYoutube,
-  SiBuymeacoffee,
-} from "@icons-pack/react-simple-icons";
 import { type SanityDocument } from "next-sanity";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import InteractivePortrait from "@/components/ui/InteractivePortrait";
 import ClientsSection from "@/components/ui/ClientsSection";
 import PressSection from "@/components/ui/PressSection";
 import { buttonVariants } from "@/components/ui/button";
+import { SOCIAL_LINKS } from "@/lib/social-links";
 
 // Photos that rotate through the portrait; InteractivePortrait controls the cycle interval.
 const PORTRAIT_PHOTOS = [
@@ -23,17 +16,6 @@ const PORTRAIT_PHOTOS = [
   "/info-portrait-dennis-cortes-3.jpeg",
   "/info-portrait-dennis-cortes-4.jpeg",
   "/info-portrait-dennis-cortes-5.jpeg",
-];
-
-// Social links displayed in the Socials section.
-const CONTACT_LINKS = [
-  { label: "Instagram", href: "https://www.instagram.com/shyboytm/", icon: Instagram },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/fromcortes/", icon: Linkedin },
-  { label: "GitHub", href: "https://github.com/shyboytm", icon: SiGithub },
-  { label: "X", href: "https://x.com/shyboytm", icon: SiX },
-  { label: "Dribbble", href: "https://dribbble.com/shyboytm", icon: SiDribbble },
-  { label: "YouTube", href: "https://www.youtube.com/cortesarts", icon: SiYoutube },
-  { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/cortes", icon: SiBuymeacoffee },
 ];
 
 const SERVICES_QUERY = `*[
@@ -48,7 +30,7 @@ const TESTIMONIALS_QUERY = `*[
   _id, quote, name, role
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(900);
 
 export default async function AboutPage() {
   const [services, testimonials] = await Promise.all([
@@ -104,7 +86,7 @@ export default async function AboutPage() {
                 / Socials
               </h2>
               <div className="flex flex-wrap gap-2 max-w-lg">
-                {CONTACT_LINKS.map((link) => (
+                {SOCIAL_LINKS.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}

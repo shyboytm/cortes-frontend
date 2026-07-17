@@ -8,7 +8,7 @@ import {
   SiYoutubemusic,
 } from '@icons-pack/react-simple-icons';
 import { type SanityDocument } from 'next-sanity';
-import { client } from '@/sanity/client';
+import { client, sanityFetchOptions } from '@/sanity/client';
 import { urlFor } from '@/sanity/image';
 import PrimaryNav from '@/components/ui/PrimaryNav';
 import PageHeader from '@/components/ui/PageHeader';
@@ -16,7 +16,7 @@ import RemixSequencer from '@/components/ui/RemixSequencer';
 import MusicReleaseCard from '@/components/ui/MusicReleaseCard';
 import VinylDisc from '@/components/ui/VinylDisc';
 import DraggableVinyl from '@/components/ui/DraggableVinyl';
-import StickySubNav from '@/components/ui/StickySubNav';
+import JumpNav from '@/components/ui/JumpNav';
 import { buttonVariants } from '@/components/ui/button';
 
 const STREAMING_LINKS = [
@@ -47,7 +47,7 @@ const RELEASE_ARTWORK_QUERY = `*[
   artwork{ alt, asset }
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(30);
 
 // Returns a random item from the list, or null if the list is empty. Picks
 // a fresh item on every request/page load rather than a fixed release.
@@ -71,11 +71,11 @@ export default async function MusicPage() {
       <div className="px-6">
         <PageHeader title="Cordio" subtitle="Music that scores the moments in between." />
 
-        <nav
-          aria-label="Listen on"
+        <JumpNav
+          ariaLabel="Listen on"
+          sentinelId="music-nav-sentinel"
           className="mt-10 flex flex-wrap gap-3 border-b border-black/10 pb-10 dark:border-white/10"
-        >
-          {STREAMING_LINKS.map(({ label, href, Icon }) => (
+          items={STREAMING_LINKS.map(({ label, href, Icon }) => (
             <Link
               key={label}
               href={href}
@@ -85,23 +85,7 @@ export default async function MusicPage() {
               {label}
             </Link>
           ))}
-        </nav>
-        {/* Marks where the in-page "Listen on" nav ends — StickySubNav
-            watches this via IntersectionObserver and mirrors the same
-            links into a bar under PrimaryNav once it scrolls out of view. */}
-        <div id="music-nav-sentinel" />
-        <StickySubNav sentinelId="music-nav-sentinel" ariaLabel="Listen on">
-          {STREAMING_LINKS.map(({ label, href, Icon }) => (
-            <Link
-              key={label}
-              href={href}
-              className={buttonVariants({ variant: "secondary", size: "sm" })}
-            >
-              <Icon size={16} />
-              {label}
-            </Link>
-          ))}
-        </StickySubNav>
+        />
 
         <div className="border-b border-black/10 pb-10 dark:border-white/10 columns-1 gap-x-10 text-base leading-relaxed mt-6 text-black/70 md:columns-2 dark:text-white/70">
           <p className="mb-4 break-inside-avoid-column">

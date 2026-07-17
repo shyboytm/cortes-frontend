@@ -21,6 +21,9 @@ export interface WorkRowProps {
   // homepage's WORK_QUERY. The card is a link only when both are present.
   slug?: string;
   hasCaseStudy?: boolean;
+  // Set by WorkGrid for whichever card is the largest-priority LCP
+  // candidate (the first one in the grid); left unset otherwise.
+  priority?: boolean;
 }
 
 // Every homepage thumbnail is cropped to this exact box via Sanity's
@@ -32,7 +35,7 @@ const THUMB_HEIGHT = 900;
 // image on hover, if one's set in Sanity), the title and date range, and an
 // arrow badge that appears on hover. The whole card links to the case study
 // page once one's been written — otherwise it's just a static preview.
-export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug, hasCaseStudy }: WorkRowProps) {
+export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, priority }: WorkRowProps) {
   const hasHoverImage = Boolean(hoverImage?.asset);
   const isClickable = Boolean(hasCaseStudy && slug);
 
@@ -51,7 +54,8 @@ export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug,
               "object-cover transition-opacity duration-300",
               hasHoverImage && "group-hover:opacity-0"
             )}
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 420px"
+            priority={priority}
           />
         )}
 
@@ -61,7 +65,7 @@ export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug,
             alt={hoverImage?.alt || title}
             fill
             className="object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 420px"
           />
         )}
 

@@ -40,6 +40,13 @@ export default function DraggableVinyl({ children, className }: DraggableVinylPr
   const velocityRef = useRef({ x: 0, y: 0 });
   const lastMoveRef = useRef<{ x: number; y: number; t: number } | null>(null);
   const throwFrameRef = useRef<number | null>(null);
+  // Holds the currently-attached pointermove/pointerup handlers while a drag
+  // is in progress, so a mid-drag unmount/route-change can remove them even
+  // though handlePointerUp (which normally removes them) never fires.
+  const activeListenersRef = useRef<{
+    move: (moveEvent: PointerEvent) => void;
+    up: () => void;
+  } | null>(null);
 
   if (pathname !== renderedPathname) {
     setRenderedPathname(pathname);
@@ -50,12 +57,20 @@ export default function DraggableVinyl({ children, className }: DraggableVinylPr
     // handlePointerDown clears draggedRef at the start of every new drag.
   }
 
-  // Cancels any in-flight throw animation when the route changes.
+  // Cancels any in-flight throw animation when the route changes, and
+  // removes any still-attached drag listeners if the route changed (or the
+  // component unmounted) mid-drag, since handlePointerUp never got a chance
+  // to remove them itself.
   useEffect(() => {
     return () => {
       if (throwFrameRef.current !== null) {
         cancelAnimationFrame(throwFrameRef.current);
         throwFrameRef.current = null;
+      }
+      if (activeListenersRef.current) {
+        window.removeEventListener("pointermove", activeListenersRef.current.move);
+        window.removeEventListener("pointerup", activeListenersRef.current.up);
+        activeListenersRef.current = null;
       }
     };
   }, [pathname]);
@@ -132,6 +147,7 @@ export default function DraggableVinyl({ children, className }: DraggableVinylPr
       setIsDragging(false);
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
+      activeListenersRef.current = null;
 
       if (draggedRef.current) {
         startThrow();
@@ -140,6 +156,7 @@ export default function DraggableVinyl({ children, className }: DraggableVinylPr
 
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerup", handlePointerUp);
+    activeListenersRef.current = { move: handlePointerMove, up: handlePointerUp };
   };
 
   // Suppresses the click event that follows a real drag's pointerup, for

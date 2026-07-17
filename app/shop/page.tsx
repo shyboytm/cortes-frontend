@@ -1,5 +1,5 @@
 import { type SanityDocument } from "next-sanity";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import ProductCard from "@/components/ui/ProductCard";
@@ -11,7 +11,7 @@ const PRODUCTS_QUERY = `*[
   image{ alt, asset }
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(900);
 
 // Each product card links out to wherever it's sold (Gumroad, Etsy, a Notion
 // template marketplace, etc.) rather than handling checkout on this site.

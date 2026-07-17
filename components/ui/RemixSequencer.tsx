@@ -108,6 +108,16 @@ export default function RemixSequencer() {
   const loopsRef = useRef<Record<PadId, any> | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sequenceRef = useRef<any>(null);
+  // Holds the in-flight setup() promise while the first setup() call is
+  // still running, so concurrent calls (e.g. Play clicked right after a
+  // step pad is tapped) await the same build instead of each starting their
+  // own audio graph.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setupPromiseRef = useRef<Promise<any> | null>(null);
+  // Tracks whether the eager 'tone' preload on first interaction has
+  // already fired, so hovering/focusing the sequencer more than once
+  // doesn't re-trigger the dynamic import.
+  const preloadStartedRef = useRef(false);
 
   // (Re)creates the three stem players for whichever song is passed in,
   // disposing any previous set first. Shared by the initial setup and by
@@ -141,47 +151,78 @@ export default function RemixSequencer() {
 
   // Builds the whole audio graph on the first Play/pad click, importing
   // Tone lazily and calling Tone.start() inside the click handler.
+  //
+  // Re-entrancy is guarded with an in-flight promise (setupPromiseRef)
+  // rather than just checking toneRef.current: the checks/assignments below
+  // are synchronous, but the work in between is async, so two calls that
+  // both land before the first one finishes (e.g. Play clicked right after
+  // a step pad tap) would otherwise both pass a plain `if (toneRef.current)`
+  // guard and each build a duplicate audio graph. Storing the promise lets
+  // any concurrent caller await the same in-flight build instead.
   const setup = useCallback(async () => {
     if (toneRef.current) return toneRef.current;
-    const Tone = await import('tone');
-    await Tone.start();
+    if (setupPromiseRef.current) return setupPromiseRef.current;
 
-    // Drum samples loaded as Tone.Sampler instances; each triggerAttack
-    // call spawns its own voice. Each sampler has one sample, so the note
-    // name used to trigger it ('C1') is just a key into the urls map.
-    const kick = new Tone.Sampler({ urls: { C1: '/music/drums/kick.wav' } }).toDestination();
-    const snare = new Tone.Sampler({ urls: { C1: '/music/drums/snare.wav' } }).toDestination();
-    const hat = new Tone.Sampler({ urls: { C1: '/music/drums/hat.wav' } }).toDestination();
-    const perc = new Tone.Sampler({ urls: { C1: '/music/drums/perc.wav' } }).toDestination();
+    const buildPromise = (async () => {
+      const Tone = await import('tone');
+      await Tone.start();
 
-    await Tone.loaded();
+      // Drum samples loaded as Tone.Sampler instances; each triggerAttack
+      // call spawns its own voice. Each sampler has one sample, so the note
+      // name used to trigger it ('C1') is just a key into the urls map.
+      const kick = new Tone.Sampler({ urls: { C1: '/music/drums/kick.wav' } }).toDestination();
+      const snare = new Tone.Sampler({ urls: { C1: '/music/drums/snare.wav' } }).toDestination();
+      const hat = new Tone.Sampler({ urls: { C1: '/music/drums/hat.wav' } }).toDestination();
+      const perc = new Tone.Sampler({ urls: { C1: '/music/drums/perc.wav' } }).toDestination();
 
-    synthsRef.current = { kick, snare, hat, perc };
+      await Tone.loaded();
 
-    const seq = new Tone.Sequence(
-      (time: number, step: number) => {
-        const g = gridRef.current;
-        if (g.kick[step]) kick.triggerAttack('C1', time);
-        if (g.snare[step]) snare.triggerAttack('C1', time);
-        if (g.hat[step]) hat.triggerAttack('C1', time);
-        if (g.perc[step]) perc.triggerAttack('C1', time);
-        setCurrentStep(step);
-      },
-      Array.from({ length: STEPS }, (_, i) => i),
-      '16n'
-    );
-    seq.start(0);
-    sequenceRef.current = seq;
+      synthsRef.current = { kick, snare, hat, perc };
 
-    toneRef.current = Tone;
-    await loadSong(Tone, SONGS.find((s) => s.id === songIdRef.current) ?? SONGS[0]);
-    return Tone;
+      const seq = new Tone.Sequence(
+        (time: number, step: number) => {
+          const g = gridRef.current;
+          if (g.kick[step]) kick.triggerAttack('C1', time);
+          if (g.snare[step]) snare.triggerAttack('C1', time);
+          if (g.hat[step]) hat.triggerAttack('C1', time);
+          if (g.perc[step]) perc.triggerAttack('C1', time);
+          setCurrentStep(step);
+        },
+        Array.from({ length: STEPS }, (_, i) => i),
+        '16n'
+      );
+      seq.start(0);
+      sequenceRef.current = seq;
+
+      toneRef.current = Tone;
+      await loadSong(Tone, SONGS.find((s) => s.id === songIdRef.current) ?? SONGS[0]);
+      return Tone;
+    })();
+
+    setupPromiseRef.current = buildPromise;
+
+    try {
+      return await buildPromise;
+    } catch (err) {
+      // Resets so a failed setup doesn't permanently block future attempts
+      // behind a rejected promise.
+      setupPromiseRef.current = null;
+      throw err;
+    } finally {
+      // On success, toneRef.current is now set, so subsequent calls short
+      // circuit on the first check above; clearing the ref here just avoids
+      // holding onto a resolved promise forever.
+      if (toneRef.current) setupPromiseRef.current = null;
+    }
   }, [loadSong]);
 
-  // Preloads the 'tone' dynamic import as soon as this component mounts,
-  // so it's already cached by the time setup() calls import('tone') on the
-  // first Play/pad click.
-  useEffect(() => {
+  // Preloads the 'tone' dynamic import on the sequencer's first meaningful
+  // interaction (pointer entering the container, or focus landing on it),
+  // rather than unconditionally on mount, so visitors who never touch the
+  // sequencer don't download the Tone.js bundle. Fires at most once.
+  const preloadTone = useCallback(() => {
+    if (preloadStartedRef.current) return;
+    preloadStartedRef.current = true;
     import('tone').catch(() => {});
   }, []);
 
@@ -264,7 +305,7 @@ export default function RemixSequencer() {
   };
 
   return (
-    <div>
+    <div onPointerEnter={preloadTone} onFocus={preloadTone}>
       <div className="rounded-lg border border-black/10 bg-black/[0.02] p-4 sm:p-6 dark:border-white/10 dark:bg-white/[0.03] shadow-2xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">

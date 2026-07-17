@@ -1,10 +1,8 @@
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import MusicReleasesFilter, { type ReleaseFilterItem } from "@/components/ui/MusicReleasesFilter";
-import { buttonVariants } from "@/components/ui/button";
+import { BackLink } from "@/components/ui/LinkPill";
 
 const ALL_RELEASES_QUERY = `*[
   _type == "musicRelease"
@@ -13,7 +11,7 @@ const ALL_RELEASES_QUERY = `*[
   artwork{ alt, asset }
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(30);
 
 export default async function MusicReleasesPage() {
   const releases = await client.fetch<ReleaseFilterItem[]>(ALL_RELEASES_QUERY, {}, options);
@@ -23,12 +21,7 @@ export default async function MusicReleasesPage() {
       <PrimaryNav />
 
       <div className="px-6">
-        <Link
-          href="/music"
-          className={buttonVariants({ variant: "secondary", size: "sm" })}
-        >
-          <ArrowLeft size={18} /> Back
-        </Link>
+        <BackLink href="/music" iconSize={18} />
 
         <PageHeader
           title="Releases"

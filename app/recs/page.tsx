@@ -2,12 +2,12 @@ import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
 import { Compass, BookOpen, Mic, Video, Newspaper, Smartphone, Music, Package, Globe, type LucideIcon } from "lucide-react";
 import { SiBuymeacoffee } from "@icons-pack/react-simple-icons";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import RecRow, { type Platform } from "@/components/ui/RecRow";
-import StickySubNav from "@/components/ui/StickySubNav";
+import JumpNav from "@/components/ui/JumpNav";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ const RECS_QUERY = `*[
   }
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(30);
 
 // Fixed display order regardless of how Sanity happens to return them —
 // alphabetical by label.
@@ -82,11 +82,10 @@ export default async function RecsPage() {
           </p>
         ) : (
           <>
-            <nav
-              aria-label="Jump to section"
-              className="mb-12 flex flex-wrap gap-2 border-b border-black/10 pb-8 dark:border-white/10"
-            >
-              {sections.map(({ value, label, icon: Icon }) => (
+            <JumpNav
+              ariaLabel="Jump to section"
+              sentinelId="recs-nav-sentinel"
+              items={sections.map(({ value, label, icon: Icon }) => (
                 <a
                   key={value}
                   href={`#${value}`}
@@ -96,23 +95,7 @@ export default async function RecsPage() {
                   {label}
                 </a>
               ))}
-            </nav>
-            {/* Marks where the in-page jump nav ends — StickySubNav watches
-                this via IntersectionObserver and mirrors the same links
-                into a bar under PrimaryNav once it scrolls out of view. */}
-            <div id="recs-nav-sentinel" />
-            <StickySubNav sentinelId="recs-nav-sentinel" ariaLabel="Jump to section">
-              {sections.map(({ value, label, icon: Icon }) => (
-                <a
-                  key={value}
-                  href={`#${value}`}
-                  className={buttonVariants({ variant: "secondary", size: "sm" })}
-                >
-                  <Icon size={14} />
-                  {label}
-                </a>
-              ))}
-            </StickySubNav>
+            />
 
             {sections.map(({ value, label, icon: Icon, items }) => (
               <div key={value} id={value} className="mb-12 scroll-mt-32">

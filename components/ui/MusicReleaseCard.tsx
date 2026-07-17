@@ -1,9 +1,7 @@
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowUpRight, Disc3 } from "lucide-react";
+import { Disc3 } from "lucide-react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
-import LikeButton from "@/components/ui/LikeButton";
+import MediaCard from "@/components/ui/MediaCard";
 
 export interface MusicReleaseCardProps {
   id: string;
@@ -45,53 +43,31 @@ export default function MusicReleaseCard({
     .filter(Boolean)
     .join(" · ");
 
-  const card = (
-    <div className="flex flex-col gap-3">
-      <div className="group relative aspect-square w-full overflow-hidden rounded-sm border border-black/10 bg-black/5 dark:border-white/10 dark:bg-white/5">
-        {artwork?.asset ? (
-          <Image
-            src={urlFor(artwork.asset).width(600).height(600).fit("crop").url()}
-            alt={artwork.alt || title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 50vw, 25vw"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-black/20 dark:text-white/20">
-            <Disc3 size={40} />
-          </div>
-        )}
-
-        {link && (
-          <span className="absolute right-3 bottom-3 flex h-9 w-9 scale-75 items-center justify-center rounded-full border border-black/20 bg-white/80 text-black opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 dark:border-white/20 dark:bg-black/70 dark:text-white">
-            <ArrowUpRight size={16} />
-          </span>
-        )}
-
-        <LikeButton id={id} initialLikes={likes ?? 0} variant="corner" className="opacity-0 group-hover:opacity-100" />
-      </div>
-
-      <div>
-        <h3 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h3>
-        {meta && (
-          <p className="dot-font font-doto mt-1 text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
-            {meta}
-          </p>
-        )}
-        {genre && (
-          <p className="mt-2 text-xs uppercase tracking-widest text-black/60 dark:text-white/60">{genre}</p>
-        )}
-      </div>
-    </div>
-  );
-
-  if (!link) {
-    return card;
-  }
-
   return (
-    <Link href={link} target="_blank" rel="noopener noreferrer" className="block">
-      {card}
-    </Link>
+    <MediaCard
+      id={id}
+      title={title}
+      href={link}
+      likes={likes}
+      imageUrl={artwork?.asset ? urlFor(artwork.asset).width(600).height(600).fit("crop").url() : undefined}
+      imageAlt={artwork?.alt}
+      aspectRatio="aspect-square"
+      FallbackIcon={Disc3}
+      groupScope="image"
+      likeButtonClassName="opacity-0 group-hover:opacity-100"
+      imageSizes="(max-width: 768px) 50vw, 380px"
+      meta={
+        <>
+          {meta && (
+            <p className="dot-font font-doto mt-1 text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
+              {meta}
+            </p>
+          )}
+          {genre && (
+            <p className="mt-2 text-xs uppercase tracking-widest text-black/60 dark:text-white/60">{genre}</p>
+          )}
+        </>
+      }
+    />
   );
 }

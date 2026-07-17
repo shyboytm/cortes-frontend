@@ -1,17 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
-// Reads the OS light/dark preference directly via prefers-color-scheme.
-function useIsDark(onChange: (isDark: boolean) => void) {
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const update = () => onChange(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, [onChange]);
-}
+import { useEffect, useRef, useState } from "react";
+import { useIsDark } from "@/lib/hooks/useIsDark";
 
 const BASE_OPACITY = 0.08;
 const FADE_DURATION_MS = 1400;
@@ -19,16 +9,47 @@ const FADE_DURATION_MS = 1400;
 // A large, faint wireframe shape that drifts toward the cursor and
 // occasionally dissolves into a different geometry. Purely decorative: sits
 // behind the footer's content (pointer-events-none, aria-hidden) and
-// dynamically imports three.js.
+// dynamically imports three.js — deferred until the container first nears
+// the viewport (see the IntersectionObserver effect below) since it's below
+// the fold on first paint.
 export default function FooterScene() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isDarkRef = useRef(true);
-
-  useIsDark((isDark) => {
-    isDarkRef.current = isDark;
-  });
+  const isDark = useIsDark();
+  const isDarkRef = useRef(isDark);
+  const [isNearViewport, setIsNearViewport] = useState(false);
 
   useEffect(() => {
+    isDarkRef.current = isDark;
+  }, [isDark]);
+
+  // Only start downloading/booting three.js once the footer's container is
+  // within (or close to) the viewport, rather than unconditionally on mount.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setIsNearViewport(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsNearViewport(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(container);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isNearViewport) return;
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -188,7 +209,7 @@ export default function FooterScene() {
       disposed = true;
       cleanup();
     };
-  }, []);
+  }, [isNearViewport]);
 
   return (
     <div

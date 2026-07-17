@@ -95,6 +95,9 @@ function cropImageToBuffer(
 // has something to draw.
 export default function InteractivePortrait({ src, alt, className }: InteractivePortraitProps) {
   const srcs = useMemo(() => (Array.isArray(src) ? src : [src]), [src]);
+  // Outermost wrapper; watched by an IntersectionObserver below so the
+  // auto-dissolve cycle can pause while this is scrolled out of view.
+  const containerRef = useRef<HTMLButtonElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Sits directly on top of the main canvas at the exact same position.
   // Used only as a dissolve layer: preloaded with the next photo (rendered
@@ -116,6 +119,10 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
   const [modeIndex, setModeIndex] = useState(0);
   const [srcIndex, setSrcIndex] = useState(0);
   const [ready, setReady] = useState(false);
+  // Whether the container is currently intersecting the viewport; gates the
+  // auto-dissolve interval below so that work (decode/crop/canvas redraw)
+  // doesn't keep running while scrolled far out of view.
+  const [isIntersecting, setIsIntersecting] = useState(true);
   const mode = MODES[modeIndex];
   const currentSrc = srcs[srcIndex % srcs.length];
   const modeRef = useRef(mode);
@@ -311,8 +318,24 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
     };
   }, [srcs, renderMode]);
 
+  // Watches the outermost wrapper so the auto-dissolve interval below can
+  // pause while it's scrolled out of view and resume once it's back.
   useEffect(() => {
-    if (srcs.length <= 1) return;
+    const node = containerRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsIntersecting(entry.isIntersecting);
+    });
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (srcs.length <= 1 || !isIntersecting) return;
 
     const interval = setInterval(() => {
       startDissolve();
@@ -322,7 +345,7 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
       clearInterval(interval);
       if (dissolveTimeoutRef.current) clearTimeout(dissolveTimeoutRef.current);
     };
-  }, [srcs.length, startDissolve]);
+  }, [srcs.length, startDissolve, isIntersecting]);
 
   // Swirls the working buffer around (cx, cy), starting fresh from the
   // pristine original each time.
@@ -412,6 +435,7 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
 
   return (
     <button
+      ref={containerRef}
       type="button"
       onClick={cycle}
       onMouseMove={handlePointerMove}

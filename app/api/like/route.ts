@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
+import { client } from "@/sanity/client";
 import { writeClient } from "@/sanity/writeClient";
+
+// Document types with a `likes` field. The increment target's `_type` is
+// checked against this list before any write happens.
+const LIKEABLE_TYPES = ["post", "feedItem", "recommendation", "musicRelease", "product"];
 
 // Increments a post or feedItem's `likes` field by 1 and returns the new total.
 // The id is only ever used as the target of that increment.
@@ -23,6 +28,11 @@ export async function POST(request: Request) {
       { error: "SANITY_API_WRITE_TOKEN is not configured on the server" },
       { status: 500 }
     );
+  }
+
+  const docType = await client.fetch<string | null>(`*[_id == $id][0]._type`, { id });
+  if (!docType || !LIKEABLE_TYPES.includes(docType)) {
+    return NextResponse.json({ error: "Document is not likeable" }, { status: 404 });
   }
 
   try {

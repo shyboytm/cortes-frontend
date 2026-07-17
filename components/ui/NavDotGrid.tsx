@@ -1,23 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Shader, DotGrid } from "shaders/react";
-
-// Tracks whether the OS is set to dark mode via the prefers-color-scheme
-// media query.
-function useIsDark() {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const update = () => setIsDark(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  return isDark;
-}
+import { useIsDark } from "@/lib/hooks/useIsDark";
 
 // Renders a faint dot-grid texture across the nav bar's background,
 // absolutely positioned so it stays confined to the nav pill.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSentinelVisible } from "@/lib/hooks/useSentinelVisible";
 import { cn } from "@/lib/utils";
 
 export interface StickySubNavProps {
@@ -16,16 +16,7 @@ export interface StickySubNavProps {
 // links) into a bar pinned under PrimaryNav, revealed via
 // IntersectionObserver once the original nav scrolls out of view.
 export default function StickySubNav({ sentinelId, ariaLabel, children }: StickySubNavProps) {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const sentinel = document.getElementById(sentinelId);
-    if (!sentinel) return;
-
-    const observer = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting));
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, [sentinelId]);
+  const visible = useSentinelVisible(sentinelId);
 
   return (
     <div

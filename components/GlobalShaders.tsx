@@ -1,21 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { Shader, ChromaFlow, ChromaticAberration, Ascii, CursorTrail } from 'shaders/react'
-
-function useIsDark() {
-  const [isDark, setIsDark] = useState(true) // Defaults to dark until the OS color-scheme listener attaches
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)')
-    const update = () => setIsDark(mq.matches)
-    update()
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
-  }, [])
-
-  return isDark
-}
+import { useIsDark } from '@/lib/hooks/useIsDark'
 
 // Site-wide ambient background: a ChromaFlow color wash nested inside
 // ChromaticAberration for an RGB-fringed liquid-color-split effect, plus an

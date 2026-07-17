@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, Doto, Inter } from "next/font/google";
+import { Suspense } from "react";
+import { IBM_Plex_Sans, Doto } from "next/font/google";
 import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
 import PrimaryFooter from '@/components/ui/PrimaryFooter'
@@ -7,16 +8,11 @@ import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
 
 import "./globals.scss";
 
-// Loads IBM Plex Sans with static weights 300/400/500/600.
+// Loads IBM Plex Sans with static weights 300/400/500/700.
 const ibmPlexSans = IBM_Plex_Sans({
   variable: "--font-ibm-plex-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
 });
 
 const doto = Doto({
@@ -37,12 +33,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${ibmPlexSans.variable} ${inter.variable} ${doto.variable} antialiased`}>
+    <html lang="en" className={`${ibmPlexSans.variable} ${doto.variable} antialiased`}>
       <body className="bg-white text-black dark:bg-black dark:text-white gradient-background">
         {/* The DOM the shader samples — all pages render inside this */}
         <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}
-          <PrimaryFooter />
+          {/* PrimaryFooter awaits a Last.fm fetch server-side; Suspense keeps
+              that from blocking the initial HTML flush for every route. */}
+          <Suspense fallback={<div className="h-[400px]" />}>
+            <PrimaryFooter />
+          </Suspense>
         </div>
 
         {/* One canvas, every page */}

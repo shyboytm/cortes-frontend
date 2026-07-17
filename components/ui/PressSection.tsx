@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Newspaper, Video, Mic, Award, ArrowUpRight, type LucideIcon } from "lucide-react";
 import { type SanityDocument } from "next-sanity";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 
 const PRESS_QUERY = `*[
   _type == "pressMention"
@@ -9,7 +9,7 @@ const PRESS_QUERY = `*[
   _id, title, outlet, type, url, date
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(900);
 
 const TYPE_ICONS: Record<string, LucideIcon> = {
   article: Newspaper,

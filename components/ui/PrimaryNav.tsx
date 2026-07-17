@@ -3,11 +3,10 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Instagram, Linkedin } from 'lucide-react'
-import { SiGithub, SiX, SiDribbble, SiYoutube, SiBuymeacoffee } from '@icons-pack/react-simple-icons'
 import { cn } from '@/lib/utils'
 import NavDotGrid from '@/components/ui/NavDotGrid'
 import NashvilleStatus from '@/components/ui/NashvilleStatus'
+import { SOCIAL_LINKS } from '@/lib/social-links'
 
 type NavLink = {
   label: string
@@ -24,17 +23,6 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Shop', href: '/shop' },
   { label: 'Writing', href: '/writing' },
   { label: 'Photos', href: 'https://glass.photo/cortes' },
-]
-
-// The social links shown in the menu, each paired with an icon.
-const SOCIAL_LINKS = [
-  { label: 'Instagram', href: 'https://www.instagram.com/shyboytm/', icon: Instagram },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/fromcortes/', icon: Linkedin },
-  { label: 'GitHub', href: 'https://github.com/shyboytm', icon: SiGithub },
-  { label: 'X', href: 'https://x.com/shyboytm', icon: SiX },
-  { label: 'Dribbble', href: 'https://dribbble.com/shyboytm', icon: SiDribbble },
-  { label: 'YouTube', href: 'https://www.youtube.com/cortesarts', icon: SiYoutube },
-  { label: 'Buy Me a Coffee', href: 'https://buymeacoffee.com/cortes', icon: SiBuymeacoffee },
 ]
 
 export default function PrimaryNav() {
@@ -123,7 +111,7 @@ export default function PrimaryNav() {
             >
               <span
                 className={cn(
-                  'h-0.5 w-5 rounded-full bg-current transition-transform duration-300 ease-in-out',
+                  'h-[2.25] w-5 rounded-full bg-current transition-transform duration-300 ease-in-out',
                   isOpen && 'translate-y-1 rotate-45'
                 )}
               />

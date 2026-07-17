@@ -1,28 +1,9 @@
-import { type SanityDocument } from "next-sanity";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
+import { WORK_QUERY } from "@/sanity/queries";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
-import WorkRow from "@/components/ui/WorkRow";
+import WorkGrid, { type WorkGridItem } from "@/components/ui/WorkGrid";
 import FeedGrid, { type FeedItem } from "@/components/ui/FeedGrid";
-
-const WORK_QUERY = `*[
-  _type == "work"
-  && defined(slug.current)
-]|order(order asc, _createdAt desc){
-  _id,
-  title,
-  dateRange,
-  slug,
-  mainImage{
-    alt,
-    asset
-  },
-  hoverImage{
-    alt,
-    asset
-  },
-  "hasCaseStudy": count(caseStudy) > 0
-}`;
 
 const FEED_QUERY = `*[
   _type == "feedItem"
@@ -45,11 +26,11 @@ const FEED_QUERY = `*[
 const WORK_SUBTITLE =
   "Some of my featured work from over the years including full-time jobs, personal projects, and freelance contracts.";
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(30);
 
 export default async function WorkIndexPage() {
   const [workItems, feedItems] = await Promise.all([
-    client.fetch<SanityDocument[]>(WORK_QUERY, {}, options),
+    client.fetch<WorkGridItem[]>(WORK_QUERY, {}, options),
     client.fetch<FeedItem[]>(FEED_QUERY, {}, options),
   ]);
 
@@ -60,19 +41,10 @@ export default async function WorkIndexPage() {
       <div className="px-6">
         <PageHeader title="Featured Projects" subtitle={WORK_SUBTITLE} />
 
-        <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-          {workItems.map((work) => (
-            <WorkRow
-              key={work._id}
-              title={work.title}
-              dateRange={work.dateRange}
-              mainImage={work.mainImage}
-              hoverImage={work.hoverImage}
-              slug={work.slug?.current}
-              hasCaseStudy={work.hasCaseStudy}
-            />
-          ))}
-        </div>
+        <WorkGrid
+          workItems={workItems}
+          className="mt-8 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
+        />
 
         {/* Feed: smaller, more informal work items shown underneath the featured projects. */}
         <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">

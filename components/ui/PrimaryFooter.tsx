@@ -1,21 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Linkedin } from "lucide-react";
-import {
-  SiLastdotfm,
-  SiBuymeacoffee,
-  SiGithub,
-  SiX,
-  SiDribbble,
-  SiYoutube,
-} from "@icons-pack/react-simple-icons";
+import { SiLastdotfm } from "@icons-pack/react-simple-icons";
 import { getNowPlaying } from "@/lib/lastfm";
 import FooterScene from "@/components/ui/FooterScene";
 import GlobeIcon from "@/components/ui/GlobeIcon";
 import WorkTogetherCTA from "@/components/ui/WorkTogetherCTA";
 import ViewportSize from "@/components/ui/ViewportSize";
-import NashvilleStatus from "@/components/ui/NashvilleStatus";
-import { buttonVariants } from "@/components/ui/button";
+import NashvilleStatus, {
+  LATITUDE,
+  LONGITUDE,
+  WEATHER_LABELS,
+  type Weather,
+} from "@/components/ui/NashvilleStatus";
+import { LinkPill } from "@/components/ui/LinkPill";
+import { SOCIAL_LINKS } from "@/lib/social-links";
 
 // Links to the site's real routes.
 const EXPLORE_LINKS = [
@@ -42,39 +40,45 @@ const ACCENT_GRAPHICS = [
   { file: "accent-graphic-09.svg", width: 111, height: 69 },
 ];
 
-const SOCIAL_LINKS = [
-  { label: "Instagram", href: "https://www.instagram.com/shyboytm/", icon: Instagram },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/fromcortes/", icon: Linkedin },
-  { label: "GitHub", href: "https://github.com/shyboytm", icon: SiGithub },
-  { label: "X", href: "https://x.com/shyboytm", icon: SiX },
-  { label: "Dribbble", href: "https://dribbble.com/shyboytm", icon: SiDribbble },
-  { label: "YouTube", href: "https://www.youtube.com/cortesarts", icon: SiYoutube },
-  { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/cortes", icon: SiBuymeacoffee },
-];
-
-// Shared pill badge link used for the Explore and Social link groups.
-function FooterPill({
-  href,
-  external,
-  children,
-}: {
-  href: string;
-  external?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className={buttonVariants({ variant: "secondary", size: "sm" })}
-    >
-      {children}
-    </Link>
-  );
+// Replicates NashvilleStatus's client-side Open-Meteo request so the
+// footer (an async Server Component) can seed it with a real initial
+// value instead of a blank/loading state on first render. PrimaryFooter
+// renders on every route, so this is cached for 10 minutes (matching
+// NashvilleStatus's own client-side refresh interval) — without it, Next
+// would re-hit Open-Meteo on every single page render and get rate-limited.
+async function fetchInitialWeather(): Promise<Weather | null> {
+  try {
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${LATITUDE}&longitude=${LONGITUDE}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=America%2FChicago`,
+      {
+        next: { revalidate: 600 },
+        // Node's fetch sends no User-Agent by default, unlike a browser —
+        // some APIs (Open-Meteo included) reject header-less server
+        // requests with a 403, so a normal browser-like one is set here.
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        },
+      }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const tempF = data?.current?.temperature_2m;
+    const code = data?.current?.weather_code;
+    if (typeof tempF === "number") {
+      return { tempF: Math.round(tempF), label: WEATHER_LABELS[code] ?? "Conditions unknown" };
+    }
+    return null;
+  } catch {
+    // A failed initial fetch just means NashvilleStatus starts blank and
+    // falls back to its own client-side fetch — not worth surfacing as an
+    // error.
+    return null;
+  }
 }
 
 export default async function PrimaryFooter() {
-  const track = await getNowPlaying();
+  const [track, initialWeather] = await Promise.all([getNowPlaying(), fetchInitialWeather()]);
 
   return (
     <footer className="relative overflow-hidden">
@@ -91,8 +95,8 @@ export default async function PrimaryFooter() {
           src="/gengar-pokemon-2d.gif"
           alt="Gengar"
           unoptimized
-          width={500}
-          height={500}
+          width={224}
+          height={224}
           className="h-full w-full select-none object-contain opacity-90"
         />
       </div>
@@ -122,7 +126,10 @@ export default async function PrimaryFooter() {
                   36.1627° N, 86.7816° W
                 </p>
               </div>
-              <NashvilleStatus className="dot-font font-doto text-xs tracking-widest text-black/80 uppercase dark:text-white/80" />
+              <NashvilleStatus
+                className="dot-font font-doto text-xs tracking-widest text-black/80 uppercase dark:text-white/80"
+                initialWeather={initialWeather ?? undefined}
+              />
             </div>
 
             {track && (
@@ -183,9 +190,9 @@ export default async function PrimaryFooter() {
               </p>
               <div className="flex flex-wrap gap-2">
                 {EXPLORE_LINKS.map((link) => (
-                  <FooterPill key={link.href} href={link.href}>
+                  <LinkPill key={link.href} href={link.href}>
                     {link.label}
-                  </FooterPill>
+                  </LinkPill>
                 ))}
               </div>
             </div>

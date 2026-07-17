@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 
 const CLIENTS_QUERY = `*[
@@ -10,7 +10,7 @@ const CLIENTS_QUERY = `*[
   logo{ alt, asset }
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(900);
 
 // Fetches its own client data, so it can be dropped into any page without
 // query wiring at the call site. Renders nothing (no heading, no border) if

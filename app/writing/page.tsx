@@ -1,9 +1,9 @@
 import { type SanityDocument } from "next-sanity";
-import { client } from "@/sanity/client";
+import { client, sanityFetchOptions } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import PostList, { type PostListItem } from "@/components/ui/PostList";
-import StickySubNav from "@/components/ui/StickySubNav";
+import JumpNav from "@/components/ui/JumpNav";
 import { buttonVariants } from "@/components/ui/button";
 
 const POSTS_QUERY = `*[
@@ -17,7 +17,7 @@ const POSTS_QUERY = `*[
   likes
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = sanityFetchOptions(30);
 
 // Groups posts by the year they were published, falling back to "Undated"
 // for posts with no publish date. Posts arrive sorted newest-first from the
@@ -62,11 +62,10 @@ export default async function WritingIndexPage() {
           <p className="text-black/60 dark:text-white/60">No posts yet — write one in Sanity.</p>
         ) : (
           <>
-            <nav
-              aria-label="Jump to year"
-              className="mb-12 flex flex-wrap gap-2 border-b border-black/10 pb-8 dark:border-white/10"
-            >
-              {years.map(([year]) => (
+            <JumpNav
+              ariaLabel="Jump to year"
+              sentinelId="writing-nav-sentinel"
+              items={years.map(([year]) => (
                 <a
                   key={year}
                   href={`#${year}`}
@@ -75,22 +74,7 @@ export default async function WritingIndexPage() {
                   {year === "undated" ? "Undated" : year}
                 </a>
               ))}
-            </nav>
-            {/* Marks where the in-page year nav ends — StickySubNav watches
-                this via IntersectionObserver and mirrors the same links
-                into a bar under PrimaryNav once it scrolls out of view. */}
-            <div id="writing-nav-sentinel" />
-            <StickySubNav sentinelId="writing-nav-sentinel" ariaLabel="Jump to year">
-              {years.map(([year]) => (
-                <a
-                  key={year}
-                  href={`#${year}`}
-                  className={buttonVariants({ variant: "secondary", size: "sm" })}
-                >
-                  {year === "undated" ? "Undated" : year}
-                </a>
-              ))}
-            </StickySubNav>
+            />
 
             {years.map(([year, yearPosts]) => (
               <div key={year} id={String(year)} className="mb-12 scroll-mt-32">

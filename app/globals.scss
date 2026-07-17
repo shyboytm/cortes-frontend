@@ -103,9 +103,9 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  // TRIAL SWAP: IBM Plex Sans first (was Ufficio), Inter if it ever fails
-  // to load, system font stack after that.
-  --font-sans: var(--font-ibm-plex-sans), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  // TRIAL SWAP: IBM Plex Sans first (was Ufficio), system font stack if it
+  // ever fails to load.
+  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
   // The old monospace typeface has been retired — font-mono now renders in Doto.
   --font-mono: var(--font-doto);
   --font-doto: var(--font-doto);
@@ -251,12 +251,12 @@ body {
 .gradient-background {
   background-image: linear-gradient(
     -45deg,
-    color-mix(in oklab, var(--gradient-1) 6%, transparent),
-    color-mix(in oklab, var(--gradient-2) 6%, transparent),
-    color-mix(in oklab, var(--gradient-3) 6%, transparent),
-    color-mix(in oklab, var(--gradient-4) 6%, transparent),
-    color-mix(in oklab, var(--gradient-5) 6%, transparent),
-    color-mix(in oklab, var(--gradient-6) 6%, transparent)
+    color-mix(in oklab, var(--gradient-1) 8%, transparent),
+    color-mix(in oklab, var(--gradient-2) 8%, transparent),
+    color-mix(in oklab, var(--gradient-3) 8%, transparent),
+    color-mix(in oklab, var(--gradient-4) 8%, transparent),
+    color-mix(in oklab, var(--gradient-5) 8%, transparent),
+    color-mix(in oklab, var(--gradient-6) 8%, transparent)
   );
   background-size: 400% 400%;
   animation: gradient-animation 16s ease-in-out infinite;

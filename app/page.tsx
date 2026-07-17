@@ -1,43 +1,16 @@
 import Link from "next/link";
-import {type SanityDocument} from "next-sanity";
-import {client} from "@/sanity/client";
+import { ArrowRight } from "lucide-react";
+import {client, sanityFetchOptions} from "@/sanity/client";
+import {WORK_QUERY} from "@/sanity/queries";
 import PrimaryNav from "@/components/ui/PrimaryNav";
-import WorkRow from "@/components/ui/WorkRow";
+import WorkGrid, {type WorkGridItem} from "@/components/ui/WorkGrid";
 import GlobeIcon from "@/components/ui/GlobeIcon";
-import ClientsSection from "@/components/ui/ClientsSection";
-import PressSection from "@/components/ui/PressSection";
+import { buttonVariants } from "@/components/ui/button";
 
-const POSTS_QUERY = `*[
-  _type == "post"
-  && defined(slug.current)
-]|order(publishedAt desc)[0...5]{_id, title, slug, publishedAt}`;
-
-const WORK_QUERY = `*[
-  _type == "work"
-  && defined(slug.current)
-]|order(order asc, _createdAt desc){
-  _id,
-  title,
-  dateRange,
-  slug,
-  mainImage{
-    alt,
-    asset
-  },
-  hoverImage{
-    alt,
-    asset
-  },
-  "hasCaseStudy": count(caseStudy) > 0
-}`;
-
-const options = {next: {revalidate: 30}};
+const options = sanityFetchOptions(30);
 
 export default async function IndexPage() {
-  const [posts, workItems] = await Promise.all([
-    client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options),
-    client.fetch<SanityDocument[]>(WORK_QUERY, {}, options),
-  ]);
+  const workItems = await client.fetch<WorkGridItem[]>(WORK_QUERY, {}, options);
 
   return (
     <div id="home" className="pt-32">
@@ -63,7 +36,7 @@ export default async function IndexPage() {
           </div>
         </div>
 
-        <div className="font-light my-6 space-y-4 sm:text-5xl text-3xl leading-[1.25] pb-6 dark:text-white/80 ">
+        <div className="font-light my-6 space-y-4 sm:text-5xl max-w-5xl text-3xl leading-[1.25] pb-6 dark:text-white/80 ">
           <h2 className="mb-12">I'm a software designer, musician, and photographer. Currently a Principal Designer at <Link className="link-underline opacity-50" href="https://www.aboon.com">Aboon</Link>, previously at <Link className="link-underline opacity-50" href="https://www.instagram.com">Instagram</Link>.</h2>
           <h2 className="mb-12">Outside of work, I build <Link className="link-underline opacity-50" href="https://apple.co/4gUqHBR">GamePal</Link>, restore and mod old consoles, take photos, and make music as <Link className="link-underline opacity-50" href="#">Cordio</Link> and <Link className="link-underline opacity-50" href="#">Horizon Radar</Link> which you can stream anywhere or support me on <Link className="link-underline opacity-50" href="https://cordio.bandcamp.com">Bandcamp</Link>.</h2>
         </div>
@@ -72,21 +45,20 @@ export default async function IndexPage() {
 
       <div
         id="work"
-        className="mt-14 grid grid-cols-1 gap-x-8 gap-y-12 border-t border-black/10 px-6 pt-8 pb-24 sm:grid-cols-2 lg:grid-cols-3 dark:border-white/10"
+        className="mt-14 border-t border-black/10 px-6 pt-8 pb-24 dark:border-white/10"
       >
-        <h2 className="mt-6 col-span-full text-2xl font-normal tracking-wide text-black dark:text-white">Featured Projects</h2>
+        <div className="mt-6 mb-6 flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-normal tracking-wide text-black dark:text-white">Featured Projects</h2>
+          <Link
+            href="/work"
+            className={buttonVariants({ variant: "secondary", size: "sm" })}
+          >
+            View All
+            <ArrowRight size={16} />
+          </Link>
+        </div>
 
-        {workItems.map((work) => (
-          <WorkRow
-            key={work._id}
-            title={work.title}
-            dateRange={work.dateRange}
-            mainImage={work.mainImage}
-            hoverImage={work.hoverImage}
-            slug={work.slug?.current}
-            hasCaseStudy={work.hasCaseStudy}
-          />
-        ))}
+        <WorkGrid workItems={workItems} />
       </div>
 
     </div>

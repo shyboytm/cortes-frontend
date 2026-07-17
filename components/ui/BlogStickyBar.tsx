@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import LikeButton from "@/components/ui/LikeButton";
+import { useSentinelVisible } from "@/lib/hooks/useSentinelVisible";
 import { cn } from "@/lib/utils";
 
 export interface BlogStickyBarProps {
@@ -17,16 +17,7 @@ export interface BlogStickyBarProps {
 // out of view. Visibility is driven by an IntersectionObserver watching a
 // sentinel element the post page renders right after its title.
 export default function BlogStickyBar({ id, title, likes }: BlogStickyBarProps) {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const sentinel = document.getElementById("post-title-sentinel");
-    if (!sentinel) return;
-
-    const observer = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting));
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, []);
+  const visible = useSentinelVisible("post-title-sentinel");
 
   return (
     <div
