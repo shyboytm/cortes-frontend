@@ -1,12 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import NavDotGrid from '@/components/ui/NavDotGrid'
 import NashvilleStatus from '@/components/ui/NashvilleStatus'
 import { SOCIAL_LINKS } from '@/lib/social-links'
+import { useLockBodyScroll } from '@/lib/hooks/useLockBodyScroll'
 
 type NavLink = {
   label: string
@@ -16,13 +18,13 @@ type NavLink = {
 // One flat, left-aligned column of every menu link, in display order.
 const NAV_LINKS: NavLink[] = [
   { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
   { label: 'Work', href: '/work' },
   { label: 'Music', href: '/music' },
   { label: 'Recs', href: '/recs' },
+  { label: 'Photos', href: '/photos' },
   { label: 'Shop', href: '/shop' },
   { label: 'Writing', href: '/writing' },
-  { label: 'Photos', href: '/photos' },
+  { label: 'About', href: '/about' },
 ]
 
 export default function PrimaryNav() {
@@ -38,12 +40,7 @@ export default function PrimaryNav() {
   }
 
   // Locks background scroll while the fullscreen menu is open.
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
+  useLockBodyScroll(isOpen)
 
   // Determines whether a nav link matches the current route. "/work" and
   // "/writing" match both their index page and any subpage under them
@@ -75,6 +72,13 @@ export default function PrimaryNav() {
     >
       <Link
         href={link.href}
+        // Closes the menu (and unlocks body scroll) synchronously on click,
+        // rather than waiting for the pathname-change check to catch up on
+        // the next render. Without this, the body was still scroll-locked
+        // at the moment Next.js tried to scroll the new page to the top, so
+        // that call was a no-op — the old page's scroll position just
+        // carried over once the lock released a beat later.
+        onClick={() => setIsOpen(false)}
         className={cn(linkClassName(link.href), 'inline-block w-fit transition-all duration-200 ease-out hover:translate-x-3')}
       >
         {link.label}
@@ -102,23 +106,32 @@ export default function PrimaryNav() {
 
           <div className="relative z-10 flex items-center gap-4">
 
+            {/* Real SVG icons rather than two hand-built <span> bars: the
+                bars looked fine as parallel lines but turned out fragile
+                across browsers/first paint (a hairline anti-aliasing
+                difference between a 2px flex-centered bar and its rotated
+                counterpart is enough to make one arm of the X look thicker,
+                or vanish entirely on first render before layout settles).
+                Vector icons don't have that problem. */}
             <button
               type="button"
               onClick={() => setIsOpen((open) => !open)}
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={isOpen}
-              className="flex h-6 w-6 shrink-0 cursor-pointer flex-col items-center justify-center gap-1.5 text-black/80 transition-colors hover:text-black dark:text-white/80 dark:hover:text-white"
+              className="relative flex h-6 w-5 shrink-0 cursor-pointer items-center justify-center text-black/80 transition-colors hover:text-black dark:text-white/80 dark:hover:text-white"
             >
-              <span
+              <Menu
+                size={24}
                 className={cn(
-                  'h-[2.25] w-5 rounded-full bg-current transition-transform duration-300 ease-in-out',
-                  isOpen && 'translate-y-1 rotate-45'
+                  'absolute transition-all duration-300 ease-in-out',
+                  isOpen ? 'scale-75 rotate-45 opacity-0' : 'scale-100 rotate-0 opacity-100'
                 )}
               />
-              <span
+              <X
+                size={24}
                 className={cn(
-                  'h-0.5 w-5 rounded-full bg-current transition-transform duration-300 ease-in-out',
-                  isOpen && '-translate-y-1 -rotate-45'
+                  'absolute transition-all duration-300 ease-in-out',
+                  isOpen ? 'scale-100 rotate-0 opacity-100' : 'scale-75 -rotate-45 opacity-0'
                 )}
               />
             </button>

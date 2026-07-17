@@ -111,6 +111,19 @@
   --font-doto: var(--font-doto);
 }
 
+html {
+  // Permanently reserves the scrollbar's gutter, whether or not it's
+  // currently rendered. Without this, toggling `overflow: hidden` on the
+  // body (done while the nav menu or photo lightbox is open, to lock
+  // background scroll) removes the scrollbar and widens the viewport by
+  // its width. useLockBodyScroll compensates the body's own content box
+  // with matching padding, which keeps normal in-flow content from
+  // shifting, but `position: fixed` elements (like PrimaryNav's bar) size
+  // themselves against the viewport directly and ignore the body's box
+  // model entirely, so they'd still shift without this.
+  scrollbar-gutter: stable;
+}
+
 body {
   @apply antialiased;
   // Subtle site-wide glow — text-shadow is inherited, and currentColor
@@ -190,7 +203,7 @@ body {
 // Two identical, adjacent (no gap) copies of the marquee content translate
 // left by exactly one copy's width, so the loop point is invisible.
 .marquee-track {
-  animation: marquee-scroll 22s linear infinite;
+  animation: marquee-scroll 45s linear infinite;
 }
 
 @keyframes marquee-scroll {
@@ -337,7 +350,7 @@ body {
 // mode so it reads against the dark one. Same prefers-color-scheme approach
 // as .dot-font's own dark-mode override above.
 .svg-shadow {
-  filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.5));
 }
 
 @media (prefers-color-scheme: dark) {

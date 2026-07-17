@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react"
 import Image from "next/image"
 import { Aperture, Calendar, ChevronLeft, ChevronRight, Camera as CameraIcon, MapPin, Settings2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLockBodyScroll } from "@/lib/hooks/useLockBodyScroll"
 import LikeButton from "@/components/ui/LikeButton"
 import type { PhotoItem } from "@/components/ui/PhotoGrid"
 
@@ -26,12 +27,7 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
   const photo = photos[selectedIndex]
 
   // Locks background scroll while the lightbox is open.
-  useEffect(() => {
-    document.body.style.overflow = "hidden"
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [])
+  useLockBodyScroll(true)
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -117,6 +113,13 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
           style={{ aspectRatio: photo.aspectRatio, width: `min(100%, calc(${photo.aspectRatio} * 80vh))` }}
         >
           <Image
+            // Keyed by photo id so switching photos remounts the <img>
+            // instead of just swapping its src. Without this, the browser
+            // keeps painting the previous photo's pixels until the new
+            // fullSrc finishes downloading (a native <img> behavior); the
+            // blur placeholder never gets a chance to show because Next
+            // only renders it for an image it hasn't already loaded once.
+            key={photo._id}
             src={photo.fullSrc}
             alt={photo.alt}
             fill
