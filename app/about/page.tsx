@@ -119,7 +119,7 @@ export default async function AboutPage() {
                     rel="noopener noreferrer"
                     className={buttonVariants({ variant: "secondary", size: "sm" })}
                   >
-                    <link.icon size={12} />
+                    <link.icon size={12} className="svg-shadow" />
                     {link.label}
                   </Link>
                 ))}

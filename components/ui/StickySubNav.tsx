@@ -41,7 +41,12 @@ export default function StickySubNav({ sentinelId, ariaLabel, children }: Sticky
         // hamburger everywhere (the hamburger's h-8 button, not a shorter
         // text-link row, is what determines the bar's height at every
         // width), so there's no more slimmer desktop variant to special-case.
-        "dot-font glass fixed inset-x-0 top-[92px] z-40 hidden px-3 transition-all duration-200 ease-out sm:block md:px-4 lg:px-6",
+        // No dot-font here — beyond the font-family the comment below
+        // already calls out, .dot-font's dark-mode text-shadow override is
+        // also inherited by every child, which was giving these mirrored
+        // pills a noticeably stronger glow than the exact same buttonVariants
+        // pills render with in their original, non-sticky spot on the page.
+        "glass fixed inset-x-0 top-[92px] z-40 hidden px-3 transition-all duration-200 ease-out sm:block md:px-4 lg:px-6",
         visible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"
       )}
     >

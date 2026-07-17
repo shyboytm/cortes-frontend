@@ -87,7 +87,7 @@ export default async function PrimaryFooter() {
       <FooterScene />
 
       <div className="group absolute right-8 bottom-2 z-11 h-20 w-20 translate-y-4 sm:h-28 sm:w-28">
-        <div className="pointer-events-none absolute bottom-full font-bold left-2 text-center mb-2 w-max max-w-[150px] -translate-x-1/2 rounded-md p-2 text-xs opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 dark:border-white/10 bg-violet-950 text-white">
+        <div className="pointer-events-none absolute bottom-full font-bold left-2 text-center mb-0 w-max max-w-[150px] -translate-x-1/2 rounded-md p-2 text-xs opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 dark:border-white/10 bg-violet-950 text-white">
           Fun fact, my favorite Pok&eacute;mon is Gengar!
         </div>
         <Image
@@ -211,7 +211,7 @@ export default async function PrimaryFooter() {
                     aria-label={link.label}
                     className="text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
                   >
-                    <link.icon size={18} />
+                    <link.icon size={18} className="svg-shadow" />
                   </Link>
                 ))}
               </div>

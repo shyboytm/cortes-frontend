@@ -47,11 +47,11 @@ export default async function PressSection() {
 
           const content = (
             <div className="flex items-center justify-between gap-4 py-4">
-              <div className="flex min-w-0 items-center gap-3">
+              <div className="flex min-w-0 items-center gap-4">
                 <Icon size={16} className="shrink-0 text-black/60 dark:text-white/60" />
-                <div className="min-w-0">
+                <div className="min-w-0 flex flex-col">
                   <p className="truncate text-base text-black dark:text-white">{mention.title}</p>
-                  <p className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
+                  <p className="dot-font mt-1 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                     {mention.outlet}
                     {formattedDate ? ` · ${formattedDate}` : ""}
                   </p>

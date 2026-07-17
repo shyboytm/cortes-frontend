@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
 import { Compass, BookOpen, Mic, Video, Newspaper, Smartphone, Music, Package, Globe, type LucideIcon } from "lucide-react";
+import { SiBuymeacoffee } from "@icons-pack/react-simple-icons";
 import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
@@ -7,6 +9,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import RecRow, { type Platform } from "@/components/ui/RecRow";
 import StickySubNav from "@/components/ui/StickySubNav";
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const RECS_QUERY = `*[
   _type == "recommendation"
@@ -146,11 +149,25 @@ export default async function RecsPage() {
               </div>
             ))}
 
-            <p className="m-auto py-6 text-xs leading-relaxed text-center text-black/60 dark:text-white/60 max-w-3xl">
-              Links here may contain affiliate links, which support me as a creator through
-              the projects and teaching mediums I work on. However, no one has paid me to put
-              any of these on this list and I genuinely recommend all of these.
-            </p>
+            <div className="mx-auto mt-6 max-w-3xl rounded-xl border border-black/10 bg-black/[0.03] p-6 text-center dark:border-white/10 dark:bg-white/[0.03]">
+              <p className="text-xs leading-relaxed text-black/60 dark:text-white/60">
+                Links here may contain affiliate links, which support me as a creator through
+                the projects and teaching mediums I work on. However, no one has paid me to put
+                any of these on this list and I genuinely recommend all of these.
+              </p>
+              <p className="mt-3 text-xs leading-relaxed text-black/60 dark:text-white/60">
+                If you find this site useful, consider supporting me directly instead.
+              </p>
+              <Link
+                href="https://buymeacoffee.com/cortes"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "mt-4")}
+              >
+                <SiBuymeacoffee size={16} />
+                Buy Me a Coffee
+              </Link>
+            </div>
           </>
         )}
       </div>

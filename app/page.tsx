@@ -63,7 +63,7 @@ export default async function IndexPage() {
           </div>
         </div>
 
-        <div className="font-light my-6 space-y-4 sm:text-5xl text-4xl leading-[1.25] pb-6 dark:text-white/80 ">
+        <div className="font-light my-6 space-y-4 sm:text-5xl text-3xl leading-[1.25] pb-6 dark:text-white/80 ">
           <h2 className="mb-12">I'm a software designer, musician, and photographer. Currently a Principal Designer at <Link className="link-underline opacity-50" href="https://www.aboon.com">Aboon</Link>, previously at <Link className="link-underline opacity-50" href="https://www.instagram.com">Instagram</Link>.</h2>
           <h2 className="mb-12">Outside of work, I build <Link className="link-underline opacity-50" href="https://apple.co/4gUqHBR">GamePal</Link>, restore and mod old consoles, take photos, and make music as <Link className="link-underline opacity-50" href="#">Cordio</Link> and <Link className="link-underline opacity-50" href="#">Horizon Radar</Link> which you can stream anywhere or support me on <Link className="link-underline opacity-50" href="https://cordio.bandcamp.com">Bandcamp</Link>.</h2>
         </div>

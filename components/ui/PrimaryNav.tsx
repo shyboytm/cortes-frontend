@@ -115,7 +115,7 @@ export default function PrimaryNav() {
       <div className="fixed inset-x-0 top-8 z-50 px-3 md:px-4 lg:px-6">
         <div
           id="primary-nav"
-          className="dot-font glass relative mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-lg border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 py-3 px-5 font-doto text-black dark:text-white"
+          className="glass relative mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-lg border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 py-3 px-5 font-doto text-black dark:text-white"
         >
 
           {/* NavDotGrid's shader canvas is absolute+inset-0 and would
@@ -151,7 +151,7 @@ export default function PrimaryNav() {
 
             <Link
               href="/"
-              className="text-sm tracking-widest uppercase whitespace-nowrap text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white"
+              className="font-sans text-xs font-medium tracking-widest uppercase whitespace-nowrap text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white"
             >
               Dennis Cortes
             </Link>
@@ -201,7 +201,7 @@ export default function PrimaryNav() {
                   aria-label={social.label}
                   className="text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
                 >
-                  <social.icon size={20} />
+                  <social.icon size={20} className="svg-shadow" />
                 </Link>
               ))}
             </div>

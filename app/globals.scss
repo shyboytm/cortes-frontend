@@ -251,12 +251,12 @@ body {
 .gradient-background {
   background-image: linear-gradient(
     -45deg,
-    color-mix(in oklab, var(--gradient-1) 8%, transparent),
-    color-mix(in oklab, var(--gradient-2) 8%, transparent),
-    color-mix(in oklab, var(--gradient-3) 8%, transparent),
-    color-mix(in oklab, var(--gradient-4) 8%, transparent),
-    color-mix(in oklab, var(--gradient-5) 8%, transparent),
-    color-mix(in oklab, var(--gradient-6) 8%, transparent)
+    color-mix(in oklab, var(--gradient-1) 6%, transparent),
+    color-mix(in oklab, var(--gradient-2) 6%, transparent),
+    color-mix(in oklab, var(--gradient-3) 6%, transparent),
+    color-mix(in oklab, var(--gradient-4) 6%, transparent),
+    color-mix(in oklab, var(--gradient-5) 6%, transparent),
+    color-mix(in oklab, var(--gradient-6) 6%, transparent)
   );
   background-size: 400% 400%;
   animation: gradient-animation 16s ease-in-out infinite;
@@ -290,13 +290,6 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  // Negative z-index paints this behind the button's own text (which is
-  // in-flow inline content) while still sitting in front of the button's
-  // own solid background-color (a box's own background always paints
-  // first, before any descendant regardless of z-index) — without this,
-  // the pseudo-element's default stacking order (a positioned descendant)
-  // painted *above* the text, which is what made "hi@cortes.us" vanish
-  // into the gradient on hover.
   z-index: -1;
   border-radius: inherit;
   background-image: linear-gradient(
@@ -339,10 +332,18 @@ body {
   }
 }
 
+// Theme-aware glow for bare SVG icons (social icons, GlobeIcon, etc.) — black
+// in light mode so it reads against the light page background, white in dark
+// mode so it reads against the dark one. Same prefers-color-scheme approach
+// as .dot-font's own dark-mode override above.
 .svg-shadow {
-  -webkit-filter: drop-shadow( 3px 3px 2px rgba(255, 255, 255, 0.7));
-  filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
-  /* Similar syntax to box-shadow */
+  filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.7));
+}
+
+@media (prefers-color-scheme: dark) {
+  .svg-shadow {
+    filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.7));
+  }
 }
 
 @keyframes gradient-animation {
