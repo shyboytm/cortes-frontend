@@ -16,8 +16,7 @@ import ClientsSection from "@/components/ui/ClientsSection";
 import PressSection from "@/components/ui/PressSection";
 import { buttonVariants } from "@/components/ui/button";
 
-// Slowly rotates through these on the portrait — see InteractivePortrait's
-// own cycle-interval logic for the timing.
+// Photos that rotate through the portrait; InteractivePortrait controls the cycle interval.
 const PORTRAIT_PHOTOS = [
   "/info-portrait-dennis-cortes.jpeg",
   "/info-portrait-dennis-cortes-2.jpeg",
@@ -26,8 +25,7 @@ const PORTRAIT_PHOTOS = [
   "/info-portrait-dennis-cortes-5.jpeg",
 ];
 
-// Same real social links used in the footer's "/ Social" group — kept in
-// sync by hand since this is the only other place they're needed.
+// Social links displayed in the Socials section.
 const CONTACT_LINKS = [
   { label: "Instagram", href: "https://www.instagram.com/shyboytm/", icon: Instagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/fromcortes/", icon: Linkedin },
@@ -52,11 +50,6 @@ const TESTIMONIALS_QUERY = `*[
 
 const options = { next: { revalidate: 30 } };
 
-// Replaces the old standalone /about page and the placeholder "Contact" nav
-// link — this single page now covers both "who is this" and "how do I get
-// in touch", plus the Services and testimonials Sanity content below.
-// (Previously named/routed as "Info" — renamed to "About" everywhere, this
-// route included.)
 export default async function AboutPage() {
   const [services, testimonials] = await Promise.all([
     client.fetch<SanityDocument[]>(SERVICES_QUERY, {}, options),
@@ -159,13 +152,11 @@ export default async function AboutPage() {
 
         {testimonials.length > 0 && (
           <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
-            <h2 className="mb-6 text-3xl font-normal tracking-wide text-black dark:text-white">What Others Say</h2>
+            <h2 className="mt-6 mb-12 col-span-full text-2xl font-normal tracking-wide text-black dark:text-white">What Others Say</h2>
             <div className="grid grid-cols-1 gap-x-10 gap-y-5 lg:grid-cols-2">
               {testimonials.map((testimonial) => (
                 <figure key={testimonial._id} className="flex w-full flex-col items-start gap-1.5">
-                  {/* "Received message" style — rounded on three corners with
-                      a squared-off bottom-left to read as a chat bubble tail,
-                      same hairline-on-black/5 treatment used elsewhere. */}
+                  {/* Rounded on three corners with a squared-off bottom-left corner, styled as a chat bubble tail. */}
                   <blockquote className="w-full rounded-2xl rounded-bl-xs bg-black/5 p-4 text-base leading-relaxed whitespace-pre-line text-black/80 dark:bg-white/10 dark:text-white/80">
                     {testimonial.quote}
                   </blockquote>

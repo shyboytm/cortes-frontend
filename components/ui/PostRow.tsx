@@ -12,11 +12,8 @@ export interface PostRowProps {
 }
 
 // One blog post's teaser row: title on the left, published date on the
-// right, the whole row a link to the post. A subtle background tint plus a
-// sliding arrow (same affordance WorkRow uses) signal it's clickable on
-// hover. Renders nothing if the post has no slug yet (shouldn't happen in
-// practice, but keeps this safe to reuse anywhere post data might be
-// incomplete).
+// right, the whole row linking to the post. A background tint and sliding
+// arrow appear on hover. Renders nothing if the post has no slug.
 export default function PostRow({ _id, title, slug, publishedAt, likes }: PostRowProps) {
   if (!slug) return null;
 

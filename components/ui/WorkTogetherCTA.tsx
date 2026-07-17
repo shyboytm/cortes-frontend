@@ -1,10 +1,8 @@
 import Link from "next/link";
 import NavDotGrid from "./NavDotGrid";
 
-// Repeated once here (rather than relying on the container to space things
-// out) so each of the two marquee copies below is fully self-contained,
-// including its own trailing separator — that's what lets them sit directly
-// adjacent with zero gap, which is what makes the -50% loop seamless.
+// The marquee phrase, including its own trailing separator, so the two
+// copies below can sit directly adjacent with zero gap for a seamless loop.
 const MARQUEE_PHRASE = Array.from({ length: 1 }, () => "Let's Chat // Contact // HMU // Emailsss // ").join(" / ");
 
 // Sits at the top of the footer on every page: a big, low-opacity phrase

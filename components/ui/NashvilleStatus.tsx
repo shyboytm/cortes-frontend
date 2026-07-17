@@ -7,16 +7,12 @@ export interface NashvilleStatusProps {
   className?: string;
 }
 
-// Same coordinates as the "36.1627° N, 86.7816° W" line above this —
-// Open-Meteo is free, keyless, and CORS-enabled, so this fetches straight
-// from the browser rather than needing a server route/API key like the
-// Last.fm widget does.
+// Coordinates for Nashville, TN, used to fetch weather from the
+// Open-Meteo API directly from the browser.
 const LATITUDE = 36.1627;
 const LONGITUDE = -86.7816;
 
-// WMO weather codes (the scheme Open-Meteo's `weather_code` uses) collapsed
-// down to short, human labels — only the buckets that are actually
-// reachable from its `current` response are listed.
+// Maps Open-Meteo's WMO weather codes to short, human-readable labels.
 const WEATHER_LABELS: Record<number, string> = {
   0: "Clear",
   1: "Mostly clear",
@@ -58,8 +54,7 @@ export default function NashvilleStatus({ className }: NashvilleStatusProps) {
   const [weather, setWeather] = useState<Weather | null>(null);
   const [weatherFailed, setWeatherFailed] = useState(false);
 
-  // Ticks the clock every second — cheap enough, and keeps the displayed
-  // time from ever drifting visibly stale.
+  // Updates the displayed time every second.
   useEffect(() => {
     const formatter = new Intl.DateTimeFormat("en-US", {
       timeZone: "America/Chicago",
@@ -74,8 +69,7 @@ export default function NashvilleStatus({ className }: NashvilleStatusProps) {
     return () => window.clearInterval(id);
   }, []);
 
-  // Weather doesn't need second-by-second freshness — fetch on mount and
-  // again every 10 minutes.
+  // Fetches weather on mount and refreshes it every 10 minutes.
   useEffect(() => {
     let cancelled = false;
 
@@ -109,7 +103,7 @@ export default function NashvilleStatus({ className }: NashvilleStatusProps) {
 
   return (
     <p className={cn(className)}>
-      {time} CT{weather && ` / ${weather.tempF}°F, ${weather.label}`}
+      Nashville, TN / {time} CT{weather && ` / ${weather.tempF}°F, ${weather.label}`}
       {weatherFailed && !weather && " — weather unavailable"}
     </p>
   );

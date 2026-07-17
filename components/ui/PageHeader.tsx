@@ -6,10 +6,8 @@ export interface PageHeaderProps {
   className?: string;
 }
 
-// The "name of the page + subtitle" block used at the top of every page
-// except the homepage (which has its own bespoke intro). Shared so the
-// Work/Feed/About indexes and the Work/Post detail pages all render the
-// exact same title treatment instead of each hand-rolling their own markup.
+// Page title and optional subtitle block rendered at the top of pages
+// other than the homepage.
 export default function PageHeader({ title, subtitle, className }: PageHeaderProps) {
   return (
     <div className={cn("mb-5 flex flex-col lg:mb-10 lg:flex-row items-start lg:justify-between gap-2 lg:gap-8", className)}>

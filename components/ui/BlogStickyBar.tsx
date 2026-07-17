@@ -13,13 +13,9 @@ export interface BlogStickyBarProps {
   likes?: number;
 }
 
-// Mirrors the Back/Like row that sits above the post title, but pinned just
-// under PrimaryNav once that title scrolls out of view — so both stay
-// reachable while reading a long post instead of scrolling away with the
-// rest of the header. Driven by an IntersectionObserver watching a sentinel
-// element the post page renders right after its title, rather than a
-// scroll-position threshold, so it stays correct regardless of how tall the
-// title/subtitle end up being.
+// Shows a Back/Like row pinned under PrimaryNav once the post title scrolls
+// out of view. Visibility is driven by an IntersectionObserver watching a
+// sentinel element the post page renders right after its title.
 export default function BlogStickyBar({ id, title, likes }: BlogStickyBarProps) {
   const [visible, setVisible] = useState(false);
 
@@ -36,12 +32,9 @@ export default function BlogStickyBar({ id, title, likes }: BlogStickyBarProps) 
     <div
       aria-hidden={!visible}
       className={cn(
-        // Hidden below sm — same reasoning as StickySubNav: not enough
-        // vertical room right under PrimaryNav on phones for a second bar.
-        //
-        // top-[92px] at every breakpoint, same as StickySubNav: PrimaryNav
-        // is now just Logo + hamburger everywhere, so its height no longer
-        // shrinks at lg the way it did when a text-link row lived there.
+        // Hidden below sm: not enough vertical room right under PrimaryNav
+        // on phones for a second bar. top-[92px] at every breakpoint since
+        // PrimaryNav's height is the same at every breakpoint.
         "dot-font glass fixed inset-x-0 top-[92px] z-40 hidden px-3 transition-all duration-200 ease-out sm:block md:px-4 lg:px-6",
         visible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"
       )}

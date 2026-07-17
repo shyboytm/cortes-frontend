@@ -19,11 +19,9 @@ const POSTS_QUERY = `*[
 
 const options = { next: { revalidate: 30 } };
 
-// Groups posts by the year they were published (falling back to
-// "Undated" for anything missing a publish date, which the schema
-// shouldn't allow in practice but keeps this safe either way). Posts
-// already arrive sorted newest-first from the query, so each year's bucket
-// stays in that same order — only the years themselves need sorting.
+// Groups posts by the year they were published, falling back to "Undated"
+// for posts with no publish date. Posts arrive sorted newest-first from the
+// query, so only the year buckets need sorting, not the posts within them.
 function groupPostsByYear(posts: PostListItem[]) {
   const buckets = new Map<number | "undated", PostListItem[]>();
 

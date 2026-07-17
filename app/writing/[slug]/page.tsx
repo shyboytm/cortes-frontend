@@ -77,9 +77,8 @@ function sizeWrapperClass(size: PostImageBlock["size"]) {
   }
 }
 
-// A single figure (image + optional numbered caption). `figureNumber` is
-// passed in rather than tracked via module state, since that state has to
-// be scoped to one render of one post, not shared across requests.
+// Renders a single figure: an image with an optional numbered caption.
+// `figureNumber` is passed in as a prop rather than tracked internally.
 function PostFigure({
   image,
   figureNumber,
@@ -120,10 +119,9 @@ function PostFigure({
   );
 }
 
-// Builds a fresh set of PortableText components per render — the figure
-// counter and "has the lede already been rendered" flag are closed-over
-// local state, so each request/post gets its own count starting at zero
-// instead of a module-level counter leaking across concurrent requests.
+// Creates a new set of PortableText components for each render. The figure
+// counter and "has the lede been rendered" flag are local state closed over
+// by the returned components.
 function createPostComponents(): PortableTextComponents {
   let figureNumber = 0;
   let hasRenderedLede = false;
@@ -230,9 +228,8 @@ export default async function WritingPostPage({
           subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
           className="mt-6"
         />
-        {/* Marks where the real title ends — BlogStickyBar watches this via
-            IntersectionObserver and reveals itself once it scrolls out of
-            view, rather than tracking a hardcoded scroll offset. */}
+        {/* Marks where the title ends; BlogStickyBar watches this via
+            IntersectionObserver and reveals itself once it scrolls out of view. */}
         <div id="post-title-sentinel" />
       </div>
 

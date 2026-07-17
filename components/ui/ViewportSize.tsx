@@ -7,10 +7,9 @@ export interface ViewportSizeProps {
   className?: string;
 }
 
-// Live window.innerWidth/innerHeight, updated on resize — null until the
-// first effect runs so the server-rendered markup (which has no viewport
-// to measure) and the first client render agree, avoiding a hydration
-// mismatch.
+// Live window.innerWidth/innerHeight, updated on resize. Starts as null
+// until the first effect runs, matching the server-rendered markup before
+// the client measures the viewport.
 export default function ViewportSize({ className }: ViewportSizeProps) {
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
 
@@ -25,7 +24,7 @@ export default function ViewportSize({ className }: ViewportSizeProps) {
 
   return (
     <p className={cn(className)}>
-      USR VWPRT | {size.width} &times; {size.height}
+      VWPRT.EXE | {size.width} &times; {size.height}
     </p>
   );
 }

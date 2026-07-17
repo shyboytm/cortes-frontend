@@ -17,9 +17,7 @@ import ViewportSize from "@/components/ui/ViewportSize";
 import NashvilleStatus from "@/components/ui/NashvilleStatus";
 import { buttonVariants } from "@/components/ui/button";
 
-// Real routes only — Photos doesn't have a page yet, so (unlike PrimaryNav)
-// it's left out here rather than linking to "#". Feed no longer has its
-// own route — that section now lives under Work.
+// Links to the site's real routes.
 const EXPLORE_LINKS = [
   { label: "Work", href: "/work" },
   { label: "Writing", href: "/writing" },
@@ -29,9 +27,8 @@ const EXPLORE_LINKS = [
   { label: "About", href: "/about" },
 ];
 
-// Decorative pixel-art marks dropped into /public — purely a visual
-// flourish along the very bottom of the footer, not linked to anything.
-// Real width/height (from each file's own viewBox) keeps aspect ratio
+// Decorative pixel-art marks rendered along the bottom of the footer.
+// Width/height match each file's own viewBox so the aspect ratio stays
 // correct when only a height is set via className.
 const ACCENT_GRAPHICS = [
   { file: "accent-graphic-01.svg", width: 496, height: 133 },
@@ -55,8 +52,7 @@ const SOCIAL_LINKS = [
   { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/cortes", icon: SiBuymeacoffee },
 ];
 
-// Shared pill badge for the Explore/Social groups — same hairline-border,
-// rounded-full language as buttonVariants' "secondary" look.
+// Shared pill badge link used for the Explore and Social link groups.
 function FooterPill({
   href,
   external,
@@ -83,7 +79,8 @@ export default async function PrimaryFooter() {
   return (
     <footer className="relative overflow-hidden">
       {/* Large, subtle 3D shape that leans toward the cursor and randomly
-          swaps its geometry — purely decorative, sits behind everything. */}
+          swaps its geometry, sitting behind everything as a decorative
+          background element. */}
       <FooterScene />
 
       <div className="group absolute right-8 bottom-2 z-11 h-20 w-20 translate-y-4 sm:h-28 sm:w-28">
@@ -135,10 +132,9 @@ export default async function PrimaryFooter() {
                 rel="noopener noreferrer"
                 className="group flex w-full items-center gap-4 rounded-md border border-black/10 py-4 pr-6 pl-4 transition-colors hover:border-black/20 sm:w-[380px] bg-transparent dark:hover:bg-white/5 hover:bg-black/10 dark:border-white/10 dark:hover:border-white/20"
               >
-                {/* Vinyl record: black disc + groove rings, always spinning
-                    (whether or not something's actively playing right now),
-                    with the album art (or a Last.fm fallback icon) as the
-                    center label. */}
+                {/* Vinyl record: black disc and groove rings, always
+                    spinning, with the album art (or a Last.fm fallback
+                    icon) as the center label. */}
                 <div className="relative h-16 w-16 shrink-0 rounded-full bg-black shadow-inner [animation:spin_7s_linear_infinite] motion-reduce:animate-none dark:bg-neutral-800">
                   <div
                     className="absolute inset-0 rounded-full"
@@ -198,9 +194,7 @@ export default async function PrimaryFooter() {
               <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                 / Social
               </p>
-              {/* Bare icons (no pill/label) — matches the treatment in the
-                  primary nav's fullscreen menu rather than the labeled
-                  pills used for Explore. */}
+              {/* Bare icons with no pill or label. */}
               <div className="flex flex-wrap gap-4">
                 {SOCIAL_LINKS.map((link) => (
                   <Link
@@ -220,14 +214,13 @@ export default async function PrimaryFooter() {
         </div>
 
         <div className="mt-16 flex flex-col items-start gap-2 border-t border-black/10 pt-6 text-xs tracking-widest text-black/60 uppercase dark:border-white/10 dark:text-white/60">
-          <p className="dot-font font-doto">© {new Date().getFullYear()} Dennis Cortes</p>
           <p className="dot-font font-doto leading-[1.5]">CRTS v1.0.0 | Next.js, TypeScript, Tailwind, Shaders, Vercel, Three.js</p>
           <ViewportSize className="dot-font font-doto" />
+          <p className="dot-font font-doto">© {new Date().getFullYear()} Dennis Cortes</p>
 
-          {/* Each mark is drawn as solid white in its source file — `invert`
-              flips that to black for light mode, and `dark:invert-0`
-              cancels the flip back to white once the page is dark, so the
-              same asset works against either background. */}
+          {/* Each mark is drawn as solid white in its source file; `invert`
+              renders it black in light mode, and `dark:invert-0` reverts it
+              to white in dark mode. */}
           <div aria-hidden className="mt-4 flex flex-wrap items-end gap-4 opacity-25 sm:gap-2">
             {ACCENT_GRAPHICS.map(({ file, width, height }) => (
               /* eslint-disable-next-line @next/next/no-img-element -- next/image's

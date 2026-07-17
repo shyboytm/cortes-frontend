@@ -36,9 +36,8 @@ const WORK_BY_SLUG_QUERY = `*[
 
 const options = { next: { revalidate: 30 } };
 
-// Renders the mixed text/image case-study body written in Sanity. Images
-// carry the same aspect-ratio projection trick WorkRow uses so they don't
-// jump around as they load.
+// Renders the mixed text/image case-study body from Sanity. Each image
+// carries a projected aspect ratio so it doesn't shift as it loads.
 const caseStudyComponents: PortableTextComponents = {
   marks: {
     link: ({ value, children }) => {

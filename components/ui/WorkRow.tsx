@@ -17,18 +17,14 @@ export interface WorkRowProps {
   // are handled explicitly below.
   mainImage?: WorkRowImage | null;
   hoverImage?: WorkRowImage | null;
-  // Slug + whether the case study field has any content — both come from
-  // the homepage's WORK_QUERY. The whole card only becomes a link when both
-  // are present, so projects without a written case study don't get a
-  // dead-end click target.
+  // Slug and whether the case study field has content, both from the
+  // homepage's WORK_QUERY. The card is a link only when both are present.
   slug?: string;
   hasCaseStudy?: boolean;
 }
 
-// Every homepage thumbnail is cropped to this exact box (via Sanity's
-// width+height image URL params, which crop around the image's hotspot) so
-// the grid reads as one consistent size/shape instead of a mix of whatever
-// aspect ratio each source photo happens to be.
+// Every homepage thumbnail is cropped to this exact box via Sanity's
+// width+height image URL params, which crop around the image's hotspot.
 const THUMB_WIDTH = 1200;
 const THUMB_HEIGHT = 900;
 

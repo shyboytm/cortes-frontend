@@ -31,16 +31,18 @@ export interface RecRowProps {
   hoverPreviewAlt?: string;
   // "cd" gives the thumbnail a jewel-case look (square corners, a glossy
   // diagonal sheen, and a spine line) — used for the Music section on Recs.
-  imageVariant?: "default" | "cd";
+  // "book" gives it a hardcover look (square corners, a shaded spine along
+  // the left edge, a sliver of page-edge along the right) — used for the
+  // Books section.
+  imageVariant?: "default" | "cd" | "book";
 }
 
 // One recommendation's row: optional thumbnail, name (external link), and
-// the "why I recommend this" blurb underneath — same hover-tint + sliding
-// arrow affordance PostRow uses, just pointed off-site instead of to a
-// detail page. Renders nothing without a link since there's nowhere for it
-// to go. `platform` renders a small tag (only apps set this). Hovering
-// reveals a preview of the destination page itself (a "Hover Preview" image
-// set on the recommendation in Sanity), framed like a little browser window.
+// a short blurb underneath, with a hover tint and sliding arrow. Renders
+// nothing without a link. `platform` renders a small tag (only apps set
+// this). Hovering reveals a preview of the destination page (a "Hover
+// Preview" image set on the recommendation in Sanity), framed like a
+// little browser window.
 export default function RecRow({
   id,
   title,
@@ -57,6 +59,7 @@ export default function RecRow({
   if (!url) return null;
 
   const isCd = imageVariant === "cd";
+  const isBook = imageVariant === "book";
 
   let hostname: string | null = null;
   try {
@@ -67,11 +70,8 @@ export default function RecRow({
 
   return (
     // The list this renders into is a single column on mobile and a
-    // 2-column grid at md+ (see RecsPage). A row-major 2-col grid means an
-    // item has nothing below it in its own column once you're within the
-    // last two DOM children — true regardless of whether the total count is
-    // even or odd — so the border only needs to disappear on the true last
-    // child below md, and on the last two children at md+.
+    // 2-column grid at md+. The bottom border is hidden on the last child
+    // below md, and on the last two children at md+.
     <li className="border-b border-black/10 last:border-b-0 md:[&:nth-last-child(2)]:border-b-0 dark:border-white/10">
       <Link
         href={url}
@@ -89,7 +89,7 @@ export default function RecRow({
               <span className="h-2 w-2 rounded-full bg-yellow-400/70" />
               <span className="h-2 w-2 rounded-full bg-green-400/70" />
               {hostname && (
-                <span className="ml-2 truncate rounded-sm bg-black/5 px-2 py-0.5 text-[10px] text-black/60 dark:bg-white/10 dark:text-white/60">
+                <span className="ml-2 font-doto truncate rounded-sm bg-black/5 px-2 py-0.5 text-xs font-bold text-black/60 dark:bg-white/10 dark:text-white/60">
                   {hostname}
                 </span>
               )}
@@ -103,21 +103,31 @@ export default function RecRow({
         {imageUrl && (
           <div
             className={cn(
-              "relative h-12 w-12 shrink-0 overflow-hidden border bg-black/5 dark:bg-white/5",
-              isCd
-                ? "rounded-[2px] border-black/15 shadow-[1px_2px_5px_rgba(0,0,0,0.35)] dark:border-white/20"
-                : "rounded-xl border-black/10 dark:border-white/10"
+              "relative shrink-0 overflow-hidden border bg-black/5 dark:bg-white/5",
+              isBook
+                ? // Taller-than-wide, like a book cover, with the left
+                  // (spine-side) corners rounded more than the right
+                  // (page-edge) corners, plus a drop shadow.
+                  "h-16 w-11 rounded-l-md rounded-r-xs border-black/10 shadow-md dark:border-white/10"
+                : isCd
+                  ? "h-12 w-12 rounded-[2px] border-black/15 shadow-[1px_2px_5px_rgba(0,0,0,0.35)] dark:border-white/20"
+                  : "h-12 w-12 rounded-xl border-black/10 dark:border-white/10"
             )}
           >
-            <Image src={imageUrl} alt={imageAlt || title} fill className="object-cover" sizes="48px" />
+            <Image
+              src={imageUrl}
+              alt={imageAlt || title}
+              fill
+              className="object-cover"
+              sizes={isBook ? "44px" : "48px"}
+            />
             {isCd && (
               <>
                 {/* Plastic-case gloss — a soft diagonal highlight across the
                     artwork, like light catching a jewel case's cover. */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-white/0 via-white/50 to-white/0 opacity-40 mix-blend-overlay" />
                 {/* Black plastic spine along the left edge, like a jewel
-                    case's hinge — solid in both themes since real CD spines
-                    are always opaque black regardless of the artwork. */}
+                    case's hinge, solid in both themes. */}
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-black" />
                 <div className="pointer-events-none absolute inset-y-0 left-[3px] w-px bg-white/10" />
               </>

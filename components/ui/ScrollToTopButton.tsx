@@ -4,14 +4,11 @@ import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Appears once the page has scrolled far enough that "back to top" is
-// actually useful, rather than cluttering the corner on short pages.
+// Scroll distance in px after which the button becomes visible.
 const SHOW_AFTER_PX = 480;
 
-// Global, site-wide — mounted once in the root layout (outside any one
-// page) so it shows up everywhere, same idea as GlobalShader/ScreenOverlay.
-// `fixed` positioning means it tracks the viewport regardless of how far
-// down any given page's content actually scrolls.
+// Mounted once in the root layout. Fixed positioning keeps it tracking the
+// viewport regardless of the current page's scroll position.
 export default function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
 

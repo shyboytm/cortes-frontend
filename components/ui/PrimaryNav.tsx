@@ -14,11 +14,7 @@ type NavLink = {
   href: string
 }
 
-// One flat, left-aligned column of every menu link, in display order —
-// previously split into an ungrouped "top" set plus categorized groups
-// (Work/Shop, Thoughts, Creative) each under their own "/ Label" header,
-// but that grouping/heading treatment was removed in favor of a single
-// uniform list.
+// One flat, left-aligned column of every menu link, in display order.
 const NAV_LINKS: NavLink[] = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
@@ -30,9 +26,7 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Photos', href: 'https://glass.photo/cortes' },
 ]
 
-// Same real socials as PrimaryFooter's SOCIAL_LINKS and the About page's
-// CONTACT_LINKS — kept in sync by hand since this is now a third place
-// that needs them.
+// The social links shown in the menu, each paired with an icon.
 const SOCIAL_LINKS = [
   { label: 'Instagram', href: 'https://www.instagram.com/shyboytm/', icon: Instagram },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/fromcortes/', icon: Linkedin },
@@ -47,9 +41,7 @@ export default function PrimaryNav() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   // Tracks the pathname the menu's open state was last computed for. When
-  // the route changes, close the menu right during render rather than in an
-  // effect — this is React's recommended way to "reset state when a prop
-  // changes" and avoids an extra render pass.
+  // the route changes, the menu closes during render.
   const [menuPathname, setMenuPathname] = useState(pathname)
 
   if (pathname !== menuPathname) {
@@ -65,16 +57,14 @@ export default function PrimaryNav() {
     }
   }, [isOpen])
 
-  // "/work" should read as active on both the index and its case-study
-  // pages ("/work/foo"), same idea for "/writing" — anything without a real
-  // route yet ("#") never counts as active. "/" only matches the exact
-  // homepage, otherwise every other page would also read "Home" as active.
+  // Determines whether a nav link matches the current route. "/work" and
+  // "/writing" match both their index page and any subpage under them
+  // (e.g. "/work/foo"). Links without a real route ("#") are never active.
+  // "/" matches only the exact homepage.
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : href !== '#' && (pathname === href || pathname.startsWith(`${href}/`))
 
-  // Active item gets the same red "accent" treatment the old dropdown-era
-  // nav used specifically for the Info/About link — now applied to
-  // whichever link matches the current route instead of one hardcoded item.
+  // Applies a red accent color to whichever link matches the current route.
   const linkClassName = (href: string) =>
     cn(
       'transition-colors',
@@ -83,10 +73,9 @@ export default function PrimaryNav() {
         : 'text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white'
     )
 
-  // Shared between every link in the flat column. Instead of a hover icon,
-  // the label itself shifts right on hover as the "go here" affordance.
-  // Each item also slides/fades in with a small per-index stagger when the
-  // menu opens, and fades back out together (no stagger) on close.
+  // Shared between every link in the flat column. The label shifts right
+  // on hover. Each item slides/fades in with a small per-index stagger when
+  // the menu opens, and fades back out together (no stagger) on close.
   const renderLink = (link: NavLink, index: number) => (
     <li
       key={link.href}
@@ -107,21 +96,18 @@ export default function PrimaryNav() {
 
   return (
     <header>
-      {/* Fixed positioning is relative to the viewport, so the nav needs its
-          own max-w-7xl wrapper to line up with the (now width-capped)
-          content underneath it on large screens. z-50 (higher than the
-          fullscreen menu below) keeps the hamburger/X clickable and visible
-          above it regardless of DOM order. */}
+      {/* Fixed positioning is relative to the viewport; this max-w-7xl
+          wrapper lines the nav up with the content underneath it on large
+          screens. z-50 keeps the hamburger/X above the fullscreen menu
+          regardless of DOM order. */}
       <div className="fixed inset-x-0 top-8 z-50 px-3 md:px-4 lg:px-6">
         <div
           id="primary-nav"
           className="glass relative mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-lg border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 py-3 px-5 font-doto text-black dark:text-white"
         >
 
-          {/* NavDotGrid's shader canvas is absolute+inset-0 and would
-              otherwise spill past the bar's rounded corners — clip it to
-              its own wrapper rather than putting overflow-hidden on the bar
-              itself. */}
+          {/* Clips NavDotGrid's absolute, inset-0 shader canvas to the bar's
+              rounded corners. */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-lg">
             <NavDotGrid />
           </div>
@@ -157,10 +143,6 @@ export default function PrimaryNav() {
             </Link>
           </div>
 
-          {/* Same live Nashville time + weather as the footer, now also
-              surfaced up here in the spot the hamburger used to occupy.
-              Hidden below sm — not enough room next to the logo/hamburger
-              on phones. */}
           <NashvilleStatus className="dot-font relative z-10 hidden font-doto text-xs tracking-widest text-black/80 uppercase sm:block dark:text-white/80" />
         </div>
       </div>
@@ -168,11 +150,6 @@ export default function PrimaryNav() {
       <div
         onClick={() => setIsOpen(false)}
         className={cn(
-          // z-45 — above StickySubNav/BlogStickyBar (both z-40, and later in
-          // the DOM than this header) so the fullscreen menu actually covers
-          // them instead of one of those bars showing through on top, but
-          // still under the z-50 hamburger/X bar above so it stays
-          // clickable.
           'dot-font glass fixed inset-0 z-[45] overflow-y-auto bg-white/80 font-doto text-black transition-all duration-300 ease-in-out dark:bg-black/80 dark:text-white',
           isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         )}

@@ -2,8 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// Same "match the OS preference" approach as GlobalShaders — no in-app theme
-// toggle exists, so light/dark is read straight off prefers-color-scheme.
+// Reads the OS light/dark preference directly via prefers-color-scheme.
 function useIsDark(onChange: (isDark: boolean) => void) {
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -18,10 +17,9 @@ const BASE_OPACITY = 0.08;
 const FADE_DURATION_MS = 1400;
 
 // A large, faint wireframe shape that drifts toward the cursor and
-// occasionally dissolves into a different geometry. Purely decorative — sits
-// behind the footer's real content (pointer-events-none, aria-hidden) and
-// dynamically imports three so nothing 3D-related ever touches the server
-// render.
+// occasionally dissolves into a different geometry. Purely decorative: sits
+// behind the footer's content (pointer-events-none, aria-hidden) and
+// dynamically imports three.js.
 export default function FooterScene() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isDarkRef = useRef(true);
@@ -53,9 +51,8 @@ export default function FooterScene() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
 
-      // Shape pool the background cycles through — kept to the plainest
-      // flat-faced solids (no torus/knot/many-faceted forms) so nothing ever
-      // reads as circular or busy.
+      // Shape pool the background cycles through: box, tetrahedron, and
+      // octahedron.
       const geometries = [
         () => new THREE.BoxGeometry(3.4, 3.4, 3.4),
         () => new THREE.TetrahedronGeometry(3.2, 0),
@@ -70,10 +67,9 @@ export default function FooterScene() {
           opacity: 0,
         });
 
-      // Two meshes so a shape change can cross-fade (dissolve) into the next
-      // one instead of popping/scaling — only one is ever the current
-      // "visible" mesh at rest, the other sits pre-loaded at opacity 0 with
-      // whichever shape comes next.
+      // Two meshes cross-fade (dissolve) between shapes: one is the visible
+      // mesh at rest, the other sits pre-loaded at opacity 0 with whichever
+      // shape comes next.
       const materials = [makeMaterial(), makeMaterial()];
       const meshes = [
         new THREE.Mesh(geometries[0](), materials[0]),
@@ -95,9 +91,8 @@ export default function FooterScene() {
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(container);
 
-      // Cursor position (normalized -1..1) tracked across the whole
-      // viewport, not just the footer, so the shape is already leaning the
-      // right way by the time the footer scrolls into view.
+      // Cursor position (normalized -1..1), tracked across the whole
+      // viewport.
       const pointer = { x: 0, y: 0 };
       const targetRotation = { x: 0, y: 0 };
       const rotationState = { x: 0, y: 0 };

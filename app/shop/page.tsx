@@ -13,11 +13,9 @@ const PRODUCTS_QUERY = `*[
 
 const options = { next: { revalidate: 30 } };
 
-// This site never runs its own checkout — every card here just links out
-// to wherever the product is actually sold (Gumroad, Etsy, a Notion
-// template marketplace, etc.), same idea as Recs linking off-site. Renders
-// an empty-state message rather than a stray section if nothing's been
-// added in Sanity yet.
+// Each product card links out to wherever it's sold (Gumroad, Etsy, a Notion
+// template marketplace, etc.) rather than handling checkout on this site.
+// Shows an empty-state message if no products exist in Sanity yet.
 export default async function ShopPage() {
   const products = await client.fetch<SanityDocument[]>(PRODUCTS_QUERY, {}, options);
 

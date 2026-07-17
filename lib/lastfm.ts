@@ -9,18 +9,15 @@ export type NowPlayingTrack = {
 
 const LASTFM_ENDPOINT = "https://ws.audioscrobbler.com/2.0/";
 
-// Last.fm's placeholder for "no artwork available" is a specific static
-// image it returns instead of omitting the field — filtering it out here so
-// the footer just shows the fallback icon instead of a gray square.
+// Hash of Last.fm's placeholder "no artwork available" image, returned in
+// place of an actual image URL when no artwork exists.
 const LASTFM_BLANK_ART_HASH = "2a96cbd8b46e442fc41c2b86b821562f";
 
 type LastfmImage = { size: string; "#text": string };
 
 // Reads the most recent (or currently playing) scrobble from Last.fm.
-// Requires LASTFM_API_KEY + LASTFM_USERNAME env vars — returns null if
-// either is missing, the account has no scrobbles yet, or the request fails
-// for any reason, so the footer can just quietly hide the widget instead of
-// breaking the whole page.
+// Requires LASTFM_API_KEY and LASTFM_USERNAME env vars, and returns null if
+// either is missing, the account has no scrobbles yet, or the request fails.
 export async function getNowPlaying(): Promise<NowPlayingTrack | null> {
   const apiKey = process.env.LASTFM_API_KEY;
   const username = process.env.LASTFM_USERNAME;
@@ -38,7 +35,7 @@ export async function getNowPlaying(): Promise<NowPlayingTrack | null> {
 
   try {
     const res = await fetch(url.toString(), {
-      // Keeps the footer fresh without hammering Last.fm on every request.
+      // Caches the response and revalidates it every 60 seconds.
       next: { revalidate: 60 },
     });
 

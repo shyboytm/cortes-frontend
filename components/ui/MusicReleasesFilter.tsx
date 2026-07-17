@@ -28,8 +28,7 @@ const RELEASE_TYPE_LABELS: Record<string, string> = {
   single: "Single",
 };
 
-// Shared pill button used for both filter rows — active state mirrors the
-// site's other pill toggles (Footer/About socials, sequencer pads).
+// Shared pill button used in both filter rows.
 function FilterPill({
   active,
   onClick,
@@ -55,10 +54,9 @@ function FilterPill({
   );
 }
 
-// Client-side filter over the full release list (fetched server-side and
-// passed in as a prop) — filters by artist and release type, both derived
-// from whatever values actually show up in the data rather than a hardcoded
-// list, so a new artist/type in Sanity just works with no code change.
+// Filters the release list (received as a prop) by artist and release
+// type. The available artist and type options are derived from the data
+// itself rather than a hardcoded list.
 export default function MusicReleasesFilter({ releases }: { releases: ReleaseFilterItem[] }) {
   const [artist, setArtist] = useState<string | null>(null);
   const [releaseType, setReleaseType] = useState<string | null>(null);
@@ -121,11 +119,10 @@ export default function MusicReleasesFilter({ releases }: { releases: ReleaseFil
         )}
       </div>
 
-      {/* Marks where the in-page filter row ends — StickySubNav watches
-          this via IntersectionObserver and mirrors the same filter pills
-          into a bar under PrimaryNav once it scrolls out of view. These are
-          the *same* buttons (same onClick/state), just rendered a second
-          time in a different spot — clicking either copy filters the grid. */}
+      {/* Sentinel marking where the in-page filter row ends. StickySubNav
+          observes it and renders the same filter pills in a bar under
+          PrimaryNav once it scrolls out of view; both sets of buttons share
+          the same state, so clicking either filters the grid. */}
       <div id="releases-filter-sentinel" />
       <StickySubNav sentinelId="releases-filter-sentinel" ariaLabel="Filter releases">
         {artists.length > 1 && (

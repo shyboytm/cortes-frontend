@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Shader, ChromaFlow, ChromaticAberration, Ascii, CursorTrail } from 'shaders/react'
 
 function useIsDark() {
-  const [isDark, setIsDark] = useState(true) // match the default look before the listener attaches
+  const [isDark, setIsDark] = useState(true) // Defaults to dark until the OS color-scheme listener attaches
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
@@ -17,19 +17,12 @@ function useIsDark() {
   return isDark
 }
 
-// Site-wide ambient background: the original ChromaFlow wash, nested inside
-// ChromaticAberration for a bit of RGB-fringed liquid-color-split character
-// (per the shaders.com docs pattern of <Effect><Generator /></Effect>),
-// plus an Ascii-ified cursor trail layered on top so ASCII characters
-// follow the cursor around the site. Colors for both switch with the
-// user's OS-level light/dark preference so neither washes out against
-// the page background.
-//
-// `fixed` (not `absolute`) is what makes this cover the whole page: with
-// no positioned ancestor, `absolute inset-0` sizes against the initial
-// containing block, which is exactly one viewport tall — so on any page
-// taller than the screen, the effect stopped at the fold. `fixed` pins it
-// to the viewport itself, which always covers what's currently visible.
+// Site-wide ambient background: a ChromaFlow color wash nested inside
+// ChromaticAberration for an RGB-fringed liquid-color-split effect, plus an
+// Ascii-ified cursor trail layered on top so ASCII characters follow the
+// cursor around the site. Colors for both switch with the user's OS-level
+// light/dark preference. Fixed positioning pins the effect to the viewport
+// so it covers whatever is currently visible on any page length.
 export default function GlobalShader() {
   const isDark = useIsDark()
 

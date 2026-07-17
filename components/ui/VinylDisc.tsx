@@ -7,18 +7,14 @@ import { cn } from "@/lib/utils";
 export interface VinylDiscProps {
   imageUrl?: string;
   imageAlt?: string;
-  // Diameter in px — the label hole and center spindle scale with it so the
-  // same proportions hold whether this is a small footer badge or a big
-  // decorative centerpiece.
+  // Diameter in px. The label hole and center spindle scale proportionally
+  // with it.
   size?: number;
   className?: string;
 }
 
 // A spinning record: black disc + groove rings + album art as the center
-// label, falling back to a plain disc icon if there's no art. Same visual
-// language as the footer's "now playing" vinyl, just pulled out into its
-// own component since this one isn't tied to Last.fm — it's handed whatever
-// artwork the caller wants to show off instead.
+// label, falling back to a plain disc icon if no art is given.
 export default function VinylDisc({ imageUrl, imageAlt, size = 64, className }: VinylDiscProps) {
   const labelSize = Math.round(size * 0.4375);
 

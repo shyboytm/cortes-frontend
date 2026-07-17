@@ -19,14 +19,11 @@ export interface ProductCardProps {
   } | null;
 }
 
-// One product's card on the Shop page — a 4:3 landscape image (matching
-// the wide product-shot mockups used, e.g. side-by-side phone
-// screenshots), title, and a price/storefront meta line. Same visual
-// language as MusicReleaseCard/FeedGrid: hover arrow badge in the corner,
-// plus a like button (always visible below lg, hover-revealed at lg, same
-// as Feed). This site never runs its own checkout: the whole card just
-// links out to wherever the product is actually sold (Gumroad, Etsy, a
-// Notion template marketplace, etc.).
+// A product card for the Shop page: a 4:3 landscape image, title, and a
+// price/storefront meta line, with a hover arrow badge in the corner and a
+// like button (always visible below lg, hover-revealed at lg). Links out
+// to wherever the product is sold (Gumroad, Etsy, a Notion template
+// marketplace, etc.) rather than handling checkout on this site.
 export default function ProductCard({
   id,
   title,

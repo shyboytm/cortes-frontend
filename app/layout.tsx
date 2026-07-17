@@ -7,11 +7,7 @@ import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
 
 import "./globals.scss";
 
-// TRIAL SWAP — Ufficio (local font files) swapped for IBM Plex Sans, as a
-// preview of the change. Same static weights Ufficio used (300/400/500/600),
-// just Google-hosted instead of local .ttf files. Revert by restoring the
-// old `localFont` Ufficio block + the previous variable name in
-// globals.scss's --font-sans line.
+// Loads IBM Plex Sans with static weights 300/400/500/600.
 const ibmPlexSans = IBM_Plex_Sans({
   variable: "--font-ibm-plex-sans",
   subsets: ["latin"],

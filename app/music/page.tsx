@@ -38,10 +38,8 @@ const LATEST_RELEASES_QUERY = `*[
   artwork{ alt, asset }
 }`;
 
-// Just enough fields to draw the vinyl's label — a separate, unfiltered
-// query (unlike LATEST_RELEASES_QUERY above, singles count here too) since
-// this is picking a random release to show off, not curating a "best of"
-// grid.
+// Fetches the fields needed to draw the vinyl label. Includes every release
+// with artwork, singles included, since one is picked at random to display.
 const RELEASE_ARTWORK_QUERY = `*[
   _type == "musicRelease" && defined(artwork.asset)
 ]{
@@ -51,11 +49,8 @@ const RELEASE_ARTWORK_QUERY = `*[
 
 const options = { next: { revalidate: 30 } };
 
-// Kept outside the component — the impure Math.random() call needs to live
-// somewhere that isn't a component/hook body (React's rules of components
-// require render to be pure), and this is a plain, non-component function.
-// A fresh pick on every request/page load is the intent here, not a stable
-// "featured release", so that non-determinism is fine.
+// Returns a random item from the list, or null if the list is empty. Picks
+// a fresh item on every request/page load rather than a fixed release.
 function pickRandomRelease<T>(list: T[]): T | null {
   if (list.length === 0) return null;
   return list[Math.floor(Math.random() * list.length)];

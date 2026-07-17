@@ -4,11 +4,9 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// Kept close to the site's established "pill" language (see the RemixSequencer
-// Shuffle/Clear buttons and the WorkRow view-more badge): rounded-full,
-// hairline black/10 - white/10 borders, uppercase tracking-widest labels, and
-// hover states that just shift text/border opacity rather than swapping in a
-// colored fill — no shadows, no shadcn default blue/gray tokens.
+// Base button styling: a rounded-full pill shape with hairline black/10 -
+// white/10 borders, uppercase tracking-widest labels, and hover states that
+// shift text/border opacity without a colored fill or shadow.
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-xs font-medium tracking-widest uppercase transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/30 dark:focus-visible:ring-white/30 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {

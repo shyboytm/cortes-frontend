@@ -12,9 +12,7 @@ export interface PostListProps {
   posts: PostListItem[];
 }
 
-// The blog's list view — a simple divided list of PostRows, kept as its own
-// component (separate from the Feed grid) so the two content types don't
-// share any rendering logic even though they both used to live at "/posts".
+// Renders the blog's list view as a divided list of PostRows.
 export default function PostList({ posts }: PostListProps) {
   if (posts.length === 0) {
     return <p className="text-black/60 dark:text-white/60">No posts yet — write one in Sanity.</p>;

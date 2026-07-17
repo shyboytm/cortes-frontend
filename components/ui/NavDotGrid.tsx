@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import { Shader, DotGrid } from "shaders/react";
 
-// Same "match the OS preference" approach as GlobalShaders/ScreenOverlay —
-// no in-app theme toggle exists, so light/dark is read straight off
-// prefers-color-scheme.
+// Tracks whether the OS is set to dark mode via the prefers-color-scheme
+// media query.
 function useIsDark() {
   const [isDark, setIsDark] = useState(true);
 
@@ -20,28 +19,19 @@ function useIsDark() {
   return isDark;
 }
 
-// A faint dot-grid texture across the nav bar's own background — same
-// shaders/react library GlobalShaders/ScreenOverlay use site-wide, scoped
-// with `absolute` (not `fixed`) so it stays confined to the nav pill
-// instead of covering the whole viewport. Formerly lived in the footer
-// (FooterDotGrid) — moved here instead.
+// Renders a faint dot-grid texture across the nav bar's background,
+// absolutely positioned so it stays confined to the nav pill.
 export default function NavDotGrid() {
   const isDark = useIsDark();
 
   return (
-    // Note: DotGrid's fragment shader only reads the RGB channels of
-    // `color` and computes its own alpha from the dot mask/twinkle — any
-    // alpha baked into the color string itself (e.g. an rgba() value) gets
-    // silently discarded. The `opacity` prop is the one that's actually
-    // threaded through to the rendered output, so that's what controls the
-    // visible opacity here rather than the color value.
+    // DotGrid's shader reads only the RGB channels of `color`; the visible
+    // opacity is controlled by the `opacity` prop rather than any alpha
+    // channel in the color string.
     <Shader className="pointer-events-none absolute opacity-10 inset-0 z-0">
-      {/* DotGrid's cell size is always canvas-height ÷ density (density
-          maps to the un-stretched axis), never the width — the nav bar is
-          only ~60px tall but very wide, so density=20 was producing ~3px
-          cells with sub-pixel dots that never showed up. A much smaller
-          density (bigger cells) plus a larger dotSize is what actually
-          makes the dots visible at this bar's height. */}
+      {/* DotGrid's cell size is canvas-height ÷ density. A low density and
+          larger dotSize produce cells and dots that are visible at the nav
+          bar's ~60px height. */}
       <DotGrid
         color={isDark ? "#ffffff" : "#000000"}
         density={8}

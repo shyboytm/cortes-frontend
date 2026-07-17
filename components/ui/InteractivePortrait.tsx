@@ -4,8 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-// "dither" is listed first so it's the default (modeIndex starts at 0) —
-// the rest of the cycle order just follows from there.
+// Mode cycle order; modeIndex starts at 0, so "dither" is the default mode.
 const MODES = ["dither", "ascii", "halftone", "hue", "normal"] as const;
 type Mode = (typeof MODES)[number];
 
@@ -19,9 +18,9 @@ const MODE_LABELS: Record<Mode, string> = {
 
 // Light -> dark character ramp, sampled by luminance per cell.
 const ASCII_RAMP = " .:-=+*#%@";
-const ASCII_CELL = 15; // px font size — bigger, chunkier characters
+const ASCII_CELL = 15; // px font size for ASCII characters
 
-const DITHER_CELL = 5; // px per dither block, so dots read as visible blocks
+const DITHER_CELL = 5; // px per dither block
 const HALFTONE_CELL = 16; // px per halftone grid cell
 
 // Classic 4x4 Bayer ordered-dithering matrix (values 0-15, normalized below).
@@ -32,12 +31,8 @@ const BAYER_4X4 = [
   [15, 7, 13, 5],
 ];
 
-// The canvas buffer is pre-cropped to this exact aspect ratio at load time
-// (matching object-top's "keep the top, crop the bottom/sides" behavior) —
-// must match the wrapping box's aspect-[3/4] class below. Baking the crop
-// into the buffer itself (rather than relying on CSS object-fit on the
-// canvas) keeps mouse-to-pixel math for the liquify effect a plain linear
-// scale, with no separate crop-offset math to get wrong.
+// The canvas buffer is pre-cropped to this exact aspect ratio at load time,
+// top-anchored, matching the wrapping box's aspect-[3/4] class below.
 const TARGET_ASPECT = 3 / 4;
 const BUFFER_WIDTH = 640;
 const BUFFER_HEIGHT = Math.round(BUFFER_WIDTH / TARGET_ASPECT);
@@ -49,7 +44,7 @@ const LIQUIFY_STRENGTH = 4.5;
 
 // When more than one photo is passed in, how long each one stays up before
 // the next one starts dissolving in, and how long that dissolve itself
-// takes — slow and deliberate rather than an instant swap.
+// takes.
 const CYCLE_INTERVAL_MS = 6000;
 const DISSOLVE_MS = 1200;
 
@@ -75,7 +70,7 @@ function cropImageToBuffer(
   let cropW = srcW;
   let cropH = srcH;
   let cropX = 0;
-  const cropY = 0; // top-anchored — crop off the bottom/sides, never the top
+  const cropY = 0; // top-anchored: crops off the bottom/sides, never the top
 
   if (srcAspect > TARGET_ASPECT) {
     cropW = srcH * TARGET_ASPECT;
@@ -101,22 +96,21 @@ function cropImageToBuffer(
 export default function InteractivePortrait({ src, alt, className }: InteractivePortraitProps) {
   const srcs = useMemo(() => (Array.isArray(src) ? src : [src]), [src]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // Sits directly on top of the main canvas at the exact same position —
-  // used only as a dissolve layer: preloaded with the next photo (rendered
+  // Sits directly on top of the main canvas at the exact same position.
+  // Used only as a dissolve layer: preloaded with the next photo (rendered
   // in whatever mode is currently active) at opacity 0, then faded to
   // opacity 1 on top of the still-visible current photo. Once the fade
   // finishes, the main canvas is updated to match and this layer resets
-  // back to hidden, ready for the next cycle.
+  // back to hidden.
   const transitionCanvasRef = useRef<HTMLCanvasElement>(null);
   const originalRef = useRef<ImageData | null>(null);
   const workingRef = useRef<ImageData | null>(null);
   const rafRef = useRef<number | null>(null);
   const dissolveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isDissolvingRef = useRef(false);
-  // The src the main canvas's buffers currently reflect — lets the load
-  // effect below tell "just finished dissolving into this photo, buffers
-  // are already correct" apart from "this is a brand new src, decode it",
-  // so a dissolve's commit doesn't trigger a redundant re-decode.
+  // The src the main canvas's buffers currently reflect. Distinguishes a
+  // src that was just committed by a dissolve (buffers already correct)
+  // from a brand-new src that still needs decoding.
   const lastCommittedSrcRef = useRef<string | null>(null);
   const pointerRef = useRef<{ x: number; y: number } | null>(null);
   const [modeIndex, setModeIndex] = useState(0);
@@ -133,9 +127,9 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
     srcIndexRef.current = srcIndex;
   }, [srcIndex]);
 
-  // Renders `source` pixel data onto whichever canvas is passed in — shared
+  // Renders `source` pixel data onto whichever canvas is passed in. Shared
   // by the mode-switch effect, every liquify frame, and the dissolve
-  // preload/commit steps, so all of them always draw the exact same way.
+  // preload/commit steps.
   const renderMode = useCallback((modeToRender: Mode, source: ImageData, canvas: HTMLCanvasElement) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -178,9 +172,9 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
       ctx.font = `${ASCII_CELL}px monospace`;
       ctx.textBaseline = "top";
       ctx.fillStyle = "#fff";
-      // Monospace glyphs don't necessarily advance exactly ASCII_CELL px —
-      // measuring the real advance width keeps each sampled row's character
-      // count matching the canvas width instead of falling short of it.
+      // Monospace glyphs don't necessarily advance exactly ASCII_CELL px;
+      // the real advance width is measured to match each row's character
+      // count to the canvas width.
       const charWidth = ctx.measureText("0").width || ASCII_CELL * 0.6;
       for (let y = 0; y < height; y += ASCII_CELL) {
         let row = "";
@@ -219,15 +213,14 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
     }
   }, []);
 
-  // Load the source image once, baking in a crop to TARGET_ASPECT so the
-  // buffer's own aspect ratio always matches the box it's displayed in. If
-  // a dissolve already committed this exact src (see startDissolve below),
-  // the buffers are already correct — this just confirms `ready` and skips
-  // re-decoding the same photo a second time.
+  // Loads the source image once, baking in a crop to TARGET_ASPECT so the
+  // buffer's aspect ratio matches the box it's displayed in. If a dissolve
+  // already committed this exact src (see startDissolve below), the buffers
+  // are already correct, so this just confirms `ready` without re-decoding.
   useEffect(() => {
     // A dissolve (see startDissolve below) already committed this exact
-    // photo's buffers directly — `ready` is already true from the initial
-    // load and is never reset during cycling, so there's nothing to do.
+    // photo's buffers directly, and `ready` is already true from the
+    // initial load and never reset during cycling, so there's nothing to do.
     if (lastCommittedSrcRef.current === currentSrc && originalRef.current) {
       return;
     }
@@ -271,7 +264,7 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
   // renders it in whatever mode is currently active, then fades that layer
   // from 0 to 1 opacity on top of the still-visible current photo. Once the
   // fade finishes, the main canvas is updated to match and the transition
-  // layer snaps back to hidden (no transition) so it's ready for next time.
+  // layer snaps back to hidden (no transition).
   const startDissolve = useCallback(() => {
     if (srcs.length <= 1 || isDissolvingRef.current) return;
     const transitionCanvas = transitionCanvasRef.current;
@@ -289,13 +282,11 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
       const nextOriginal = cropImageToBuffer(img, transitionCanvas, tctx);
       renderMode(modeRef.current, nextOriginal, transitionCanvas);
 
-      // Make sure the layer starts from a clean opacity:0 with no
-      // transition, then kick off the real fade on the next tick so the
-      // browser registers 0 as the starting point before animating to 1.
+      // Sets the layer to a clean opacity:0 with no transition, then starts
+      // the real fade on the next tick.
       transitionCanvas.style.transition = "none";
       transitionCanvas.style.opacity = "0";
-      // Force a reflow so the two style writes above and below don't get
-      // batched into a single, transition-less jump straight to opacity 1.
+      // Forces a layout reflow between the style writes above and below.
       void transitionCanvas.offsetHeight;
       transitionCanvas.style.transition = `opacity ${DISSOLVE_MS}ms ease-in-out`;
       transitionCanvas.style.opacity = "1";
@@ -334,8 +325,7 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
   }, [srcs.length, startDissolve]);
 
   // Swirls the working buffer around (cx, cy), starting fresh from the
-  // pristine original each time — so the distortion follows the cursor
-  // live rather than permanently deforming the image.
+  // pristine original each time.
   const applySwirl = useCallback((cx: number, cy: number) => {
     const original = originalRef.current;
     const working = workingRef.current;
@@ -449,10 +439,8 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
             mode === "hue" && "animate-hue-cycle"
           )}
         />
-        {/* Dissolve layer — opacity is driven imperatively in startDissolve
-            above rather than via React state, since it needs a "no
-            transition" instant reset between cycles that a className swap
-            can't express cleanly. */}
+        {/* Dissolve layer; opacity is driven imperatively in startDissolve
+            above rather than via React state. */}
         <canvas
           ref={transitionCanvasRef}
           aria-hidden

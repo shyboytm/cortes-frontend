@@ -7,32 +7,27 @@ import { cn } from "@/lib/utils";
 export interface LikeButtonProps {
   id: string;
   initialLikes: number;
-  // "inline" — a standalone bordered pill, used on the blog post detail
-  // page. "corner" — a badge pinned to the top-right of a card, used on
-  // Feed grid items (always visible on touch/tablet, hover-revealed on
-  // desktop). "minimal" — a bare heart + count with no chrome, used inline
-  // in list rows (Recs, the Blog index) that already have their own
-  // hover/arrow affordance.
+  // "inline" renders a standalone bordered pill. "corner" renders a badge
+  // pinned to the top-right of a card, visible always on touch/tablet and
+  // revealed on hover on desktop. "minimal" renders a bare heart and count
+  // with no border, used inline in list rows.
   variant?: "inline" | "corner" | "minimal";
   className?: string;
 }
 
 const STORAGE_PREFIX = "liked:";
 
-// A simple, honest like counter: one like per browser (tracked in
-// localStorage, not a real account system), incrementing a single shared
-// `likes` count stored on the Sanity document itself so the number
-// persists and reads the same for every visitor. Optimistic on click —
-// bumps the displayed count immediately and rolls back if the request
-// to /api/like fails.
+// Allows one like per browser, tracked in localStorage, incrementing a
+// shared `likes` count stored on the Sanity document. Updates the
+// displayed count immediately on click and rolls back if the request to
+// /api/like fails.
 export default function LikeButton({ id, initialLikes, variant = "inline", className }: LikeButtonProps) {
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
   const [pending, setPending] = useState(false);
   const [justLiked, setJustLiked] = useState(false);
 
-  // Read localStorage only after mount — it isn't available during SSR and
-  // reading it during render would mismatch the server-rendered markup.
+  // Reads localStorage after mount to check whether this id is already liked.
   useEffect(() => {
     setLiked(window.localStorage.getItem(STORAGE_PREFIX + id) === "1");
   }, [id]);
@@ -56,10 +51,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
       if (typeof data.likes === "number") setLikes(data.likes);
     } catch (error) {
-      // The like didn't actually save server-side — undo the optimistic
-      // update so the count/localStorage stay honest. Logged (not silent)
-      // so the real reason shows up in the browser console instead of just
-      // looking like the count silently reset itself.
+      // Reverts the optimistic like update and logs the error.
       console.error("Like failed to save:", error);
       setLiked(false);
       setLikes((n) => Math.max(0, n - 1));
@@ -71,10 +63,8 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
 
   const label = liked ? `${likes} likes — you liked this` : `Like this post (${likes} likes so far)`;
 
-  // Rows/cards using "corner" or "minimal" are usually themselves wrapped
-  // in a Link (a whole row/card is clickable) — stopping propagation here
-  // keeps a like tap from also triggering that navigation. Harmless for
-  // "inline", which never sits inside a Link.
+  // Stops the click from propagating so a like tap doesn't also trigger
+  // navigation on a row/card wrapped in a Link.
   const onClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();

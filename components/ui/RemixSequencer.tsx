@@ -41,9 +41,8 @@ type Song = {
   urls: Record<PadId, string>;
 };
 
-// Each song is three real stems (one per pad), all the same length and
-// tempo-locked to the song's own BPM (verified against each file's actual
-// duration when they were dropped in — 4 bars at each song's tempo).
+// Each song has three stems (one per pad), all the same length and
+// tempo-locked to the song's own BPM (4 bars per song).
 const SONGS: Song[] = [
   {
     id: 'chips-2une',
@@ -78,14 +77,14 @@ const SONGS: Song[] = [
 ];
 
 // Track 1 is on by default whenever a song loads (initial load or a song
-// change) so there's always something audible the moment Play is hit.
+// change).
 const defaultPads = (): Record<PadId, boolean> => ({ track1: true, track2: false, track3: false });
 
-// The three pads are real stems — Tone.Player instances synced to the
-// Transport so toggling a pad just mutes/unmutes it in place rather than
-// restarting playback. Which song's stems are loaded (and the Transport's
-// BPM) is driven by the dropdown; switching songs stops playback, disposes
-// the old players, and loads the new ones in at that song's own tempo.
+// The three pads are Tone.Player instances synced to the Transport;
+// toggling a pad mutes/unmutes it in place. The dropdown selects which
+// song's stems are loaded and sets the Transport's BPM; switching songs
+// stops playback, disposes the old players, and loads the new ones in at
+// that song's tempo.
 export default function RemixSequencer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1);
@@ -96,10 +95,8 @@ export default function RemixSequencer() {
   const gridRef = useRef(grid);
   gridRef.current = grid;
 
-  // setup() below is only ever really executed once (it early-returns after
-  // that), so if it read `songId` directly it would close over whatever
-  // song was selected on the very first render — a stale value — instead
-  // of whatever's currently picked in the dropdown. A ref sidesteps that.
+  // Holds the currently selected song id for use inside setup(), which
+  // only runs once.
   const songIdRef = useRef(songId);
   songIdRef.current = songId;
 
@@ -130,9 +127,8 @@ export default function RemixSequencer() {
     await Tone.loaded();
 
     loopsRef.current = players;
-    // Mute state on the actual players has to mirror `defaultPads()` (only
-    // Track 1 unmuted) — otherwise the UI would show Track 1 as selected
-    // while it's still silent until toggled off and back on.
+    // Sets mute state on the players to match `defaultPads()` (only Track 1
+    // unmuted).
     const defaults = defaultPads();
     Object.entries(players).forEach(([padId, player]) => {
       player.mute = !defaults[padId as PadId];
@@ -143,22 +139,16 @@ export default function RemixSequencer() {
     setActivePads(defaults);
   }, []);
 
-  // Builds the whole audio graph exactly once, on the first Play/pad click —
-  // importing Tone lazily keeps it out of the server render entirely, and
-  // Tone.start() has to happen inside a real user gesture for the browser
-  // to allow audio at all.
+  // Builds the whole audio graph on the first Play/pad click, importing
+  // Tone lazily and calling Tone.start() inside the click handler.
   const setup = useCallback(async () => {
     if (toneRef.current) return toneRef.current;
     const Tone = await import('tone');
     await Tone.start();
 
-    // Real one-shot drum samples instead of synthesized hits. Tone.Sampler
-    // (rather than Tone.Player) is what handles rapid retriggering safely —
-    // each triggerAttack spawns its own internal voice, so a step landing
-    // on the same 16th twice in a row (or two lanes overlapping) doesn't
-    // fight over a single player instance the way reusing one Tone.Player
-    // would. Each sampler only has one sample, so the note name used to
-    // trigger it ('C1') is arbitrary — it's just a key into the urls map.
+    // Drum samples loaded as Tone.Sampler instances; each triggerAttack
+    // call spawns its own voice. Each sampler has one sample, so the note
+    // name used to trigger it ('C1') is just a key into the urls map.
     const kick = new Tone.Sampler({ urls: { C1: '/music/drums/kick.wav' } }).toDestination();
     const snare = new Tone.Sampler({ urls: { C1: '/music/drums/snare.wav' } }).toDestination();
     const hat = new Tone.Sampler({ urls: { C1: '/music/drums/hat.wav' } }).toDestination();
@@ -188,15 +178,9 @@ export default function RemixSequencer() {
     return Tone;
   }, [loadSong]);
 
-  // Warms up the 'tone' dynamic import as soon as this component mounts,
-  // well before anyone presses Play. Without this, the very first Play
-  // click's `await import('tone')` inside setup() is a real network-bound
-  // import — that delay pushes `Tone.start()` outside the browser's
-  // "user gesture" window, so the AudioContext never actually resumes and
-  // the first press is silent even though nothing throws. Once the module's
-  // already cached here, that same `await import('tone')` resolves as an
-  // instant microtask instead, keeping Tone.start() inside the gesture and
-  // letting audio play immediately.
+  // Preloads the 'tone' dynamic import as soon as this component mounts,
+  // so it's already cached by the time setup() calls import('tone') on the
+  // first Play/pad click.
   useEffect(() => {
     import('tone').catch(() => {});
   }, []);
@@ -250,8 +234,7 @@ export default function RemixSequencer() {
     const song = SONGS.find((s) => s.id === nextSongId);
     if (!song) return;
 
-    // Switching songs mid-playback would leave stems from two different
-    // tempos/tracks briefly overlapping, so stop the transport first.
+    // Stops the transport before switching songs.
     if (toneRef.current) {
       const transport = toneRef.current.getTransport();
       if (isPlaying) {
@@ -261,9 +244,9 @@ export default function RemixSequencer() {
       }
       await loadSong(toneRef.current, song);
     }
-    // If audio hasn't been initialized yet, setup() will load whichever
-    // song is selected (via `songId` state) the first time Play/a pad is
-    // pressed — nothing else to do here.
+    // If audio hasn't been initialized yet, setup() loads whichever song
+    // is selected (via `songId` state) the first time Play/a pad is
+    // pressed.
   };
 
   const clearGrid = () => {
@@ -322,10 +305,9 @@ export default function RemixSequencer() {
               Song
             </span>
             <div className="relative">
-              {/* Native select arrows aren't inset evenly with the rest of
-                  the pill's padding — appearance-none drops the built-in one
-                  so this custom chevron can sit at the same inset as the
-                  left-side text. */}
+              {/* appearance-none removes the native select arrow; the
+                  ChevronDown below renders a custom one, inset to match the
+                  pill's left-side text padding. */}
               <select
                 value={songId}
                 onChange={(e) => changeSong(e.target.value as SongId)}

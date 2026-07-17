@@ -24,7 +24,6 @@ const WORK_QUERY = `*[
   "hasCaseStudy": count(caseStudy) > 0
 }`;
 
-// Same query the old standalone /feed page used.
 const FEED_QUERY = `*[
   _type == "feedItem"
 ]|order(order asc, _createdAt desc){
@@ -75,13 +74,11 @@ export default async function WorkIndexPage() {
           ))}
         </div>
 
-        {/* Feed used to be its own page — folded in here underneath the
-            featured projects instead, since it's the same "things made"
-            idea at a smaller/more informal scale. */}
+        {/* Feed: smaller, more informal work items shown underneath the featured projects. */}
         <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
           <PageHeader
             title="Feed"
-            subtitle="Random bits of work, experiments, and personal projects that don't have a proper place but I don't want them to live on my hard drive and not see the light of day. Hover each for details and links."
+            subtitle="Random bits of work, experiments, and personal projects that don't have a proper place but I don't want them to live on my hard drive and not see the light of day."
           />
           <FeedGrid items={feedItems} />
         </div>

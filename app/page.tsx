@@ -70,16 +70,11 @@ export default async function IndexPage() {
 
       </div>
 
-      <div className="px-6">
-        <ClientsSection />
-        <PressSection />
-      </div>
-
       <div
         id="work"
         className="mt-14 grid grid-cols-1 gap-x-8 gap-y-12 border-t border-black/10 px-6 pt-8 pb-24 sm:grid-cols-2 lg:grid-cols-3 dark:border-white/10"
       >
-        <h1 className="col-span-full text-2xl font-normal tracking-wide text-black dark:text-white">Featured Projects</h1>
+        <h2 className="mt-6 col-span-full text-2xl font-normal tracking-wide text-black dark:text-white">Featured Projects</h2>
 
         {workItems.map((work) => (
           <WorkRow

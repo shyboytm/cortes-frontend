@@ -24,12 +24,9 @@ function formatPressDate(date?: string) {
   return new Date(date).toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-// Self-contained like ClientsSection — fetches its own data, renders
-// nothing (not even the heading/border) until there's at least one
-// pressMention in Sanity. A simple divided list (2 columns on large
-// screens) rather than a card grid, since articles/videos/awards don't all
-// have (or need) an image, and this reads fine with just an icon + title +
-// outlet.
+// Fetches press mentions from Sanity and renders nothing until at least
+// one exists. Displays a divided list (2 columns on large screens) of
+// icon, title, and outlet.
 export default async function PressSection() {
   const mentions = await client.fetch<SanityDocument[]>(PRESS_QUERY, {}, options);
 

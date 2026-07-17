@@ -7,10 +7,8 @@ export interface FeedVideoProps {
   mimeType?: string;
 }
 
-// Split out from FeedGrid (a server component) purely so this can listen for
-// a failed decode — most likely cause is a browser that can't play back
-// whatever container/codec was uploaded (e.g. an iPhone .mov saved with HEVC)
-// — and show something visible instead of silently rendering an empty box.
+// Renders a video, falling back to a text message if the browser can't play
+// back the uploaded container/codec (e.g. an iPhone .mov saved with HEVC).
 export default function FeedVideo({ url, mimeType }: FeedVideoProps) {
   const [failed, setFailed] = useState(false);
 

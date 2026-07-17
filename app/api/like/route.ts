@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { writeClient } from "@/sanity/writeClient";
 
-// The single mutation this route performs: bump a post/feedItem's `likes`
-// field by 1 and hand back the new total. Nothing else is patchable through
-// here — the id is only ever used as the target of an increment.
+// Increments a post or feedItem's `likes` field by 1 and returns the new total.
+// The id is only ever used as the target of that increment.
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -17,10 +16,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing document id" }, { status: 400 });
   }
 
-  // Fail loudly and specifically rather than letting Sanity's client throw
-  // a generic auth error further down — this is the #1 reason writes fail
-  // (the token has to be set in *this* environment's env vars, and on most
-  // hosts that means redeploying after adding it, not just saving it).
+  // Returns a specific error response when SANITY_API_WRITE_TOKEN isn't set in the environment.
   if (!process.env.SANITY_API_WRITE_TOKEN) {
     console.error("SANITY_API_WRITE_TOKEN is not set in this environment.");
     return NextResponse.json(

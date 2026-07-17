@@ -12,35 +12,23 @@ const CLIENTS_QUERY = `*[
 
 const options = { next: { revalidate: 30 } };
 
-// Self-contained (fetches its own data) so it can be dropped into any page
-// with no query wiring at the call site — same idea as PrimaryFooter's own
-// Last.fm fetch. Renders nothing at all (no heading, no border) if there's
-// no client data yet, so an empty Sanity dataset never leaves a stray
-// section-shaped gap on the page.
+// Fetches its own client data, so it can be dropped into any page without
+// query wiring at the call site. Renders nothing (no heading, no border) if
+// there's no client data yet.
 //
-// Logos are forced to a flat monochrome silhouette (grayscale + brightness
-// crushed to 0) regardless of whatever colors the uploaded logo actually
-// has, then inverted in dark mode — so every logo, whether it's a plain
-// black mark or a colorful brand logo, ends up as a single dark shape in
-// light mode and a single light shape in dark mode instead of staying a
-// fixed color that might go invisible against one of the two themes. A
-// plain <img> rather than next/image, since these are commonly uploaded as
-// SVGs and next/image's optimizer refuses remote SVGs without
-// dangerouslyAllowSVG.
+// Logos are rendered as a flat monochrome silhouette (grayscale + brightness
+// crushed to 0), then inverted in dark mode, so every logo ends up as a
+// single dark shape in light mode and a single light shape in dark mode. A
+// plain <img> is used rather than next/image.
 //
-// All logos are constrained to the same base height, but that alone
-// doesn't guarantee they *look* the same size — a dense wordmark (e.g.
-// "Uber") reads visually bigger than a compact icon+wordmark lockup at the
-// same pixel height. `displaySize` is a per-client manual nudge for
-// balancing that out, since there's no reliable way to measure a logo's
-// "visual weight" automatically.
+// All logos are constrained to the same base height. `displaySize` is a
+// per-client manual scale for balancing out logos that read as visually
+// bigger or smaller than others at the same pixel height.
 //
-// The nudge is applied via the actual `height` (through a --logo-h custom
-// property so it still respects the responsive h-6/h-8 base), not a CSS
-// `transform: scale`. Transform only repaints the element visually — it
-// doesn't change the box it occupies in layout — so a transformed logo
-// would still leave its *surrounding link* sized (and hoverable/clickable)
-// as if at 100%, out of sync with what's actually drawn on screen.
+// The scale is applied via the actual `height` (through a --logo-h custom
+// property, so it still respects the responsive h-6/h-8 base) rather than a
+// CSS `transform: scale`, so the surrounding link's clickable area stays in
+// sync with the logo's rendered size.
 export default async function ClientsSection() {
   const clients = await client.fetch<SanityDocument[]>(CLIENTS_QUERY, {}, options);
   const withLogos = clients.filter((c) => c.logo?.asset);

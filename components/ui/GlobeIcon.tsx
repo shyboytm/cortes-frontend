@@ -1,6 +1,5 @@
-// Wireframe globe icon, traced from the uploaded "Label Vectors Vol.2 -
-// Symbols & Barcodes" reference. Single-path outline, colored via
-// `currentColor` so it inherits whatever text color it's placed in.
+// Wireframe globe icon. Single-path outline, colored via `currentColor` so
+// it inherits the surrounding text color.
 export default function GlobeIcon({ className }: { className?: string }) {
   return (
     <svg

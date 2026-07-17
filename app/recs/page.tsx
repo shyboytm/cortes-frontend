@@ -51,8 +51,7 @@ const CATEGORY_SECTIONS: { value: string; label: string; icon: LucideIcon }[] = 
 export default async function RecsPage() {
   const recs = await client.fetch<SanityDocument[]>(RECS_QUERY, {}, options);
 
-  // Lower `order` first, undefined/blank order falls back to newest-first —
-  // same convention as Work and Feed.
+  // Sorts by lower `order` value first; items with no order value fall back to newest-first.
   const sorted = [...recs].sort((a, b) => {
     if (a.order != null && b.order != null) return a.order - b.order;
     if (a.order != null) return -1;
@@ -132,11 +131,13 @@ export default async function RecsPage() {
                       likes={rec.likes}
                       imageUrl={
                         rec.image?.asset
-                          ? urlFor(rec.image.asset).width(96).height(96).fit("crop").url()
+                          ? value === "book"
+                            ? urlFor(rec.image.asset).width(88).height(128).fit("crop").url()
+                            : urlFor(rec.image.asset).width(96).height(96).fit("crop").url()
                           : undefined
                       }
                       imageAlt={rec.image?.alt}
-                      imageVariant={value === "music" ? "cd" : undefined}
+                      imageVariant={value === "music" ? "cd" : value === "book" ? "book" : undefined}
                       hoverPreviewUrl={
                         rec.hoverPreview?.asset
                           ? urlFor(rec.hoverPreview.asset).width(720).fit("max").url()
