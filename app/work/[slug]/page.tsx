@@ -1,12 +1,11 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client, sanityFetchOptions } from "@/sanity/client";
-import { urlFor } from "@/sanity/image";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import { BackLink } from "@/components/ui/LinkPill";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
+import { groupHalfImages, createPortableImageTypes } from "@/lib/portable-text-images";
 
 const WORK_BY_SLUG_QUERY = `*[
   _type == "work"
@@ -19,6 +18,7 @@ const WORK_BY_SLUG_QUERY = `*[
   scope,
   industry,
   description,
+  comingSoon,
   photos[]{
     _key,
     alt,
@@ -35,40 +35,26 @@ const WORK_BY_SLUG_QUERY = `*[
 
 const options = sanityFetchOptions(30);
 
-// Renders the mixed text/image case-study body from Sanity. Each image
-// carries a projected aspect ratio so it doesn't shift as it loads.
-const caseStudyComponents: PortableTextComponents = {
-  marks: {
-    link: portableTextLinkMark,
-  },
-  types: {
-    image: ({ value }) => {
-      if (!value?.asset) return null;
-      const ratio = value.aspectRatio && value.aspectRatio > 0 ? value.aspectRatio : 16 / 9;
-
-      return (
-        <div
-          className="relative my-8 w-full overflow-hidden rounded-sm border border-black/10 bg-black/5 dark:border-white/10 dark:bg-white/5"
-          style={{ aspectRatio: ratio }}
-        >
-          <Image
-            src={urlFor(value.asset).width(1600).fit("max").url()}
-            alt={value.alt || ""}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
-          />
-        </div>
-      );
+// Creates a new set of PortableText components for each render, mirroring
+// the blog post case-study body: images support the same inset/half/wide/
+// full layout options and optional numbered captions (see
+// lib/portable-text-images.tsx). The figure-number counter inside
+// createPortableImageTypes must reset on each render, so this is called
+// fresh per page load rather than defined as a static object.
+function createCaseStudyComponents(): PortableTextComponents {
+  return {
+    marks: {
+      link: portableTextLinkMark,
     },
-  },
-  block: {
-    normal: ({ children }) => (
-      <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>
-    ),
-    ...portableTextHeadings,
-  },
-};
+    types: createPortableImageTypes(),
+    block: {
+      normal: ({ children }) => (
+        <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>
+      ),
+      ...portableTextHeadings,
+    },
+  };
+}
 
 export default async function WorkCaseStudyPage({
   params,
@@ -78,9 +64,13 @@ export default async function WorkCaseStudyPage({
   const { slug } = await params;
   const work = await client.fetch(WORK_BY_SLUG_QUERY, { slug }, options);
 
-  if (!work) {
+  // Coming-soon projects aren't publicly reachable, even via direct URL —
+  // same not-found boundary as a missing/mistyped slug.
+  if (!work || work.comingSoon) {
     notFound();
   }
+
+  const caseStudy = Array.isArray(work.caseStudy) ? groupHalfImages(work.caseStudy) : [];
 
   return (
     <div className="pt-32 pb-24">
@@ -115,8 +105,8 @@ export default async function WorkCaseStudyPage({
           );
         })()}
 
-        {work.caseStudy && work.caseStudy.length > 0 ? (
-          <PortableText value={work.caseStudy} components={caseStudyComponents} />
+        {caseStudy.length > 0 ? (
+          <PortableText value={caseStudy} components={createCaseStudyComponents()} />
         ) : (
           <p className="text-black/60 dark:text-white/60">
             No case study has been written for this project yet.

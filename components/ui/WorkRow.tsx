@@ -21,6 +21,10 @@ export interface WorkRowProps {
   // homepage's WORK_QUERY. The card is a link only when both are present.
   slug?: string;
   hasCaseStudy?: boolean;
+  // When on, overrides hasCaseStudy: the card never links anywhere (the
+  // case study page itself also 404s, see app/work/[slug]/page.tsx) and a
+  // "Coming soon" tag shows in place of the hover arrow.
+  comingSoon?: boolean;
   // Set by WorkGrid for whichever card is the largest-priority LCP
   // candidate (the first one in the grid); left unset otherwise.
   priority?: boolean;
@@ -35,9 +39,9 @@ const THUMB_HEIGHT = 900;
 // image on hover, if one's set in Sanity), the title and date range, and an
 // arrow badge that appears on hover. The whole card links to the case study
 // page once one's been written — otherwise it's just a static preview.
-export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, priority }: WorkRowProps) {
+export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, comingSoon, priority }: WorkRowProps) {
   const hasHoverImage = Boolean(hoverImage?.asset);
-  const isClickable = Boolean(hasCaseStudy && slug);
+  const isClickable = Boolean(hasCaseStudy && slug && !comingSoon);
 
   const card = (
     <div className="flex flex-col gap-3">
@@ -72,6 +76,12 @@ export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug,
         {isClickable && (
           <span className="absolute right-3 bottom-3 flex h-9 w-9 scale-75 items-center justify-center rounded-full border border-black/20 bg-white/80 text-black opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 dark:border-white/20 dark:bg-black/70 dark:text-white">
             <ArrowRight size={18} />
+          </span>
+        )}
+
+        {comingSoon && (
+          <span className="dot-font font-doto absolute right-3 bottom-3 rounded-full border border-black/20 bg-white/80 px-3 py-1 text-xs tracking-widest text-black/70 uppercase backdrop-blur-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
+            Coming soon
           </span>
         )}
       </div>

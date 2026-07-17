@@ -17,5 +17,6 @@ export const WORK_QUERY = `*[
     alt,
     asset
   },
-  "hasCaseStudy": count(caseStudy) > 0
+  "hasCaseStudy": count(caseStudy) > 0,
+  comingSoon
 }`;
