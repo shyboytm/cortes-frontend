@@ -11,7 +11,7 @@ import { formatPostDate } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
 import BlogStickyBar from "@/components/ui/BlogStickyBar";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
-import { groupHalfImages, createPortableImageTypes } from "@/lib/portable-text-images";
+import { groupAdjacentImages, createPortableImageTypes } from "@/lib/portable-text-images";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -74,7 +74,7 @@ export default async function WritingPostPage({
     notFound();
   }
 
-  const body = Array.isArray(post.body) ? groupHalfImages(post.body) : [];
+  const body = Array.isArray(post.body) ? groupAdjacentImages(post.body) : [];
 
   return (
     <div className="pt-32 pb-24">

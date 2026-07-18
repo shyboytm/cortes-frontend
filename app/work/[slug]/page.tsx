@@ -5,7 +5,7 @@ import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import { BackLink } from "@/components/ui/LinkPill";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
-import { groupHalfImages, createPortableImageTypes } from "@/lib/portable-text-images";
+import { groupAdjacentImages, createPortableImageTypes } from "@/lib/portable-text-images";
 
 const WORK_BY_SLUG_QUERY = `*[
   _type == "work"
@@ -70,7 +70,7 @@ export default async function WorkCaseStudyPage({
     notFound();
   }
 
-  const caseStudy = Array.isArray(work.caseStudy) ? groupHalfImages(work.caseStudy) : [];
+  const caseStudy = Array.isArray(work.caseStudy) ? groupAdjacentImages(work.caseStudy) : [];
 
   return (
     <div className="pt-32 pb-24">

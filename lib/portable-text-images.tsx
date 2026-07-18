@@ -11,41 +11,67 @@ export type PortableImageBlock = {
   _key: string;
   alt?: string;
   caption?: string;
-  size?: "inset" | "half" | "wide" | "full";
+  size?: "inset" | "half" | "third" | "wide" | "full" | "offsetLeft" | "offsetRight";
   aspectRatio?: number | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   asset?: any;
 };
 
-// Adjacent images both marked "half" get paired up into a single synthetic
-// "imageRow" block so they render side-by-side instead of stacked — a lone
-// half-width image (nothing to pair with) just falls through and renders
-// on its own.
+// "half" and "third" images pair up with however many more images of the
+// same size immediately follow them (1 more for half, 2 more for third),
+// grouped into a single synthetic "imageRow" block so they render side by
+// side instead of stacked. A run that comes up short (e.g. a lone "half" or
+// two "third"s in a row with nothing left to pair with) just falls through
+// and renders each image on its own at inset width.
+const GROUP_SIZES: Partial<Record<NonNullable<PortableImageBlock["size"]>, number>> = {
+  half: 2,
+  third: 3,
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function groupHalfImages(blocks: any[]): any[] {
+export function groupAdjacentImages(blocks: any[]): any[] {
   const result: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
-  for (let i = 0; i < blocks.length; i++) {
+  let i = 0;
+  while (i < blocks.length) {
     const block = blocks[i];
-    const next = blocks[i + 1];
-    if (block?._type === "image" && block.size === "half" && next?._type === "image" && next.size === "half") {
-      result.push({ _type: "imageRow", _key: `${block._key}-row`, images: [block, next] });
-      i += 1;
-    } else {
-      result.push(block);
+    const groupSize = block?._type === "image" && block.size ? GROUP_SIZES[block.size as NonNullable<PortableImageBlock["size"]>] : undefined;
+
+    if (groupSize) {
+      const group = [block];
+      let j = i + 1;
+      while (group.length < groupSize && blocks[j]?._type === "image" && blocks[j].size === block.size) {
+        group.push(blocks[j]);
+        j += 1;
+      }
+      if (group.length > 1) {
+        result.push({ _type: "imageRow", _key: `${block._key}-row`, images: group });
+        i = j;
+        continue;
+      }
     }
+
+    result.push(block);
+    i += 1;
   }
   return result;
 }
 
-// Width treatment per image: "inset" matches the text column, "wide" breaks
-// past it a bit, "full" bleeds edge-to-edge, and "half" is only meaningful
-// paired inside an imageRow (a lone one just renders inset).
+// Width/position treatment per image. "inset" matches the text column,
+// "wide" breaks past it a bit, "full" bleeds edge-to-edge, "half"/"third"
+// are only meaningful paired inside an imageRow (a lone one just renders
+// inset), and "offsetLeft"/"offsetRight" break out past the column on just
+// one side — reusing the same viewport-edge trick as "full" but on a single
+// margin, so the image's other edge stays put where the text column ends.
 function sizeWrapperClass(size: PortableImageBlock["size"]) {
   switch (size) {
     case "full":
       return "mx-[calc(50%-50vw)] w-screen";
     case "wide":
       return "-mx-6 sm:-mx-12 md:-mx-16";
+    case "offsetLeft":
+      return "ml-[calc(50%-50vw)] mr-0";
+    case "offsetRight":
+      return "mr-[calc(50%-50vw)] ml-0";
     default:
       return "";
   }
@@ -112,7 +138,9 @@ export function createPortableImageTypes(): PortableTextComponents["types"] {
       );
     },
     imageRow: ({ value }: { value: { images: PortableImageBlock[] } }) => (
-      <div className="my-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div
+        className={`my-8 grid grid-cols-1 gap-6 ${value.images.length >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+      >
         {value.images.map((image) => {
           if (image.caption) figureNumber += 1;
           return (
