@@ -108,13 +108,65 @@ export function groupOffsetSections(blocks: any[]): any[] {
   return result;
 }
 
-// Runs both grouping passes: half/third pairing first, then offsetLeft
+// Types that already carry their own generous vertical margin (my-8) —
+// used by annotateTextSpacing below to detect when a text block sits
+// directly against an image, so it can widen its own margin on that side
+// rather than crowding against the image.
+const IMAGE_LIKE_TYPES = new Set(["image", "imageRow", "offsetSection"]);
+
+// Walks the array and, for every plain text block (_type: "block" — this
+// covers paragraphs and every heading level, since Sanity/Portable Text
+// gives them all the same _type and differentiates only by `style`), tags
+// it with `_spacingTop`/`_spacingBottom` flags when the adjacent sibling is
+// an image/imageRow/offsetSection. Recurses into an offsetSection's own
+// `content` array too, since that's rendered as its own independent
+// PortableText sequence with its own adjacency. Consumed by
+// textSpacingClassName in each block/heading renderer.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function annotateTextSpacing(blocks: any[]): any[] {
+  return blocks.map((block, index) => {
+    if (block?._type === "offsetSection") {
+      return { ...block, content: annotateTextSpacing(block.content) };
+    }
+    if (block?._type !== "block") return block;
+    return {
+      ...block,
+      _spacingTop: IMAGE_LIKE_TYPES.has(blocks[index - 1]?._type),
+      _spacingBottom: IMAGE_LIKE_TYPES.has(blocks[index + 1]?._type),
+    };
+  });
+}
+
+// Extra margin a paragraph/heading gets on whichever edge(s) sit directly
+// against an image, instead of its usual default margin on that edge —
+// roughly 4x the image's own my-8 gap on desktop, scaling down a bit on
+// tablet and mobile so it doesn't feel as exaggerated on smaller screens.
+// (8px less than the initial pass at each breakpoint: 64/96/128 -> 56/88/120.)
+const EXTRA_SPACING_TOP = "mt-[56px] sm:mt-[88px] lg:mt-[120px]";
+const EXTRA_SPACING_BOTTOM = "mb-[56px] sm:mb-[88px] lg:mb-[120px]";
+
+// Builds a block/heading's margin classes: `defaultTop`/`defaultBottom` are
+// used normally, swapped out for the wider EXTRA_SPACING_* classes on
+// whichever edge(s) annotateTextSpacing flagged as sitting against an image.
+export function textSpacingClassName(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: { _spacingTop?: boolean; _spacingBottom?: boolean } | any,
+  defaultTop: string,
+  defaultBottom: string
+): string {
+  const top = value?._spacingTop ? EXTRA_SPACING_TOP : defaultTop;
+  const bottom = value?._spacingBottom ? EXTRA_SPACING_BOTTOM : defaultBottom;
+  return `${top} ${bottom}`;
+}
+
+// Runs every grouping/annotation pass: half/third pairing, then offsetLeft
 // sweeping (so an imageRow that falls inside an offset section's run of
-// content arrives already paired). This is what page components should call
-// on a raw Sanity body/caseStudy array before handing it to PortableText.
+// content arrives already paired), then image-adjacency spacing. This is
+// what page components should call on a raw Sanity body/caseStudy array
+// before handing it to PortableText.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function prepareImageBlocks(blocks: any[]): any[] {
-  return groupOffsetSections(groupAdjacentImages(blocks));
+  return annotateTextSpacing(groupOffsetSections(groupAdjacentImages(blocks)));
 }
 
 // Width treatment per image. "inset" matches the text column, "wide" breaks
@@ -234,7 +286,11 @@ export function createPortableTextComponents({
                 figureNumber={value.image.caption ? figureNumber : null}
               />
             </div>
-            <div className="min-w-0">
+            {/* [&>*:first-child]:mt-0 zeroes whatever top margin the first
+                rendered block would otherwise have (a paragraph's mt-4, a
+                heading's mt-8, etc.) so it starts flush with the sticky
+                image beside it instead of sitting visibly lower. */}
+            <div className="min-w-0 [&>*:first-child]:mt-0">
               <PortableText value={value.content} components={components} />
             </div>
           </div>

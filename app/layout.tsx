@@ -5,6 +5,7 @@ import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
 import PrimaryFooter from '@/components/ui/PrimaryFooter'
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
+import ScrollRestoration from '@/components/ScrollRestoration'
 import { Analytics } from '@vercel/analytics/next';
 
 import "./globals.scss";
@@ -36,6 +37,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${ibmPlexSans.variable} ${doto.variable} antialiased`}>
       <body className="bg-white text-black dark:bg-black dark:text-white gradient-background">
+        {/* Forces scroll-to-top on every route change, as a hard guarantee
+            on top of Next's default (which can be a no-op if the body is
+            still scroll-locked by an overlay at the moment of navigation). */}
+        <ScrollRestoration />
+
         {/* The DOM the shader samples — all pages render inside this */}
         <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}

@@ -11,7 +11,7 @@ import { formatPostDate } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
 import BlogStickyBar from "@/components/ui/BlogStickyBar";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
-import { prepareImageBlocks, createPortableTextComponents } from "@/lib/portable-text-images";
+import { prepareImageBlocks, createPortableTextComponents, textSpacingClassName } from "@/lib/portable-text-images";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -43,19 +43,23 @@ function createPostComponents(): PortableTextComponents {
       link: portableTextLinkMark,
     },
     block: {
-      normal: ({ children }) => {
+      normal: ({ children, value }) => {
         // The very first paragraph of a post renders as a larger "lede"
         // statement — everything after it is regular body copy.
         if (!hasRenderedLede) {
           hasRenderedLede = true;
           return (
-            <p className="mx-auto my-6 max-w-3xl text-2xl leading-relaxed font-light text-black dark:text-white">
+            <p
+              className={`mx-auto max-w-3xl text-2xl leading-relaxed font-light text-black dark:text-white ${textSpacingClassName(value, "mt-6", "mb-6")}`}
+            >
               {children}
             </p>
           );
         }
         return (
-          <p className="mx-auto my-4 max-w-3xl text-lg leading-relaxed text-black/80 dark:text-white/80">
+          <p
+            className={`mx-auto max-w-3xl text-lg leading-relaxed text-black/80 dark:text-white/80 ${textSpacingClassName(value, "mt-4", "mb-4")}`}
+          >
             {children}
           </p>
         );

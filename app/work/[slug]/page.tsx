@@ -5,7 +5,7 @@ import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import { BackLink } from "@/components/ui/LinkPill";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
-import { prepareImageBlocks, createPortableTextComponents } from "@/lib/portable-text-images";
+import { prepareImageBlocks, createPortableTextComponents, textSpacingClassName } from "@/lib/portable-text-images";
 
 const WORK_BY_SLUG_QUERY = `*[
   _type == "work"
@@ -47,8 +47,10 @@ function createCaseStudyComponents(): PortableTextComponents {
       link: portableTextLinkMark,
     },
     block: {
-      normal: ({ children }) => (
-        <p className="mx-auto my-4 max-w-3xl text-lg leading-relaxed text-black/80 dark:text-white/80">
+      normal: ({ children, value }) => (
+        <p
+          className={`mx-auto max-w-3xl text-lg leading-relaxed text-black/80 dark:text-white/80 ${textSpacingClassName(value, "mt-4", "mb-4")}`}
+        >
           {children}
         </p>
       ),
@@ -93,7 +95,7 @@ export default async function WorkCaseStudyPage({
           if (metaItems.length === 0) return null;
 
           return (
-            <div className="mb-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-black/10 bg-black/10 lg:grid-cols-2 dark:border-white/10 dark:bg-white/10">
+            <div className="mb-24 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-black/5 bg-black/5 lg:grid-cols-2 dark:border-white/5 dark:bg-white/5">
               {metaItems.map((item) => (
                 <div key={item.label} className="bg-white p-4 dark:bg-black">
                   <p className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
