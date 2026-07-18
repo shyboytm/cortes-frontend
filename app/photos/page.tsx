@@ -1,6 +1,7 @@
 import { type SanityImageSource } from "@sanity/image-url";
 import { client, sanityFetchOptions } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
+import { shuffleArray } from "@/lib/utils";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import PhotoGrid, { type PhotoItem } from "@/components/ui/PhotoGrid";
@@ -52,7 +53,9 @@ const options = sanityFetchOptions(900);
 export default async function PhotosPage() {
   const photos = await client.fetch<PhotoDocument[]>(PHOTOS_QUERY, {}, options);
 
-  const items: PhotoItem[] = photos
+  // Randomized on every render (bounded by the fetch cache's revalidate
+  // window above) so the gallery order isn't the same every visit.
+  const items: PhotoItem[] = shuffleArray(photos)
     .filter((photo) => photo.image?.asset)
     .map((photo) => ({
       _id: photo._id,

@@ -28,9 +28,6 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
 
-  // Multi-hue wash used by .gradient-background — matches the
-  // Design/Music/Photo/Code line on the homepage (blue/green/red/amber),
-  // using each word's light-mode (-800) shade here.
   --gradient-1: oklch(0.424 0.199 265.638); // Design — blue-800
   --gradient-2: oklch(0.448 0.119 151.328); // Music — green-800
   --gradient-3: oklch(0.444 0.177 26.899); // Photo — red-800
@@ -39,9 +36,6 @@
   --gradient-6: oklch(0.438 0.218 303.724); // purple-800
 }
 
-// Automatic dark mode driven by the OS/browser preference —
-// no JS theme toggle exists in this project, so we key off
-// prefers-color-scheme directly rather than a `.dark` class.
 @media (prefers-color-scheme: dark) {
   :root {
     --background: oklch(0.145 0 0);
@@ -63,7 +57,6 @@
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
 
-    // Same match-up, using each word's dark-mode (-400) shade instead.
     --gradient-1: oklch(0.707 0.165 254.624); // Design — blue-400
     --gradient-2: oklch(0.792 0.209 151.711); // Music — green-400
     --gradient-3: oklch(0.704 0.191 22.216); // Photo — red-400
@@ -72,9 +65,6 @@
     --gradient-6: oklch(0.714 0.203 305.504); // purple-400
   }
 
-  // Original, slightly stronger glow — kept as-is for dark mode, since the
-  // reduced version above was only ever too heavy against light
-  // backgrounds.
   body {
     text-shadow: 0 0 3px color-mix(in oklab, currentColor 45%, transparent);
   }
@@ -103,38 +93,18 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  // TRIAL SWAP: IBM Plex Sans first (was Ufficio), system font stack if it
-  // ever fails to load.
   --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  // The old monospace typeface has been retired — font-mono now renders in Doto.
   --font-mono: var(--font-doto);
   --font-doto: var(--font-doto);
-  // Captions site-wide (case study/blog images, photos, feed items) — kept
-  // separate from --font-mono since that's still Doto's display treatment.
   --font-space-mono: var(--font-space-mono);
 }
 
 html {
-  // Permanently reserves the scrollbar's gutter, whether or not it's
-  // currently rendered. Without this, toggling `overflow: hidden` on the
-  // body (done while the nav menu or photo lightbox is open, to lock
-  // background scroll) removes the scrollbar and widens the viewport by
-  // its width. useLockBodyScroll compensates the body's own content box
-  // with matching padding, which keeps normal in-flow content from
-  // shifting, but `position: fixed` elements (like PrimaryNav's bar) size
-  // themselves against the viewport directly and ignore the body's box
-  // model entirely, so they'd still shift without this.
   scrollbar-gutter: stable;
 }
 
 body {
   @apply antialiased;
-  // Subtle site-wide glow — text-shadow is inherited, and currentColor
-  // re-resolves per element, so every element glows in its own color
-  // without needing to touch individual components. Dialed back a touch in
-  // light mode specifically, where the same intensity read as slightly too
-  // heavy against light backgrounds; dark mode keeps the original strength
-  // (see the prefers-color-scheme: dark override below).
   text-shadow: 0 0 2px color-mix(in oklab, currentColor 35%, transparent);
 }
 
@@ -176,8 +146,6 @@ body {
   }
 }
 
-// Keeps horizontally-scrolling rows (e.g. WorkRow) usable without a visible
-// scrollbar cluttering the design.
 .scrollbar-hide {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -203,8 +171,6 @@ body {
   }
 }
 
-// Two identical, adjacent (no gap) copies of the marquee content translate
-// left by exactly one copy's width, so the loop point is invisible.
 .marquee-track {
   animation: marquee-scroll 45s linear infinite;
 }
@@ -218,9 +184,7 @@ body {
   }
 }
 
-// "Color Shift" mode on InteractivePortrait — continuously rotates hue on
-// whatever's currently drawn to the canvas (a photo, in practice, since that
-// mode reuses the normal-mode pixels underneath).
+// Color shift animation
 @keyframes hue-cycle {
   from {
     filter: hue-rotate(0deg) saturate(1.6);
@@ -234,9 +198,7 @@ body {
   animation: hue-cycle 6s linear infinite;
 }
 
-// Loading skeleton behind RecRow's link-preview screenshot — same idea as
-// Tailwind's built-in animate-pulse, just slower/gentler so it reads as
-// "still loading" rather than an urgent flicker.
+// Loading skeleton animation
 @keyframes preview-pulse {
   0%,
   100% {
@@ -278,25 +240,8 @@ body {
   animation: gradient-animation 16s ease-in-out infinite;
 }
 
-// Hover-only treatment for the "hi@cortes.us" pill in WorkTogetherCTA — a
-// fast-moving version of the same multi-hue wash `.gradient-background`
-// uses behind it, plus a soft theme-aware glow. Idle state is untouched
-// (plain black/white pill from Tailwind classes); the color only shows up
-// as an intentional response to hovering (or focusing, for keyboard users).
-//
-// `background-image` can't be transitioned directly (browsers can't
-// interpolate between "none" and a gradient), which is what made an earlier
-// version of this snap in/out instead of animating. Instead, the gradient
-// lives on an always-present `::before` layer sitting between the button's
-// own solid background and its text, and hover/focus only crossfades that
-// layer's opacity — which *does* animate smoothly.
 .cta-gradient-hover {
   position: relative;
-  // `transition` is a shorthand — declaring it here for box-shadow alone
-  // was silently replacing the Tailwind `transition-transform` utility
-  // class already on this element (last declaration for a given property
-  // wins), which is what made the hover:scale-105 jump instead of easing.
-  // Folding transform in here too keeps both smooth.
   transition:
     transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.4s ease;
@@ -328,10 +273,6 @@ body {
   opacity: 1;
 }
 
-// Plain theme-aware glow instead of a colorful drop shadow — black in light
-// mode (reads against the light page background), white in dark mode
-// (reads against the dark page background), matching the button's own
-// light/dark bg-black/bg-white pairing.
 .cta-gradient-hover:hover,
 .cta-gradient-hover:focus-visible {
   box-shadow:
@@ -348,10 +289,6 @@ body {
   }
 }
 
-// Theme-aware glow for bare SVG icons (social icons, GlobeIcon, etc.) — black
-// in light mode so it reads against the light page background, white in dark
-// mode so it reads against the dark one. Same prefers-color-scheme approach
-// as .dot-font's own dark-mode override above.
 .svg-shadow {
   filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.5));
 }

@@ -44,7 +44,7 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
 
   return (
     <>
-      <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
+      <div className="columns-1 gap-4 sm:columns-2 lg:columns-4">
         {photos.map((photo, index) => (
           // A <div> rather than a <button>, since it contains the nested
           // LikeButton — browsers don't allow interactive elements inside a
@@ -60,7 +60,7 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
                 setSelectedIndex(index)
               }
             }}
-            className="group relative mb-6 block w-full cursor-zoom-in overflow-hidden rounded-sm border border-black/10 bg-black/5 break-inside-avoid dark:border-white/10 dark:bg-white/5"
+            className="group relative mb-4 block w-full cursor-zoom-in overflow-hidden rounded-sm border border-black/10 bg-black/5 break-inside-avoid dark:border-white/10 dark:bg-white/5"
             style={{ aspectRatio: photo.aspectRatio }}
             aria-label={`Open ${photo.alt} full screen`}
           >
@@ -81,7 +81,7 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
 
       {selectedIndex !== null && (
         <PhotoLightbox
-          photos={photos}
+          items={photos}
           selectedIndex={selectedIndex}
           onClose={() => setSelectedIndex(null)}
           onSelect={setSelectedIndex}

@@ -1,5 +1,6 @@
 import { client, sanityFetchOptions } from "@/sanity/client";
 import { WORK_QUERY } from "@/sanity/queries";
+import { shuffleArray } from "@/lib/utils";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import WorkGrid, { type WorkGridItem } from "@/components/ui/WorkGrid";
@@ -15,7 +16,8 @@ const FEED_QUERY = `*[
   image{
     alt,
     asset,
-    "aspectRatio": asset->metadata.dimensions.aspectRatio
+    "aspectRatio": asset->metadata.dimensions.aspectRatio,
+    "lqip": asset->metadata.lqip
   },
   video{
     "url": asset->url,
@@ -52,7 +54,10 @@ export default async function WorkIndexPage() {
             title="Feed"
             subtitle="Random bits of work, experiments, and personal projects that don't have a proper place but I don't want them to live on my hard drive and not see the light of day."
           />
-          <FeedGrid items={feedItems} />
+          {/* Randomized on every render (bounded by the fetch cache's
+              revalidate window above) so the feed order isn't the same
+              every visit. */}
+          <FeedGrid items={shuffleArray(feedItems)} />
         </div>
       </div>
     </div>
