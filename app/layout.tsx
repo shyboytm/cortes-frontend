@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { IBM_Plex_Sans, Doto } from "next/font/google";
+import { IBM_Plex_Sans, Doto, Space_Mono } from "next/font/google";
 import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
 import PrimaryFooter from '@/components/ui/PrimaryFooter'
@@ -24,6 +24,15 @@ const doto = Doto({
   axes: ["ROND"],
 });
 
+// Captions site-wide (case study/blog images, photos, feed items) render in
+// this rather than the default IBM Plex Sans body font.
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+});
+
 export const metadata: Metadata = {
   title: "Dennis Cortés - Designer & Music Producer",
   description: "Software Designer, Musician, and Photographer based in Nashville, TN",
@@ -35,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${ibmPlexSans.variable} ${doto.variable} antialiased`}>
+    <html lang="en" className={`${ibmPlexSans.variable} ${doto.variable} ${spaceMono.variable} antialiased`}>
       <body className="bg-white text-black dark:bg-black dark:text-white gradient-background">
         {/* Forces scroll-to-top on every route change, as a hard guarantee
             on top of Next's default (which can be a no-op if the body is

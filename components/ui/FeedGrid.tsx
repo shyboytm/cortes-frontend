@@ -70,7 +70,7 @@ export default function FeedGrid({ items }: FeedGridProps) {
               // showing the caption on an opaque, theme-aware panel clipped
               // to the card's rounded corners by the parent's overflow-hidden.
               <div className="absolute inset-x-0 bottom-0 z-10 flex translate-y-full items-center justify-between gap-4 border-t border-black/10 bg-white px-3 py-2.5 transition-transform duration-200 ease-out group-hover:translate-y-0 dark:border-white/10 dark:bg-black">
-                <p className="line-clamp-2 text-sm text-black dark:text-white">{item.caption}</p>
+                <p className="font-space-mono line-clamp-2 text-sm text-black dark:text-white">{item.caption}</p>
                 {isClickable && (
                   <ArrowUpRight size={20} className="shrink-0 text-black/60 dark:text-white/60" />
                 )}

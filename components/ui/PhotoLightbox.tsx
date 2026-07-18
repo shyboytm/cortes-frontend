@@ -134,7 +134,7 @@ export default function PhotoLightbox({ photos, selectedIndex, onClose, onSelect
         {hasMeta && (
           <div className="flex w-full max-w-md flex-col gap-2 lg:w-72 lg:max-w-none lg:shrink-0">
             {photo.caption && (
-              <p className="text-base text-black dark:text-white">{photo.caption}</p>
+              <p className="font-space-mono text-base text-black dark:text-white">{photo.caption}</p>
             )}
             {photo.location && (
               <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">

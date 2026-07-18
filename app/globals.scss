@@ -109,6 +109,9 @@
   // The old monospace typeface has been retired — font-mono now renders in Doto.
   --font-mono: var(--font-doto);
   --font-doto: var(--font-doto);
+  // Captions site-wide (case study/blog images, photos, feed items) — kept
+  // separate from --font-mono since that's still Doto's display treatment.
+  --font-space-mono: var(--font-space-mono);
 }
 
 html {

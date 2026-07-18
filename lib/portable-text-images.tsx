@@ -212,7 +212,7 @@ function PortableImageFigure({
         />
       </div>
       {image.caption && (
-        <figcaption className="mt-3 text-sm text-black/60 italic dark:text-white/60">
+        <figcaption className="font-space-mono mt-3 text-sm text-black/60 italic dark:text-white/60">
           {figureNumber !== null && (
             <span className="dot-font font-doto text-xs tracking-widest text-black/70 uppercase not-italic dark:text-white/70">
               N&#176;{String(figureNumber).padStart(2, "0")}{" — "}
