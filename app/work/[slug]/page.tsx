@@ -5,7 +5,7 @@ import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import { BackLink } from "@/components/ui/LinkPill";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
-import { groupAdjacentImages, createPortableImageTypes } from "@/lib/portable-text-images";
+import { prepareImageBlocks, createPortableTextComponents } from "@/lib/portable-text-images";
 
 const WORK_BY_SLUG_QUERY = `*[
   _type == "work"
@@ -42,18 +42,17 @@ const options = sanityFetchOptions(30);
 // createPortableImageTypes must reset on each render, so this is called
 // fresh per page load rather than defined as a static object.
 function createCaseStudyComponents(): PortableTextComponents {
-  return {
+  return createPortableTextComponents({
     marks: {
       link: portableTextLinkMark,
     },
-    types: createPortableImageTypes(),
     block: {
       normal: ({ children }) => (
         <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>
       ),
       ...portableTextHeadings,
     },
-  };
+  });
 }
 
 export default async function WorkCaseStudyPage({
@@ -70,7 +69,7 @@ export default async function WorkCaseStudyPage({
     notFound();
   }
 
-  const caseStudy = Array.isArray(work.caseStudy) ? groupAdjacentImages(work.caseStudy) : [];
+  const caseStudy = Array.isArray(work.caseStudy) ? prepareImageBlocks(work.caseStudy) : [];
 
   return (
     <div className="pt-32 pb-24">

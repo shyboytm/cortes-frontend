@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { PortableTextComponents } from "@portabletext/react";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { urlFor } from "@/sanity/image";
 
 // Shared image-handling for Sanity PortableText bodies (blog posts, work
@@ -11,7 +11,7 @@ export type PortableImageBlock = {
   _key: string;
   alt?: string;
   caption?: string;
-  size?: "inset" | "half" | "third" | "wide" | "full" | "offsetLeft" | "offsetRight";
+  size?: "inset" | "half" | "third" | "wide" | "full" | "offsetLeft";
   aspectRatio?: number | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   asset?: any;
@@ -56,22 +56,61 @@ export function groupAdjacentImages(blocks: any[]): any[] {
   return result;
 }
 
-// Width/position treatment per image. "inset" matches the text column,
-// "wide" breaks past it a bit, "full" bleeds edge-to-edge, "half"/"third"
-// are only meaningful paired inside an imageRow (a lone one just renders
-// inset), and "offsetLeft"/"offsetRight" break out past the column on just
-// one side — reusing the same viewport-edge trick as "full" but on a single
-// margin, so the image's other edge stays put where the text column ends.
+// An "offsetLeft" image is never rendered by the plain `image` handler — it
+// gets swept up, along with every block that follows it, into an
+// "offsetSection" (see groupOffsetSections below) and rendered as a sticky
+// left-column figure running alongside that content in a right column.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isOffsetLeftImage(block: any): block is PortableImageBlock {
+  return block?._type === "image" && block.size === "offsetLeft";
+}
+
+// Sweeps every block starting at an "offsetLeft" image up through (but not
+// including) the next "offsetLeft" image into a single synthetic
+// "offsetSection" block, so it can be rendered as one sticky-image + running-
+// text pairing. Content before the first offsetLeft image (or when there
+// isn't one at all) passes through unchanged.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function groupOffsetSections(blocks: any[]): any[] {
+  const result: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let currentSection: { _type: "offsetSection"; _key: string; image: PortableImageBlock; content: any[] } | null =
+    null;
+
+  for (const block of blocks) {
+    if (isOffsetLeftImage(block)) {
+      currentSection = { _type: "offsetSection", _key: `${block._key}-offset`, image: block, content: [] };
+      result.push(currentSection);
+      continue;
+    }
+    if (currentSection) {
+      currentSection.content.push(block);
+    } else {
+      result.push(block);
+    }
+  }
+
+  return result;
+}
+
+// Runs both grouping passes: half/third pairing first, then offsetLeft
+// sweeping (so an imageRow that falls inside an offset section's run of
+// content arrives already paired). This is what page components should call
+// on a raw Sanity body/caseStudy array before handing it to PortableText.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function prepareImageBlocks(blocks: any[]): any[] {
+  return groupOffsetSections(groupAdjacentImages(blocks));
+}
+
+// Width treatment per image. "inset" matches the text column, "wide" breaks
+// past it a bit, "full" bleeds edge-to-edge, and "half"/"third" are only
+// meaningful paired inside an imageRow (a lone one just renders inset).
 function sizeWrapperClass(size: PortableImageBlock["size"]) {
   switch (size) {
     case "full":
       return "mx-[calc(50%-50vw)] w-screen";
     case "wide":
       return "-mx-6 sm:-mx-12 md:-mx-16";
-    case "offsetLeft":
-      return "ml-[calc(50%-50vw)] mr-0";
-    case "offsetRight":
-      return "mr-[calc(50%-50vw)] ml-0";
     default:
       return "";
   }
@@ -119,39 +158,76 @@ function PortableImageFigure({
   );
 }
 
-// Builds fresh `types.image` / `types.imageRow` PortableText handlers. Call
-// this once per render (not memoized/shared across renders) since the
-// figure-number counter is closed over as local state that must reset every
-// time — only images with a caption get numbered.
-export function createPortableImageTypes(): PortableTextComponents["types"] {
+// Builds a complete, fresh set of PortableText components for each render
+// (not memoized/shared across renders): the figure-number counter is closed
+// over as local state that must reset every time, and only images with a
+// caption get numbered. `marks`/`block` are passed in by the page (link
+// styling, heading styling, lede paragraph, etc.) and merged in alongside
+// the shared image/imageRow/offsetSection handlers below.
+//
+// offsetSection recurses back into <PortableText> using this same
+// components object, so anything nested in an offset section's running text
+// column (headings, paragraphs, even further inline images) gets the exact
+// same treatment as the top-level body — including continuing the same
+// figure-number sequence, since it's the same closure.
+export function createPortableTextComponents({
+  marks,
+  block,
+}: {
+  marks?: PortableTextComponents["marks"];
+  block?: PortableTextComponents["block"];
+}): PortableTextComponents {
   let figureNumber = 0;
 
-  return {
-    image: ({ value }: { value: PortableImageBlock }) => {
-      if (value.caption) figureNumber += 1;
-      return (
-        <PortableImageFigure
-          image={value}
-          figureNumber={value.caption ? figureNumber : null}
-          className={`my-8 ${sizeWrapperClass(value.size)}`}
-        />
-      );
+  const components: PortableTextComponents = {
+    marks,
+    types: {
+      image: ({ value }: { value: PortableImageBlock }) => {
+        if (value.caption) figureNumber += 1;
+        return (
+          <PortableImageFigure
+            image={value}
+            figureNumber={value.caption ? figureNumber : null}
+            className={`my-8 ${sizeWrapperClass(value.size)}`}
+          />
+        );
+      },
+      imageRow: ({ value }: { value: { images: PortableImageBlock[] } }) => (
+        <div
+          className={`my-8 grid grid-cols-1 gap-6 ${value.images.length >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+        >
+          {value.images.map((image) => {
+            if (image.caption) figureNumber += 1;
+            return (
+              <PortableImageFigure
+                key={image._key}
+                image={image}
+                figureNumber={image.caption ? figureNumber : null}
+              />
+            );
+          })}
+        </div>
+      ),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      offsetSection: ({ value }: { value: { image: PortableImageBlock; content: any[] } }) => {
+        if (value.image.caption) figureNumber += 1;
+        return (
+          <div className="my-8 grid grid-cols-1 gap-8 md:grid-cols-[minmax(240px,340px)_1fr] md:items-start">
+            <div className="md:sticky md:top-32">
+              <PortableImageFigure
+                image={value.image}
+                figureNumber={value.image.caption ? figureNumber : null}
+              />
+            </div>
+            <div className="min-w-0">
+              <PortableText value={value.content} components={components} />
+            </div>
+          </div>
+        );
+      },
     },
-    imageRow: ({ value }: { value: { images: PortableImageBlock[] } }) => (
-      <div
-        className={`my-8 grid grid-cols-1 gap-6 ${value.images.length >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
-      >
-        {value.images.map((image) => {
-          if (image.caption) figureNumber += 1;
-          return (
-            <PortableImageFigure
-              key={image._key}
-              image={image}
-              figureNumber={image.caption ? figureNumber : null}
-            />
-          );
-        })}
-      </div>
-    ),
+    block,
   };
+
+  return components;
 }

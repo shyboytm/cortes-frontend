@@ -11,7 +11,7 @@ import { formatPostDate } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
 import BlogStickyBar from "@/components/ui/BlogStickyBar";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
-import { groupAdjacentImages, createPortableImageTypes } from "@/lib/portable-text-images";
+import { prepareImageBlocks, createPortableTextComponents } from "@/lib/portable-text-images";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -38,11 +38,10 @@ const options = sanityFetchOptions(30);
 function createPostComponents(): PortableTextComponents {
   let hasRenderedLede = false;
 
-  return {
+  return createPortableTextComponents({
     marks: {
       link: portableTextLinkMark,
     },
-    types: createPortableImageTypes(),
     block: {
       normal: ({ children }) => {
         // The very first paragraph of a post renders as a larger "lede"
@@ -59,7 +58,7 @@ function createPostComponents(): PortableTextComponents {
       },
       ...portableTextHeadings,
     },
-  };
+  });
 }
 
 export default async function WritingPostPage({
@@ -74,7 +73,7 @@ export default async function WritingPostPage({
     notFound();
   }
 
-  const body = Array.isArray(post.body) ? groupAdjacentImages(post.body) : [];
+  const body = Array.isArray(post.body) ? prepareImageBlocks(post.body) : [];
 
   return (
     <div className="pt-32 pb-24">
