@@ -65,11 +65,22 @@ function isOffsetLeftImage(block: any): block is PortableImageBlock {
   return block?._type === "image" && block.size === "offsetLeft";
 }
 
+// An "endOffset" block is an author-inserted marker (Sanity object type,
+// not an image) with no visual output of its own — it just closes whichever
+// offsetSection is currently open, so a pinned image doesn't stay stuck for
+// the rest of the document. Without one, an offsetSection only ends when
+// the next offsetLeft image starts a new pairing (or the document ends).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isEndOffsetMarker(block: any): boolean {
+  return block?._type === "endOffset";
+}
+
 // Sweeps every block starting at an "offsetLeft" image up through (but not
-// including) the next "offsetLeft" image into a single synthetic
-// "offsetSection" block, so it can be rendered as one sticky-image + running-
-// text pairing. Content before the first offsetLeft image (or when there
-// isn't one at all) passes through unchanged.
+// including) whichever comes first — the next "offsetLeft" image or an
+// "endOffset" marker — into a single synthetic "offsetSection" block, so it
+// can be rendered as one sticky-image + running-text pairing. Content before
+// the first offsetLeft image (or when there isn't one at all) passes
+// through unchanged; the endOffset marker itself is dropped, not rendered.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function groupOffsetSections(blocks: any[]): any[] {
   const result: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -81,6 +92,10 @@ export function groupOffsetSections(blocks: any[]): any[] {
     if (isOffsetLeftImage(block)) {
       currentSection = { _type: "offsetSection", _key: `${block._key}-offset`, image: block, content: [] };
       result.push(currentSection);
+      continue;
+    }
+    if (isEndOffsetMarker(block)) {
+      currentSection = null;
       continue;
     }
     if (currentSection) {

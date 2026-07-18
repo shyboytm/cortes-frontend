@@ -48,7 +48,9 @@ function createCaseStudyComponents(): PortableTextComponents {
     },
     block: {
       normal: ({ children }) => (
-        <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>
+        <p className="mx-auto my-4 max-w-3xl text-lg leading-relaxed text-black/80 dark:text-white/80">
+          {children}
+        </p>
       ),
       ...portableTextHeadings,
     },

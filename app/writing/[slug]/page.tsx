@@ -49,12 +49,16 @@ function createPostComponents(): PortableTextComponents {
         if (!hasRenderedLede) {
           hasRenderedLede = true;
           return (
-            <p className="my-6 text-2xl leading-relaxed font-light text-black dark:text-white">
+            <p className="mx-auto my-6 max-w-3xl text-2xl leading-relaxed font-light text-black dark:text-white">
               {children}
             </p>
           );
         }
-        return <p className="my-4 text-lg leading-relaxed text-black/80 dark:text-white/80">{children}</p>;
+        return (
+          <p className="mx-auto my-4 max-w-3xl text-lg leading-relaxed text-black/80 dark:text-white/80">
+            {children}
+          </p>
+        );
       },
       ...portableTextHeadings,
     },
