@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { type SanityDocument } from "next-sanity";
 import { client, sanityFetchOptions } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
@@ -6,6 +7,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import InteractivePortrait from "@/components/ui/InteractivePortrait";
 import ClientsSection from "@/components/ui/ClientsSection";
 import PressSection from "@/components/ui/PressSection";
+import ExperienceSection from "@/components/ui/ExperienceSection";
 import { buttonVariants } from "@/components/ui/button";
 import { SOCIAL_LINKS } from "@/lib/social-links";
 
@@ -132,13 +134,28 @@ export default async function AboutPage() {
           />
         </div>
 
+        <ExperienceSection />
+
         {testimonials.length > 0 && (
           <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
-            <h2 className="mt-6 mb-12 col-span-full text-2xl font-normal tracking-wide text-black dark:text-white">What Others Say</h2>
-            <div className="grid grid-cols-1 gap-x-10 gap-y-5 lg:grid-cols-2">
+            <div className="mt-6 mb-12 flex flex-wrap items-center justify-between gap-4">
+              <h2 className="text-2xl font-normal tracking-wide text-black dark:text-white">What Others Say</h2>
+              <Link
+                href={SOCIAL_LINKS.find((link) => link.label === "LinkedIn")!.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={buttonVariants({ variant: "secondary", size: "sm" })}
+              >
+                See more on LinkedIn
+                <ArrowUpRight size={14} className="svg-shadow" />
+              </Link>
+            </div>
+            <div className="columns-1 gap-x-10 lg:columns-2">
               {testimonials.map((testimonial) => (
-                <figure key={testimonial._id} className="flex w-full flex-col items-start gap-1.5">
-                  {/* Rounded on three corners with a squared-off bottom-left corner, styled as a chat bubble tail. */}
+                <figure
+                  key={testimonial._id}
+                  className="mb-5 flex w-full flex-col items-start gap-1.5 break-inside-avoid"
+                >
                   <blockquote className="w-full rounded-2xl rounded-bl-xs bg-black/5 p-4 text-base leading-relaxed whitespace-pre-line text-black/80 dark:bg-white/10 dark:text-white/80">
                     {testimonial.quote}
                   </blockquote>
