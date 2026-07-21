@@ -9,6 +9,7 @@ export interface WorkGridItem {
   slug?: { current?: string } | null;
   hasCaseStudy?: boolean;
   comingSoon?: boolean;
+  likes?: number;
 }
 
 export interface WorkGridProps {
@@ -30,6 +31,7 @@ export default function WorkGrid({ workItems, className }: WorkGridProps) {
       {workItems.map((work, index) => (
         <WorkRow
           key={work._id}
+          id={work._id}
           title={work.title}
           dateRange={work.dateRange}
           mainImage={work.mainImage}
@@ -37,6 +39,7 @@ export default function WorkGrid({ workItems, className }: WorkGridProps) {
           slug={work.slug?.current}
           hasCaseStudy={work.hasCaseStudy}
           comingSoon={work.comingSoon}
+          likes={work.likes}
           priority={index === 0}
         />
       ))}

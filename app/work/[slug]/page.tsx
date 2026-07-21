@@ -3,7 +3,9 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client, sanityFetchOptions } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
-import { BackLink } from "@/components/ui/LinkPill";
+import WorkBackLink from "@/components/ui/WorkBackLink";
+import WorkStickyBar from "@/components/ui/WorkStickyBar";
+import LikeButton from "@/components/ui/LikeButton";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
 import { prepareImageBlocks, createPortableTextComponents, textSpacingClassName } from "@/lib/portable-text-images";
 
@@ -19,6 +21,7 @@ const WORK_BY_SLUG_QUERY = `*[
   industry,
   description,
   comingSoon,
+  likes,
   photos[]{
     _key,
     alt,
@@ -78,11 +81,19 @@ export default async function WorkCaseStudyPage({
   return (
     <div className="pt-32 pb-24">
       <PrimaryNav />
+      <WorkStickyBar id={work._id} title={work.title} likes={work.likes ?? 0} />
 
       <div className="m-auto w-full max-w-7xl px-6 md:px-10">
-        <BackLink href="/#work" iconSize={16} />
+        <div className="flex items-center justify-between gap-4">
+          <WorkBackLink iconSize={16} />
+
+          <LikeButton id={work._id} initialLikes={work.likes ?? 0} />
+        </div>
 
         <PageHeader title={work.title} subtitle={work.description || work.dateRange} className="mt-6" />
+        {/* Marks where the title ends; WorkStickyBar watches this via
+            IntersectionObserver and reveals itself once it scrolls out of view. */}
+        <div id="work-title-sentinel" />
 
         {(() => {
           const metaItems = [
@@ -95,7 +106,7 @@ export default async function WorkCaseStudyPage({
           if (metaItems.length === 0) return null;
 
           return (
-            <div className="mb-24 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-black/5 bg-black/5 lg:grid-cols-2 dark:border-white/5 dark:bg-white/5">
+            <div className="mb-24 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-black/5 bg-black/[0.03] lg:grid-cols-2 dark:border-white/5 dark:bg-white/[0.03]">
               {metaItems.map((item) => (
                 <div key={item.label} className="bg-white p-4 dark:bg-black">
                   <p className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">

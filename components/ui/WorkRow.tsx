@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
 import { cn } from "@/lib/utils";
+import LikeButton from "@/components/ui/LikeButton";
 
 export interface WorkRowImage {
   alt?: string;
@@ -11,6 +12,8 @@ export interface WorkRowImage {
 }
 
 export interface WorkRowProps {
+  // Sanity document id, used as the like button's target.
+  id: string;
   title: string;
   dateRange?: string;
   // Sanity returns null (not undefined) for an unset image field, so both
@@ -25,6 +28,7 @@ export interface WorkRowProps {
   // case study page itself also 404s, see app/work/[slug]/page.tsx) and a
   // "Coming soon" tag shows in place of the hover arrow.
   comingSoon?: boolean;
+  likes?: number;
   // Set by WorkGrid for whichever card is the largest-priority LCP
   // candidate (the first one in the grid); left unset otherwise.
   priority?: boolean;
@@ -39,7 +43,7 @@ const THUMB_HEIGHT = 900;
 // image on hover, if one's set in Sanity), the title and date range, and an
 // arrow badge that appears on hover. The whole card links to the case study
 // page once one's been written — otherwise it's just a static preview.
-export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, comingSoon, priority }: WorkRowProps) {
+export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, comingSoon, likes, priority }: WorkRowProps) {
   const hasHoverImage = Boolean(hoverImage?.asset);
   const isClickable = Boolean(hasCaseStudy && slug && !comingSoon);
 
@@ -84,6 +88,8 @@ export default function WorkRow({ title, dateRange, mainImage, hoverImage, slug,
             Coming soon
           </span>
         )}
+
+        <LikeButton id={id} initialLikes={likes ?? 0} variant="corner" />
       </div>
 
       <div className="flex items-center justify-between gap-3">

@@ -47,11 +47,6 @@ const PHOTOS_QUERY = `*[
 
 const options = sanityFetchOptions(900);
 
-// Full-bleed masonry photo gallery with a click-to-open lightbox, replacing
-// the previous external link out to glass.photo. Shows an empty-state
-// message until photos are uploaded in Sanity. Each photo resolves to two
-// sizes: a small one for the grid tile and lightbox filmstrip, and a larger
-// one only downloaded once that photo is actually open in the lightbox.
 export default async function PhotosPage() {
   const photos = await client.fetch<PhotoDocument[]>(PHOTOS_QUERY, {}, options);
 
@@ -82,7 +77,7 @@ export default async function PhotosPage() {
       <PrimaryNav />
 
       <div className="px-6">
-        <PageHeader title="Photos" subtitle="A collection of my favorite photography I've shot over the years, with camera and lens details included." />
+        <PageHeader title="Photos" subtitle="A collection of my favorite photography I've shot over the years. Camera and lens info as well as buy print links included." />
 
         <PhotoGrid photos={items} />
       </div>

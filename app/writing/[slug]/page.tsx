@@ -9,7 +9,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import { BackLink } from "@/components/ui/LinkPill";
 import { formatPostDate } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
-import BlogStickyBar from "@/components/ui/BlogStickyBar";
+import DetailStickyBar from "@/components/ui/DetailStickyBar";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
 import { prepareImageBlocks, createPortableTextComponents, textSpacingClassName } from "@/lib/portable-text-images";
 
@@ -86,7 +86,13 @@ export default async function WritingPostPage({
   return (
     <div className="pt-32 pb-24">
       <PrimaryNav />
-      <BlogStickyBar id={post._id} title={post.title} likes={post.likes ?? 0} />
+      <DetailStickyBar
+        id={post._id}
+        title={post.title}
+        likes={post.likes ?? 0}
+        backHref="/writing"
+        sentinelId="post-title-sentinel"
+      />
 
       <div className="px-6">
         <div className="flex items-center justify-between gap-4">
@@ -100,7 +106,7 @@ export default async function WritingPostPage({
           subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
           className="mt-6"
         />
-        {/* Marks where the title ends; BlogStickyBar watches this via
+        {/* Marks where the title ends; DetailStickyBar watches this via
             IntersectionObserver and reveals itself once it scrolls out of view. */}
         <div id="post-title-sentinel" />
       </div>

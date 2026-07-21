@@ -4,10 +4,11 @@ import { writeClient } from "@/sanity/writeClient";
 
 // Document types with a `likes` field. The increment target's `_type` is
 // checked against this list before any write happens.
-const LIKEABLE_TYPES = ["post", "feedItem", "recommendation", "musicRelease", "product", "photo"];
+const LIKEABLE_TYPES = ["post", "feedItem", "recommendation", "musicRelease", "product", "photo", "work"];
 
-// Increments a post or feedItem's `likes` field by 1 and returns the new total.
-// The id is only ever used as the target of that increment.
+// Increments (or, with `action: "unlike"`, decrements) a document's `likes`
+// field by 1 and returns the new total. The id is only ever used as the
+// target of that update.
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -20,6 +21,9 @@ export async function POST(request: Request) {
   if (typeof id !== "string" || !id) {
     return NextResponse.json({ error: "Missing document id" }, { status: 400 });
   }
+
+  const action = (body as { action?: unknown } | null)?.action;
+  const delta = action === "unlike" ? -1 : 1;
 
   // Returns a specific error response when SANITY_API_WRITE_TOKEN isn't set in the environment.
   if (!process.env.SANITY_API_WRITE_TOKEN) {
@@ -39,13 +43,13 @@ export async function POST(request: Request) {
     const result = await writeClient
       .patch(id)
       .setIfMissing({ likes: 0 })
-      .inc({ likes: 1 })
+      .inc({ likes: delta })
       .commit<{ likes?: number }>();
 
-    return NextResponse.json({ likes: result.likes ?? 0 });
+    return NextResponse.json({ likes: Math.max(0, result.likes ?? 0) });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error("Failed to increment likes:", message);
+    console.error("Failed to update likes:", message);
     return NextResponse.json({ error: `Failed to save like: ${message}` }, { status: 500 });
   }
 }

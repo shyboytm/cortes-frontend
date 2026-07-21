@@ -312,7 +312,7 @@ export default function RemixSequencer() {
             <button
               type="button"
               onClick={togglePlay}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-800 text-white transition-transform hover:scale-105 dark:bg-purple-500"
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-purple-800 text-white transition-transform hover:scale-105 dark:bg-purple-500"
               aria-label={isPlaying ? 'Stop' : 'Play'}
             >
               {isPlaying ? <Square size={16} /> : <Play size={16} className="ml-0.5" />}
@@ -326,14 +326,14 @@ export default function RemixSequencer() {
             <button
               type="button"
               onClick={randomize}
-              className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
+              className="flex cursor-pointer items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
             >
               <Shuffle size={13} /> Shuffle
             </button>
             <button
               type="button"
               onClick={clearGrid}
-              className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
+              className="flex cursor-pointer items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
             >
               <RotateCcw size={13} /> Clear
             </button>
@@ -379,7 +379,7 @@ export default function RemixSequencer() {
                 type="button"
                 onClick={() => togglePad(pad.id)}
                 className={cn(
-                  'flex-1 rounded-full border px-3 py-1.5 text-center text-xs tracking-widest uppercase transition-colors',
+                  'flex-1 cursor-pointer rounded-full border px-3 py-1.5 text-center text-xs tracking-widest uppercase transition-colors',
                   activePads[pad.id]
                     ? 'border-purple-800 bg-purple-800/10 text-purple-800 dark:border-purple-400 dark:bg-purple-400/10 dark:text-purple-400'
                     : 'border-black/10 text-black/60 hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white'
@@ -407,7 +407,7 @@ export default function RemixSequencer() {
                     onClick={() => toggleStep(lane.id, step)}
                     aria-label={`${lane.label} step ${step + 1}`}
                     className={cn(
-                      'aspect-square rounded-[3px] transition-colors',
+                      'aspect-square cursor-pointer rounded-[3px] transition-colors',
                       active ? 'bg-purple-800 dark:bg-purple-400' : 'bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20',
                       currentStep === step && isPlaying && 'ring-2 ring-black/40 dark:ring-white/60'
                     )}

@@ -43,7 +43,7 @@ function FilterPill({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs tracking-widest uppercase transition-colors",
+        "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs tracking-widest uppercase transition-colors",
         active
           ? "border-black/30 bg-black/5 text-black dark:border-white/30 dark:bg-white/10 dark:text-white"
           : "border-black/10 text-black/60 hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:border-white/30 dark:hover:text-white"

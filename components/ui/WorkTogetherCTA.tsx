@@ -1,5 +1,4 @@
 import Link from "next/link";
-import NavDotGrid from "./NavDotGrid";
 
 // The marquee phrase, including its own trailing separator, so the two
 // copies below can sit directly adjacent with zero gap for a seamless loop.
@@ -12,8 +11,6 @@ const MARQUEE_PHRASE = Array.from({ length: 1 }, () => "Let's Chat // Contact //
 export default function WorkTogetherCTA() {
   return (
     <div className="relative z-10 mx-6 mt-6 flex h-48 items-center justify-center overflow-hidden bg-white/40 dark:bg-black/40 rounded-2xl border border-black/10 sm:h-64 dark:border-white/10">
-
-      <NavDotGrid />
 
       <div
         aria-hidden

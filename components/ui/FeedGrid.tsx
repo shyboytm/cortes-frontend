@@ -92,7 +92,7 @@ export default function FeedGrid({ items }: FeedGridProps) {
                     src={urlFor(item.image.asset).width(1200).fit("max").url()}
                     alt={item.image.alt || item.caption || ""}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 420px"
                   />
                 )

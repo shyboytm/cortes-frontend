@@ -19,10 +19,10 @@ export interface LikeButtonProps {
 
 const STORAGE_PREFIX = "liked:";
 
-// Allows one like per browser, tracked in localStorage, incrementing a
-// shared `likes` count stored on the Sanity document. Updates the
-// displayed count immediately on click and rolls back if the request to
-// /api/like fails.
+// Allows toggling a like per browser, tracked in localStorage, incrementing
+// or decrementing a shared `likes` count stored on the Sanity document.
+// Updates the displayed count immediately on click and rolls back if the
+// request to /api/like fails.
 export default function LikeButton({ id, initialLikes, variant = "inline", className }: LikeButtonProps) {
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
@@ -34,43 +34,53 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
     setLiked(window.localStorage.getItem(STORAGE_PREFIX + id) === "1");
   }, [id]);
 
-  const handleClick = async () => {
-    if (liked || pending) return;
+  const handleToggle = async () => {
+    if (pending) return;
+    const nextLiked = !liked;
+
     setPending(true);
-    setLiked(true);
-    setLikes((n) => n + 1);
-    setJustLiked(true);
-    window.localStorage.setItem(STORAGE_PREFIX + id, "1");
-    window.setTimeout(() => setJustLiked(false), 300);
+    setLiked(nextLiked);
+    setLikes((n) => Math.max(0, n + (nextLiked ? 1 : -1)));
+    if (nextLiked) {
+      setJustLiked(true);
+      window.setTimeout(() => setJustLiked(false), 300);
+      window.localStorage.setItem(STORAGE_PREFIX + id, "1");
+    } else {
+      window.localStorage.removeItem(STORAGE_PREFIX + id);
+    }
 
     try {
       const res = await fetch("/api/like", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id, action: nextLiked ? "like" : "unlike" }),
       });
       const data = (await res.json().catch(() => ({}))) as { likes?: number; error?: string };
       if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
       if (typeof data.likes === "number") setLikes(data.likes);
     } catch (error) {
-      // Reverts the optimistic like update and logs the error.
+      // Reverts the optimistic update and logs the error.
       console.error("Like failed to save:", error);
-      setLiked(false);
-      setLikes((n) => Math.max(0, n - 1));
-      window.localStorage.removeItem(STORAGE_PREFIX + id);
+      setLiked(!nextLiked);
+      setLikes((n) => Math.max(0, n + (nextLiked ? -1 : 1)));
+      if (nextLiked) {
+        window.localStorage.removeItem(STORAGE_PREFIX + id);
+      } else {
+        window.localStorage.setItem(STORAGE_PREFIX + id, "1");
+      }
     } finally {
       setPending(false);
     }
   };
 
-  const label = liked ? `${likes} likes — you liked this` : `Like this post (${likes} likes so far)`;
+  const label = liked ? `Unlike (${likes} likes so far)` : `Like this post (${likes} likes so far)`;
 
   // Stops the click from propagating so a like tap doesn't also trigger
   // navigation on a row/card wrapped in a Link.
   const onClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    handleClick();
+    handleToggle();
   };
 
   if (variant === "corner") {
@@ -78,10 +88,9 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       <button
         type="button"
         onClick={onClick}
-        disabled={liked || pending}
         aria-label={label}
         className={cn(
-          "absolute top-3 right-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full border border-black/20 bg-white/80 px-3 py-1.5 text-xs text-black backdrop-blur-sm transition-all duration-200 hover:bg-white/95 disabled:cursor-not-allowed dark:border-white/20 dark:bg-black/70 dark:text-white dark:hover:bg-black/85 lg:opacity-0 lg:group-hover:opacity-100",
+          "absolute top-3 right-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full border border-black/20 bg-white/80 px-3 py-1.5 text-xs text-black backdrop-blur-sm transition-all duration-200 hover:bg-white/95 dark:border-white/20 dark:bg-black/70 dark:text-white dark:hover:bg-black/85 lg:opacity-0 lg:group-hover:opacity-100",
           justLiked && "scale-110",
           className
         )}
@@ -97,10 +106,9 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       <button
         type="button"
         onClick={onClick}
-        disabled={liked || pending}
         aria-label={label}
         className={cn(
-          "flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-black/20 bg-white/80 px-3 text-black/70 backdrop-blur-sm transition-colors hover:text-black disabled:cursor-not-allowed dark:border-white/20 dark:bg-black/70 dark:text-white/70 dark:hover:text-white",
+          "flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-black/20 bg-white/80 px-3 text-black/70 backdrop-blur-sm transition-colors hover:text-black dark:border-white/20 dark:bg-black/70 dark:text-white/70 dark:hover:text-white",
           justLiked && "scale-110",
           className
         )}
@@ -116,10 +124,9 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       <button
         type="button"
         onClick={onClick}
-        disabled={liked || pending}
         aria-label={label}
         className={cn(
-          "inline-flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-black/60 transition-colors hover:text-black disabled:cursor-not-allowed dark:text-white/60 dark:hover:text-white",
+          "inline-flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white",
           liked && "text-red-800 hover:text-red-800 dark:text-red-400 dark:hover:text-red-400",
           className
         )}
@@ -137,10 +144,9 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
     <button
       type="button"
       onClick={onClick}
-      disabled={liked || pending}
       aria-label={label}
       className={cn(
-        "inline-flex cursor-pointer items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:bg-black/[0.06] hover:text-black disabled:cursor-not-allowed dark:border-white/10 dark:bg-white/[0.03] dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white",
+        "inline-flex cursor-pointer items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:bg-black/[0.06] hover:text-black dark:border-white/10 dark:bg-white/[0.03] dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white",
         liked && "border-red-800/30 text-red-800 hover:bg-red-800/10 hover:text-red-800 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10 dark:hover:text-red-400",
         className
       )}

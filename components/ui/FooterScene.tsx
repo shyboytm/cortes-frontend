@@ -69,7 +69,12 @@ export default function FooterScene() {
       camera.position.z = 9;
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // Capped to 1x rather than the usual min(devicePixelRatio, 2): this is
+      // a faint, thin-lined wireframe shape, so retina sharpness buys very
+      // little here relative to the framebuffer memory a 2x-resolution
+      // full-bleed canvas costs on top of the two shader-library canvases
+      // already running site-wide.
+      renderer.setPixelRatio(1);
       container.appendChild(renderer.domElement);
 
       // Shape pool the background cycles through: box, tetrahedron, and
@@ -190,10 +195,38 @@ export default function FooterScene() {
 
         renderer.render(scene, camera);
       };
-      frameId = requestAnimationFrame(animate);
+
+      // Unlike the "wait to start" gate above (which only defers the initial
+      // three.js setup until the footer nears the viewport once), this
+      // observer keeps running for the scene's whole lifetime: it actually
+      // stops the rAF loop whenever the footer scrolls back out of view, and
+      // restarts it when it scrolls back in, rather than letting the loop
+      // run forever in the background for the rest of the session.
+      const visibilityObserver = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[entries.length - 1];
+          if (!entry) return;
+
+          if (entry.isIntersecting) {
+            if (frameId === 0) {
+              // Reset the swap timer so a long time spent paused doesn't
+              // read as elapsed animation time and trigger an instant
+              // dissolve the moment the loop resumes.
+              lastSwap = performance.now();
+              frameId = requestAnimationFrame(animate);
+            }
+          } else if (frameId !== 0) {
+            cancelAnimationFrame(frameId);
+            frameId = 0;
+          }
+        },
+        { rootMargin: "200px" }
+      );
+      visibilityObserver.observe(container);
 
       cleanup = () => {
         cancelAnimationFrame(frameId);
+        visibilityObserver.disconnect();
         window.removeEventListener("pointermove", handlePointerMove);
         resizeObserver.disconnect();
         meshes.forEach((mesh) => mesh.geometry.dispose());

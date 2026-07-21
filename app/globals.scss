@@ -28,12 +28,12 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
 
-  --gradient-1: oklch(0.424 0.199 265.638); // Design — blue-800
+  --gradient-1: oklch(0.48 0.26 265.638); // Design — vivid blue
   --gradient-2: oklch(0.448 0.119 151.328); // Music — green-800
   --gradient-3: oklch(0.444 0.177 26.899); // Photo — red-800
   --gradient-4: oklch(0.473 0.137 46.201); // Code — amber-800
   --gradient-5: oklch(0.459 0.187 3.815); // pink-800
-  --gradient-6: oklch(0.438 0.218 303.724); // purple-800
+  --gradient-6: oklch(0.46 0.27 303.724); // vivid purple
 }
 
 @media (prefers-color-scheme: dark) {
@@ -57,12 +57,12 @@
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
 
-    --gradient-1: oklch(0.707 0.165 254.624); // Design — blue-400
+    --gradient-1: oklch(0.72 0.22 254.624); // Design — vivid blue
     --gradient-2: oklch(0.792 0.209 151.711); // Music — green-400
     --gradient-3: oklch(0.704 0.191 22.216); // Photo — red-400
     --gradient-4: oklch(0.828 0.189 84.429); // Code — amber-400
     --gradient-5: oklch(0.718 0.202 349.761); // pink-400
-    --gradient-6: oklch(0.714 0.203 305.504); // purple-400
+    --gradient-6: oklch(0.72 0.26 305.504); // vivid purple
   }
 
   body {
@@ -106,6 +106,21 @@ html {
 body {
   @apply antialiased;
   text-shadow: 0 0 2px color-mix(in oklab, currentColor 35%, transparent);
+}
+
+// Removes the browser's default focus outline (the "blue line") left behind
+// after clicking or tapping an interactive element. Buttons/links that need
+// a visible focus state for keyboard users already define their own
+// focus-visible ring (see components/ui/button.tsx), so this only affects
+// the plain default outline nothing else opts into.
+a,
+button,
+[role="button"],
+input,
+textarea,
+select,
+summary {
+  outline: none;
 }
 
 // Custom classes
@@ -229,15 +244,15 @@ body {
 .gradient-background {
   background-image: linear-gradient(
     -45deg,
-    color-mix(in oklab, var(--gradient-1) 8%, transparent),
-    color-mix(in oklab, var(--gradient-2) 8%, transparent),
-    color-mix(in oklab, var(--gradient-3) 8%, transparent),
-    color-mix(in oklab, var(--gradient-4) 8%, transparent),
-    color-mix(in oklab, var(--gradient-5) 8%, transparent),
-    color-mix(in oklab, var(--gradient-6) 8%, transparent)
+    color-mix(in oklab, var(--gradient-1) 12%, transparent),
+    color-mix(in oklab, var(--gradient-2) 12%, transparent),
+    color-mix(in oklab, var(--gradient-3) 12%, transparent),
+    color-mix(in oklab, var(--gradient-4) 12%, transparent),
+    color-mix(in oklab, var(--gradient-5) 12%, transparent),
+    color-mix(in oklab, var(--gradient-6) 12%, transparent)
   );
   background-size: 400% 400%;
-  animation: gradient-animation 16s ease-in-out infinite;
+  animation: gradient-animation 12s ease-in-out infinite;
 }
 
 .cta-gradient-hover {
@@ -299,15 +314,22 @@ body {
   }
 }
 
+// Animates position diagonally (both axes), not just horizontally: the
+// gradient itself runs corner-to-corner at -45deg through all 6 color
+// stops, so a horizontal-only sweep (the old 0%/100% with Y pinned at 50%)
+// only ever cut through the middle of that diagonal — exactly where the
+// middle stops (red/amber/pink) live. Blue and purple sit at the two far
+// corners and barely got any screen time as a result. Sweeping Y too
+// actually traverses the whole diagonal, corner to corner.
 @keyframes gradient-animation {
   0% {
-    background-position: 0% 50%;
+    background-position: 0% 0%;
   }
   50% {
-    background-position: 100% 50%;
+    background-position: 100% 100%;
   }
   100% {
-    background-position: 0% 50%;
+    background-position: 0% 0%;
   }
 }
 

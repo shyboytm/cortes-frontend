@@ -54,16 +54,22 @@ export interface PhotoLightboxProps {
   onSelect: (index: number) => void
 }
 
-// Full-screen media viewer: a scrollable filmstrip of every item down the
-// left edge, and the selected item alongside its caption/camera/lens/date/
-// link (stacked on mobile, side by side to the right of the image on
-// desktop). Closes on Escape, backdrop click, or the close button; steps
-// through items via the arrow buttons, Left/Right keys, or clicking a
-// filmstrip thumbnail. Each item has a small thumbnail size (used here and
-// in the grid) and a larger size that's only downloaded once it's the one
-// open.
+// Minimum horizontal drag distance (in px) before a touch gesture counts as
+// an intentional swipe rather than a tap or an incidental wobble.
+const SWIPE_THRESHOLD = 50
+
+// Full-screen media viewer: the selected item (plus its caption/camera/lens/
+// date/link) fills the space above a horizontal filmstrip of every item
+// pinned to the bottom of the viewport. Steps through items via the arrow
+// buttons, Left/Right keys, a horizontal swipe on touch devices, or clicking
+// a filmstrip thumbnail. Closes on Escape, the close button, or clicking
+// anywhere that isn't the image itself or one of the interactive controls
+// (filmstrip, toolbar, meta links) — mirroring PrimaryNav's click-outside-
+// to-close overlay. Each item has a small thumbnail size (used here and in
+// the grid) and a larger size that's only downloaded once it's the one open.
 export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect }: PhotoLightboxProps) {
   const activeThumbRef = useRef<HTMLButtonElement>(null)
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null)
   const item = items[selectedIndex]
 
   // Locks background scroll while the lightbox is open
@@ -79,10 +85,35 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [selectedIndex, items.length, onClose, onSelect])
 
-  // Keeps the active filmstrip thumbnail in view as selection changes.
+  // Keeps the active filmstrip thumbnail in view (horizontally) as selection changes.
   useEffect(() => {
-    activeThumbRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+    activeThumbRef.current?.scrollIntoView({ inline: "nearest", behavior: "smooth" })
   }, [selectedIndex])
+
+  const handleTouchStart = (event: React.TouchEvent) => {
+    const touch = event.touches[0]
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY }
+  }
+
+  const handleTouchEnd = (event: React.TouchEvent) => {
+    const start = touchStartRef.current
+    touchStartRef.current = null
+    if (!start) return
+
+    const touch = event.changedTouches[0]
+    const deltaX = touch.clientX - start.x
+    const deltaY = touch.clientY - start.y
+
+    // Ignores short taps and mostly-vertical gestures so this doesn't
+    // interfere with an accidental tap or scroll attempt.
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY)) return
+
+    if (deltaX < 0) {
+      onSelect((selectedIndex + 1) % items.length)
+    } else {
+      onSelect((selectedIndex - 1 + items.length) % items.length)
+    }
+  }
 
   if (!item) return null
 
@@ -106,64 +137,43 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
   )
 
   return (
-    <div className="glass fixed inset-0 z-[60] flex bg-white/80 dark:bg-black/80" onClick={onClose}>
+    <div
+      className="glass fixed inset-0 z-[60] flex cursor-zoom-out flex-col bg-white/80 dark:bg-black/80"
+      onClick={onClose}
+    >
+      {/* Image + meta. No stopPropagation here (beyond the image/links
+          themselves below) so clicking the surrounding empty space counts
+          as clicking outside the image and closes the lightbox. */}
       <div
-        onClick={(event) => event.stopPropagation()}
-        className="scrollbar-hide h-full w-20 shrink-0 overflow-y-auto py-4 pl-2 pr-6 sm:w-24 lg:w-32 xl:w-36"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 p-6 sm:p-10 lg:flex-row lg:gap-10"
       >
-        <div className="flex flex-col gap-2">
-          {items.map((thumb, index) => (
-            <button
-              key={thumb._id}
-              type="button"
-              ref={index === selectedIndex ? activeThumbRef : undefined}
-              onClick={() => onSelect(index)}
-              className={cn(
-                "relative block w-full shrink-0 cursor-pointer overflow-hidden rounded-sm border transition-all duration-200 ease-out",
-                index === selectedIndex
-                  ? "translate-x-4 border-black opacity-100 dark:border-white"
-                  : "translate-x-0 border-black/10 opacity-50 hover:opacity-80 dark:border-white/10"
-              )}
-              style={{ aspectRatio: thumb.aspectRatio }}
-              aria-label={`Show ${thumb.alt}`}
-            >
-              <Image
-                src={thumb.thumbSrc}
-                alt={thumb.alt}
-                fill
-                placeholder={thumb.blurDataURL ? "blur" : undefined}
-                blurDataURL={thumb.blurDataURL}
-                className="object-cover"
-                sizes="144px"
-              />
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div
-        onClick={(event) => event.stopPropagation()}
-        className="flex flex-1 flex-col items-center justify-center gap-6 p-6 sm:p-10 lg:flex-row lg:gap-10"
-      >
-        <div
-          className="relative max-h-[80vh] max-w-4xl overflow-hidden lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
-          style={{ aspectRatio: item.aspectRatio, width: `min(100%, calc(${item.aspectRatio} * 80vh))` }}
-        >
+        {/* No stopPropagation on this wrapper — it's sized to fill the
+            available space so the lightbox can center the image, which
+            would otherwise make "click outside the image" trigger from
+            anywhere in that box, not just the image's own visible pixels.
+            The Image below sizes itself intrinsically (no `fill`) so its
+            own element bounds match what's actually rendered, and only it
+            stops propagation. */}
+        <div className="flex min-h-0 w-full max-w-4xl flex-1 items-center justify-center self-stretch lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
           <Image
             key={item._id}
             src={item.fullSrc}
             alt={item.alt}
-            fill
+            width={2000}
+            height={Math.max(1, Math.round(2000 / item.aspectRatio))}
             placeholder={item.blurDataURL ? "blur" : undefined}
             blurDataURL={item.blurDataURL}
-            className="object-contain"
+            onClick={(event) => event.stopPropagation()}
+            className="h-auto max-h-full w-auto max-w-full cursor-default"
             sizes="(max-width: 1024px) 90vw, 75vw"
             priority
           />
         </div>
 
         {hasMeta && (
-          <div className="flex w-full max-w-md flex-col gap-2 lg:w-72 lg:max-w-none lg:shrink-0">
+          <div className="flex w-full max-w-md shrink-0 flex-col gap-2 lg:w-72 lg:max-w-none">
             {item.caption && (
               <p className="font-space-mono mb-3 text-base text-black dark:text-white">{item.caption}</p>
             )}
@@ -172,7 +182,8 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
                 href={item.printsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "mb-2 w-fit")}
+                onClick={(event) => event.stopPropagation()}
+                className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "mb-3 w-fit")}
               >
                 <ShoppingBag size={14} />
                 Buy Print
@@ -183,6 +194,7 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(event) => event.stopPropagation()}
                 className="mb-1 flex w-fit items-center gap-2 text-sm text-black/70 underline decoration-black/30 underline-offset-4 transition-colors hover:text-black hover:decoration-black/60 dark:text-white/70 dark:decoration-white/30 dark:hover:text-white dark:hover:decoration-white/60"
               >
                 <ArrowUpRight size={16} className="shrink-0" />
@@ -223,9 +235,42 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
         )}
       </div>
 
+      {/* Filmstrip: pinned to the bottom of the viewport, scrolls horizontally. */}
       <div
         onClick={(event) => event.stopPropagation()}
-        className="absolute top-6 right-6 flex items-center gap-2"
+        className="scrollbar-hide flex h-20 w-full shrink-0 cursor-default items-center gap-2 overflow-x-auto overflow-y-hidden px-4 py-2 sm:h-24 sm:px-6 sm:py-3 lg:h-28 xl:h-32"
+      >
+        {items.map((thumb, index) => (
+          <button
+            key={thumb._id}
+            type="button"
+            ref={index === selectedIndex ? activeThumbRef : undefined}
+            onClick={() => onSelect(index)}
+            className={cn(
+              "relative block h-full w-auto shrink-0 cursor-pointer overflow-hidden rounded-sm border transition-all duration-200 ease-out",
+              index === selectedIndex
+                ? "-translate-y-2 border-black opacity-100 dark:border-white"
+                : "translate-y-0 border-black/10 opacity-50 hover:opacity-80 dark:border-white/10"
+            )}
+            style={{ aspectRatio: thumb.aspectRatio }}
+            aria-label={`Show ${thumb.alt}`}
+          >
+            <Image
+              src={thumb.thumbSrc}
+              alt={thumb.alt}
+              fill
+              placeholder={thumb.blurDataURL ? "blur" : undefined}
+              blurDataURL={thumb.blurDataURL}
+              className="object-cover"
+              sizes="144px"
+            />
+          </button>
+        ))}
+      </div>
+
+      <div
+        onClick={(event) => event.stopPropagation()}
+        className="absolute top-6 right-6 flex cursor-default items-center gap-2"
       >
         <div className="flex items-center gap-1 rounded-full border border-black/20 bg-white/80 p-1 text-black/70 backdrop-blur-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
           <button

@@ -76,6 +76,14 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
             />
 
             <LikeButton id={photo._id} initialLikes={photo.likes ?? 0} variant="corner" />
+
+            {photo.caption && (
+              // Solid drawer that slides up from the bottom edge on hover,
+              // matching the same caption treatment used on Feed cards.
+              <div className="absolute inset-x-0 bottom-0 z-10 flex translate-y-full items-center gap-4 border-t border-black/10 bg-white px-3 py-2.5 transition-transform duration-200 ease-out group-hover:translate-y-0 dark:border-white/10 dark:bg-black">
+                <p className="font-space-mono line-clamp-2 text-sm text-black dark:text-white">{photo.caption}</p>
+              </div>
+            )}
           </div>
         ))}
       </div>

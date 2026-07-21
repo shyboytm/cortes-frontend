@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import NavDotGrid from '@/components/ui/NavDotGrid'
 import NashvilleStatus from '@/components/ui/NashvilleStatus'
 import { SOCIAL_LINKS } from '@/lib/social-links'
 import { useLockBodyScroll } from '@/lib/hooks/useLockBodyScroll'
@@ -17,13 +16,12 @@ type NavLink = {
 
 // One flat, left-aligned column of every menu link, in display order.
 const NAV_LINKS: NavLink[] = [
-  { label: 'Home', href: '/' },
   { label: 'Work', href: '/work' },
   { label: 'Music', href: '/music' },
-  { label: 'Recs', href: '/recs' },
   { label: 'Photos', href: '/photos' },
-  { label: 'Shop', href: '/shop' },
   { label: 'Writing', href: '/writing' },
+  { label: 'Shop', href: '/shop' },
+  { label: 'Recs', href: '/recs' },
   { label: 'About', href: '/about' },
 ]
 
@@ -41,6 +39,16 @@ export default function PrimaryNav() {
 
   // Locks background scroll while the fullscreen menu is open.
   useLockBodyScroll(isOpen)
+
+  // Closes the fullscreen menu on Escape, same as the lightbox.
+  useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen])
 
   // Determines whether a nav link matches the current route. "/work" and
   // "/writing" match both their index page and any subpage under them
@@ -97,12 +105,6 @@ export default function PrimaryNav() {
           id="primary-nav"
           className="glass relative mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-lg border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 py-3 px-5 font-doto text-black dark:text-white"
         >
-
-          {/* Clips NavDotGrid's absolute, inset-0 shader canvas to the bar's
-              rounded corners. */}
-          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-lg">
-            <NavDotGrid />
-          </div>
 
           <div className="relative z-10 flex items-center gap-4">
 
