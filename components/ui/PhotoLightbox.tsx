@@ -12,11 +12,13 @@ import {
   Camera as CameraIcon,
   MapPin,
   Settings2,
+  ShoppingBag,
   X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLockBodyScroll } from "@/lib/hooks/useLockBodyScroll"
 import LikeButton from "@/components/ui/LikeButton"
+import { buttonVariants } from "@/components/ui/button"
 
 // Shared by the Photos grid (camera/lens/settings/location/date all set,
 // no link) and the Work page's Feed grid (just caption + an optional
@@ -39,6 +41,8 @@ export interface LightboxItem {
   location?: string
   // External link shown under the caption (Feed items only).
   link?: string
+  // "Buy Print" button shown under the caption (Photos only).
+  printsUrl?: string
   likes?: number
   aspectRatio: number
 }
@@ -91,7 +95,14 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
     : null
 
   const hasMeta = Boolean(
-    item.caption || item.camera || item.lens || item.settings || item.location || item.link || formattedDate
+    item.caption
+      || item.camera
+      || item.lens
+      || item.settings
+      || item.location
+      || item.link
+      || item.printsUrl
+      || formattedDate
   )
 
   return (
@@ -155,6 +166,17 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
           <div className="flex w-full max-w-md flex-col gap-2 lg:w-72 lg:max-w-none lg:shrink-0">
             {item.caption && (
               <p className="font-space-mono mb-3 text-base text-black dark:text-white">{item.caption}</p>
+            )}
+            {item.printsUrl && (
+              <Link
+                href={item.printsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "mb-2 w-fit")}
+              >
+                <ShoppingBag size={14} />
+                Buy Print
+              </Link>
             )}
             {item.link && (
               <Link

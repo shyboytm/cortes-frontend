@@ -21,6 +21,7 @@ export interface PhotoItem {
   dateTaken?: string
   settings?: string
   location?: string
+  printsUrl?: string
   likes?: number
   aspectRatio: number
 }
