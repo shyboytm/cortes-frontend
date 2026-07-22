@@ -54,7 +54,7 @@ export default function NewsletterSignup({ className }: NewsletterSignupProps) {
           / Newsletter
         </p>
         <p className="text-sm text-black/70 dark:text-white/70">
-          You&apos;re on the list — thanks for signing up.
+          You&apos;re on the list, thanks for signing up!
         </p>
       </div>
     );
@@ -65,7 +65,7 @@ export default function NewsletterSignup({ className }: NewsletterSignupProps) {
       <p className="dot-font font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
         / Newsletter
       </p>
-      <p className="text-sm text-black/60 dark:text-white/60">Occasional updates, never spam.</p>
+      <p className="text-sm text-black/60 dark:text-white/60">Occasional work and music updates, no spam.</p>
 
       <form onSubmit={handleSubmit} className="relative mt-1 w-full max-w-[380px]">
         <input

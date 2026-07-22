@@ -174,6 +174,8 @@ export default async function PrimaryFooter() {
           </div>
 
           <div className="grid grid-cols-2 gap-8 lg:col-span-7">
+            <NewsletterSignup />
+
             <div>
               <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                 / Social
@@ -194,8 +196,6 @@ export default async function PrimaryFooter() {
                 ))}
               </div>
             </div>
-
-            <NewsletterSignup />
           </div>
         </div>
 
@@ -204,14 +204,8 @@ export default async function PrimaryFooter() {
           <ViewportSize className="dot-font font-doto" />
           <p className="dot-font font-doto">© {new Date().getFullYear()} Dennis Cortes</p>
 
-          {/* Each mark is drawn as solid white in its source file; `invert`
-              renders it black in light mode, and `dark:invert-0` reverts it
-              to white in dark mode. */}
           <div aria-hidden className="mt-4 flex flex-wrap items-end gap-4 opacity-25 sm:gap-2">
             {ACCENT_GRAPHICS.map(({ file, width, height }) => (
-              /* eslint-disable-next-line @next/next/no-img-element -- next/image's
-                 optimizer refuses local SVGs without dangerouslyAllowSVG, and
-                 these are purely decorative, non-optimized marks anyway. */
               <img
                 key={file}
                 src={`/${file}`}
