@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { Menu, Volume2, VolumeX, X } from 'lucide-react'
+import { setEnabled as setCuelumeEnabled, play } from 'cuelume'
 import { cn } from '@/lib/utils'
 import NashvilleStatus from '@/components/ui/NashvilleStatus'
 import { SOCIAL_LINKS } from '@/lib/social-links'
 import { useLockBodyScroll } from '@/lib/hooks/useLockBodyScroll'
+import { getStoredSoundEnabled, setStoredSoundEnabled } from '@/lib/sound-preference'
 
 type NavLink = {
   label: string
@@ -31,10 +33,36 @@ export default function PrimaryNav() {
   // Tracks the pathname the menu's open state was last computed for. When
   // the route changes, the menu closes during render.
   const [menuPathname, setMenuPathname] = useState(pathname)
+  // Defaults to true so server and first client render match; synced from
+  // localStorage right after mount, same pattern as LikeButton's liked state.
+  const [soundEnabled, setSoundEnabled] = useState(true)
 
   if (pathname !== menuPathname) {
     setMenuPathname(pathname)
     setIsOpen(false)
+  }
+
+  useEffect(() => {
+    // localStorage only exists client-side, so this can't be computed during
+    // the initial (possibly server) render without risking a hydration
+    // mismatch — it has to resolve here, once, after mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time read of a browser-only value, not a derived/re-render loop
+    setSoundEnabled(getStoredSoundEnabled())
+  }, [])
+
+  // Flips Cuelume's global enabled flag, persists the choice, and — only
+  // when turning sound back on — plays a confirmation tick. Turning it off
+  // stays silent, since a mute action making noise would be a bit ironic.
+  // stopPropagation keeps this from bubbling up to the overlay's own
+  // click-outside-to-close handler, which would otherwise close the menu
+  // every time this is clicked.
+  const handleToggleSound = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    const next = !soundEnabled
+    setSoundEnabled(next)
+    setStoredSoundEnabled(next)
+    setCuelumeEnabled(next)
+    if (next) play('toggle')
   }
 
   // Locks background scroll while the fullscreen menu is open.
@@ -190,6 +218,42 @@ export default function PrimaryNav() {
                 </Link>
               ))}
             </div>
+
+            <button
+              type="button"
+              onClick={handleToggleSound}
+              aria-pressed={soundEnabled}
+              aria-label={soundEnabled ? 'Turn sound off' : 'Turn sound on'}
+              data-cuelume-hover="tick"
+              className="flex w-fit items-center gap-3 text-sm font-normal text-black/70 transition-colors hover:text-black sm:text-base dark:text-white/70 dark:hover:text-white"
+            >
+              {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+              {/* Fixed width (sized to fit "Sound Off", the longer of the
+                  two states) so the label swapping between "On"/"Off"
+                  doesn't change this button's layout width and shove the
+                  toggle over. */}
+              <span className="w-[4.75rem] whitespace-nowrap sm:w-[5.75rem]">Sound {soundEnabled ? 'On' : 'Off'}</span>
+              {/* The actual switch: a pill track that fills solid once "on"
+                  and a thumb that slides to the far side, same on/off
+                  language as any standard toggle. Purely decorative — the
+                  surrounding <button> is what's actually interactive/focusable. */}
+              <span
+                aria-hidden
+                className={cn(
+                  'inline-flex h-5 w-9 shrink-0 items-center rounded-full border px-0.5 transition-colors duration-200',
+                  soundEnabled
+                    ? 'border-black bg-black dark:border-white dark:bg-white'
+                    : 'border-black/20 bg-black/10 dark:border-white/20 dark:bg-white/10'
+                )}
+              >
+                <span
+                  className={cn(
+                    'h-4 w-4 rounded-full bg-white shadow transition-transform duration-200 dark:bg-black',
+                    soundEnabled ? 'translate-x-4' : 'translate-x-0'
+                  )}
+                />
+              </span>
+            </button>
 
           </div>
         </div>

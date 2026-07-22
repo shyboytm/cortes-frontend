@@ -12,18 +12,8 @@ import NashvilleStatus, {
   WEATHER_LABELS,
   type Weather,
 } from "@/components/ui/NashvilleStatus";
-import { LinkPill } from "@/components/ui/LinkPill";
+import NewsletterSignup from "@/components/ui/NewsletterSignup";
 import { SOCIAL_LINKS } from "@/lib/social-links";
-
-// Links to the site's real routes.
-const EXPLORE_LINKS = [
-  { label: "Work", href: "/work" },
-  { label: "Writing", href: "/writing" },
-  { label: "Music", href: "/music" },
-  { label: "Recs", href: "/recs" },
-  { label: "Shop", href: "/shop" },
-  { label: "About", href: "/about" },
-];
 
 // Decorative pixel-art marks rendered along the bottom of the footer.
 // Width/height match each file's own viewBox so the aspect ratio stays
@@ -186,19 +176,6 @@ export default async function PrimaryFooter() {
           <div className="grid grid-cols-2 gap-8 lg:col-span-7">
             <div>
               <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
-                / Explore
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {EXPLORE_LINKS.map((link) => (
-                  <LinkPill key={link.href} href={link.href}>
-                    {link.label}
-                  </LinkPill>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                 / Social
               </p>
               {/* Bare icons with no pill or label. */}
@@ -217,6 +194,8 @@ export default async function PrimaryFooter() {
                 ))}
               </div>
             </div>
+
+            <NewsletterSignup />
           </div>
         </div>
 
