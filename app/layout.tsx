@@ -7,6 +7,7 @@ import PrimaryFooter from '@/components/ui/PrimaryFooter'
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
 import ScrollRestoration from '@/components/ScrollRestoration'
 import NavigationHistoryTracker from '@/components/NavigationHistoryTracker'
+import CuelumeSetup from '@/components/CuelumeSetup'
 import { Analytics } from '@vercel/analytics/next';
 
 import "./globals.scss";
@@ -47,6 +48,7 @@ export default function RootLayout({
       <body className="bg-white text-black dark:bg-black dark:text-white gradient-background">
         <ScrollRestoration />
         <NavigationHistoryTracker />
+        <CuelumeSetup />
 
         <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}

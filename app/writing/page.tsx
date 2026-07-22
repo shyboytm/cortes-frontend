@@ -69,6 +69,8 @@ export default async function WritingIndexPage() {
                 <a
                   key={year}
                   href={`#${year}`}
+                  data-cuelume-hover="tick"
+                  data-cuelume-press
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   {year === "undated" ? "Undated" : year}

@@ -61,6 +61,8 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
                 setSelectedIndex(index)
               }
             }}
+            data-cuelume-hover="tick"
+            data-cuelume-press
             className="group relative mb-4 block w-full cursor-zoom-in overflow-hidden rounded-sm border border-black/10 bg-black/5 break-inside-avoid dark:border-white/10 dark:bg-white/5"
             style={{ aspectRatio: photo.aspectRatio }}
             aria-label={`Open ${photo.alt} full screen`}

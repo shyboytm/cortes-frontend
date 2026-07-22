@@ -50,6 +50,7 @@ export default async function AboutPage() {
           subtitle={
             <Link
               href="mailto:hi@cortes.us"
+              data-cuelume-hover="tick"
               className="transition-colors link-underline hover:text-black dark:hover:text-white"
             >
               hi@cortes.us
@@ -94,6 +95,8 @@ export default async function AboutPage() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-cuelume-hover="tick"
+                    data-cuelume-press
                     className={buttonVariants({ variant: "secondary", size: "sm" })}
                   >
                     <link.icon size={12} className="svg-shadow" />
@@ -144,6 +147,8 @@ export default async function AboutPage() {
                 href={SOCIAL_LINKS.find((link) => link.label === "LinkedIn")!.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-cuelume-hover="tick"
+                data-cuelume-press
                 className={buttonVariants({ variant: "secondary", size: "sm" })}
               >
                 See more on LinkedIn

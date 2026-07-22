@@ -141,6 +141,8 @@ export default function FeedGrid({ items }: FeedGridProps) {
                       setSelectedIndex(lightboxIndex);
                     }
                   }}
+                  data-cuelume-hover="tick"
+                  data-cuelume-press
                   className="block cursor-zoom-in"
                   aria-label={`Open ${item.image?.alt || item.caption || "image"} full screen`}
                 >

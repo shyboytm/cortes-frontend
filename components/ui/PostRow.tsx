@@ -21,6 +21,7 @@ export default function PostRow({ _id, title, slug, publishedAt, likes }: PostRo
     <li>
       <Link
         href={`/writing/${slug}`}
+        data-cuelume-hover="tick"
         className="group -mx-3 flex flex-col items-start gap-2 rounded-md px-4 py-4 transition-colors hover:bg-black/[0.03] sm:flex-row sm:items-center sm:justify-between sm:gap-6 dark:hover:bg-white/[0.03]"
       >
         <div className="flex items-center gap-2">

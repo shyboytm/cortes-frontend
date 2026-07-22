@@ -440,6 +440,8 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
       onClick={cycle}
       onMouseMove={handlePointerMove}
       onMouseLeave={handlePointerLeave}
+      data-cuelume-hover="tick"
+      data-cuelume-press
       className={cn(
         "group relative block w-full cursor-pointer rounded-sm border border-black/10 text-left dark:border-white/10",
         className

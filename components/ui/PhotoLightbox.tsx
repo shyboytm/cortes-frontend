@@ -85,9 +85,12 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [selectedIndex, items.length, onClose, onSelect])
 
-  // Keeps the active filmstrip thumbnail in view (horizontally) as selection changes.
+  // Keeps the active filmstrip thumbnail in view as selection changes —
+  // `inline` covers the sm+ horizontal bar, `block` covers the mobile
+  // vertical strip, and "nearest" on both means whichever axis isn't
+  // actually scrollable is a no-op.
   useEffect(() => {
-    activeThumbRef.current?.scrollIntoView({ inline: "nearest", behavior: "smooth" })
+    activeThumbRef.current?.scrollIntoView({ inline: "nearest", block: "nearest", behavior: "smooth" })
   }, [selectedIndex])
 
   const handleTouchStart = (event: React.TouchEvent) => {
@@ -175,7 +178,7 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
         {hasMeta && (
           <div className="flex w-full max-w-md shrink-0 flex-col gap-2 lg:w-72 lg:max-w-none">
             {item.caption && (
-              <p className="font-space-mono mb-3 text-base text-black dark:text-white">{item.caption}</p>
+              <p className="font-space-mono mb-3 text-xs text-black sm:text-sm lg:text-base dark:text-white">{item.caption}</p>
             )}
             {item.printsUrl && (
               <Link
@@ -184,6 +187,8 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
                 rel="noopener noreferrer"
                 onClick={(event) => event.stopPropagation()}
                 className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "mb-3 w-fit")}
+                data-cuelume-hover="tick"
+                data-cuelume-press
               >
                 <ShoppingBag size={14} />
                 Buy Print
@@ -202,31 +207,31 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
               </Link>
             )}
             {item.location && (
-              <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
+              <div className="flex items-center gap-2 text-xs text-black/60 sm:text-sm dark:text-white/60">
                 <MapPin size={16} className="shrink-0" />
                 <span>{item.location}</span>
               </div>
             )}
             {item.camera && (
-              <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
+              <div className="flex items-center gap-2 text-xs text-black/60 sm:text-sm dark:text-white/60">
                 <CameraIcon size={16} className="shrink-0" />
                 <span>{item.camera}</span>
               </div>
             )}
             {item.lens && (
-              <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
+              <div className="flex items-center gap-2 text-xs text-black/60 sm:text-sm dark:text-white/60">
                 <Aperture size={16} className="shrink-0" />
                 <span>{item.lens}</span>
               </div>
             )}
             {item.settings && (
-              <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
+              <div className="flex items-center gap-2 text-xs text-black/60 sm:text-sm dark:text-white/60">
                 <Settings2 size={16} className="shrink-0" />
                 <span>{item.settings}</span>
               </div>
             )}
             {formattedDate && (
-              <div className="flex items-center gap-2 text-sm text-black/60 dark:text-white/60">
+              <div className="flex items-center gap-2 text-xs text-black/60 sm:text-sm dark:text-white/60">
                 <Calendar size={16} className="shrink-0" />
                 <span>{formattedDate}</span>
               </div>
@@ -235,10 +240,12 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
         )}
       </div>
 
-      {/* Filmstrip: pinned to the bottom of the viewport, scrolls horizontally. */}
+      {/* Filmstrip: hidden entirely on mobile (swipe/arrows are the only
+          way to step through items there) — pinned to the bottom of the
+          viewport and scrolling horizontally from sm+ up. */}
       <div
         onClick={(event) => event.stopPropagation()}
-        className="scrollbar-hide flex h-20 w-full shrink-0 cursor-default items-center gap-2 overflow-x-auto overflow-y-hidden px-4 py-2 sm:h-24 sm:px-6 sm:py-3 lg:h-28 xl:h-32"
+        className="scrollbar-hide hidden shrink-0 cursor-default items-center gap-2 overflow-x-auto overflow-y-hidden px-4 py-2 sm:flex sm:h-24 sm:w-full sm:px-6 sm:py-3 lg:h-28 xl:h-32"
       >
         {items.map((thumb, index) => (
           <button
@@ -246,6 +253,8 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
             type="button"
             ref={index === selectedIndex ? activeThumbRef : undefined}
             onClick={() => onSelect(index)}
+            data-cuelume-hover="tick"
+            data-cuelume-press
             className={cn(
               "relative block h-full w-auto shrink-0 cursor-pointer overflow-hidden rounded-sm border transition-all duration-200 ease-out",
               index === selectedIndex
@@ -277,6 +286,8 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
             type="button"
             onClick={() => onSelect((selectedIndex - 1 + items.length) % items.length)}
             aria-label="Previous"
+            data-cuelume-hover="tick"
+            data-cuelume-press
             className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/10 hover:text-black dark:hover:bg-white/10 dark:hover:text-white"
           >
             <ChevronLeft size={18} />
@@ -285,6 +296,8 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
             type="button"
             onClick={() => onSelect((selectedIndex + 1) % items.length)}
             aria-label="Next"
+            data-cuelume-hover="tick"
+            data-cuelume-press
             className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/10 hover:text-black dark:hover:bg-white/10 dark:hover:text-white"
           >
             <ChevronRight size={18} />
@@ -297,6 +310,8 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
           type="button"
           onClick={onClose}
           aria-label="Close"
+          data-cuelume-hover="tick"
+          data-cuelume-press
           className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/20 bg-white/80 text-black/70 transition-colors hover:text-black dark:border-white/20 dark:bg-black/70 dark:text-white/70 dark:hover:text-white"
         >
           <X size={18} />

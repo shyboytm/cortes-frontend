@@ -95,6 +95,8 @@ export default function RecRow({
         href={url}
         target="_blank"
         rel="noopener noreferrer"
+        data-cuelume-hover="tick"
+        data-cuelume-press
         className="group relative -mx-3 flex items-start gap-4 rounded-md px-4 py-4 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
       >
         {hoverPreviewUrl && (

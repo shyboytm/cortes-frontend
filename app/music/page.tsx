@@ -79,6 +79,8 @@ export default async function MusicPage() {
             <Link
               key={label}
               href={href}
+              data-cuelume-hover="tick"
+              data-cuelume-press
               className={buttonVariants({ variant: "secondary", size: "sm" })}
             >
               <Icon size={16} />
@@ -112,7 +114,7 @@ export default async function MusicPage() {
           <p className="mb-4 break-inside-avoid-column text-lg leading-relaxed text-black/80 dark:text-white/80">
             If you&apos;re a fan of immersive compositions that are hip-hop-inspired, ambient,
             electronic, and sample-heavy, I invite you to explore my music and experience the unique soundscapes I create.
-            You can find my music on all major streaming platforms, and you can directly support my work by purchasing my music on <Link href="https://cordio.bandcamp.com" className="link-underline">Bandcamp</Link>.
+            You can find my music on all major streaming platforms, and you can directly support my work by purchasing my music on <Link href="https://cordio.bandcamp.com" data-cuelume-hover="tick" className="link-underline">Bandcamp</Link>.
           </p>
         </div>
 
@@ -122,6 +124,8 @@ export default async function MusicPage() {
               <h2 className="text-2xl font-normal tracking-wide text-black dark:text-white">Latest releases</h2>
               <Link
                 href="/music/releases"
+                data-cuelume-hover="tick"
+                data-cuelume-press
                 className={buttonVariants({ variant: 'secondary', size: 'sm' })}
               >
                 View All

@@ -42,6 +42,8 @@ function FilterPill({
     <button
       type="button"
       onClick={onClick}
+      data-cuelume-hover="tick"
+      data-cuelume-press
       className={cn(
         "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs tracking-widest uppercase transition-colors",
         active

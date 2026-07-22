@@ -10,6 +10,7 @@ export const portableTextLinkMark: PortableTextMarkComponent = ({ value, childre
   return (
     <a
       href={href}
+      data-cuelume-hover="tick"
       className="link-underline opacity-50"
       {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >

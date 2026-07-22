@@ -89,6 +89,8 @@ export default async function RecsPage() {
                 <a
                   key={value}
                   href={`#${value}`}
+                  data-cuelume-hover="tick"
+                  data-cuelume-press
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   <Icon size={14} />
@@ -146,6 +148,8 @@ export default async function RecsPage() {
                 href="https://buymeacoffee.com/cortes"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-cuelume-hover="tick"
+                data-cuelume-press
                 className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "mt-4")}
               >
                 <SiBuymeacoffee size={16} />

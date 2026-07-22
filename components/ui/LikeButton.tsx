@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
+import { play } from "cuelume";
 import { cn } from "@/lib/utils";
 
 export interface LikeButtonProps {
@@ -45,8 +46,13 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       setJustLiked(true);
       window.setTimeout(() => setJustLiked(false), 300);
       window.localStorage.setItem(STORAGE_PREFIX + id, "1");
+      // Audible confirmation for the positive action, right alongside the
+      // optimistic UI update — matches how justLiked's bounce animation
+      // fires immediately rather than waiting on the network request.
+      play("success");
     } else {
       window.localStorage.removeItem(STORAGE_PREFIX + id);
+      play("release");
     }
 
     try {
@@ -89,6 +95,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
         type="button"
         onClick={onClick}
         aria-label={label}
+        data-cuelume-hover="tick"
         className={cn(
           "absolute top-3 right-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full border border-black/20 bg-white/80 px-3 py-1.5 text-xs text-black backdrop-blur-sm transition-all duration-200 hover:bg-white/95 dark:border-white/20 dark:bg-black/70 dark:text-white dark:hover:bg-black/85 lg:opacity-0 lg:group-hover:opacity-100",
           justLiked && "scale-110",
@@ -107,6 +114,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
         type="button"
         onClick={onClick}
         aria-label={label}
+        data-cuelume-hover="tick"
         className={cn(
           "flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-black/20 bg-white/80 px-3 text-black/70 backdrop-blur-sm transition-colors hover:text-black dark:border-white/20 dark:bg-black/70 dark:text-white/70 dark:hover:text-white",
           justLiked && "scale-110",
@@ -125,6 +133,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
         type="button"
         onClick={onClick}
         aria-label={label}
+        data-cuelume-hover="tick"
         className={cn(
           "inline-flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white",
           liked && "text-red-800 hover:text-red-800 dark:text-red-400 dark:hover:text-red-400",
@@ -145,6 +154,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       type="button"
       onClick={onClick}
       aria-label={label}
+      data-cuelume-hover="tick"
       className={cn(
         "inline-flex cursor-pointer items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-xs tracking-widest text-black/70 uppercase transition-colors hover:bg-black/[0.06] hover:text-black dark:border-white/10 dark:bg-white/[0.03] dark:text-white/70 dark:hover:bg-white/[0.06] dark:hover:text-white",
         liked && "border-red-800/30 text-red-800 hover:bg-red-800/10 hover:text-red-800 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10 dark:hover:text-red-400",

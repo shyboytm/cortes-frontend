@@ -312,6 +312,8 @@ export default function RemixSequencer() {
             <button
               type="button"
               onClick={togglePlay}
+              data-cuelume-hover="tick"
+              data-cuelume-press
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-purple-800 text-white transition-transform hover:scale-105 dark:bg-purple-500"
               aria-label={isPlaying ? 'Stop' : 'Play'}
             >
@@ -326,6 +328,8 @@ export default function RemixSequencer() {
             <button
               type="button"
               onClick={randomize}
+              data-cuelume-hover="tick"
+              data-cuelume-press
               className="flex cursor-pointer items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
             >
               <Shuffle size={13} /> Shuffle
@@ -333,6 +337,8 @@ export default function RemixSequencer() {
             <button
               type="button"
               onClick={clearGrid}
+              data-cuelume-hover="tick"
+              data-cuelume-press
               className="flex cursor-pointer items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs tracking-widest text-black/60 uppercase transition-colors hover:text-black dark:border-white/10 dark:text-white/60 dark:hover:text-white"
             >
               <RotateCcw size={13} /> Clear
@@ -378,6 +384,8 @@ export default function RemixSequencer() {
                 key={pad.id}
                 type="button"
                 onClick={() => togglePad(pad.id)}
+                data-cuelume-hover="tick"
+                data-cuelume-press
                 className={cn(
                   'flex-1 cursor-pointer rounded-full border px-3 py-1.5 text-center text-xs tracking-widest uppercase transition-colors',
                   activePads[pad.id]
@@ -400,6 +408,11 @@ export default function RemixSequencer() {
                 {lane.label}
               </span>
               <div className="grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1 sm:flex-1">
+                {/* Deliberately no Cuelume tick/press here, unlike the rest
+                    of the sequencer's controls: these 64 step buttons are
+                    tapped rapidly while composing a beat, and layering a
+                    synthesized UI click on every tap would clash with the
+                    actual drum samples the sequencer is already playing. */}
                 {grid[lane.id].map((active, step) => (
                   <button
                     key={step}

@@ -51,6 +51,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        // Default Cuelume feedback for every button built on this
+        // component: a hover tick, and a press knock on click. Callers can
+        // still override either by passing their own data-cuelume-* prop,
+        // since these come before the {...props} spread below.
+        data-cuelume-hover="tick"
+        data-cuelume-press
         {...props}
       />
     )

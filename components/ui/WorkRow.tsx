@@ -48,7 +48,11 @@ export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, s
   const isClickable = Boolean(hasCaseStudy && slug && !comingSoon);
 
   const card = (
-    <div className="flex flex-col gap-3">
+    <div
+      className="flex flex-col gap-3"
+      data-cuelume-hover="tick"
+      data-cuelume-press={isClickable || undefined}
+    >
       <div
         className="group relative w-full overflow-hidden rounded-sm border border-black/10 bg-black/5 dark:border-white/10 dark:bg-white/5"
         style={{ aspectRatio: THUMB_WIDTH / THUMB_HEIGHT }}

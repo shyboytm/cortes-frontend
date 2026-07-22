@@ -18,6 +18,8 @@ export function LinkPill({ href, external, className, children }: LinkPillProps)
     <Link
       href={href}
       className={cn(buttonVariants({ variant: "secondary", size: "sm" }), className)}
+      data-cuelume-hover="tick"
+      data-cuelume-press
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
       {children}

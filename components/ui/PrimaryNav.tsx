@@ -87,6 +87,7 @@ export default function PrimaryNav() {
         // that call was a no-op — the old page's scroll position just
         // carried over once the lock released a beat later.
         onClick={() => setIsOpen(false)}
+        data-cuelume-hover="tick"
         className={cn(linkClassName(link.href), 'inline-block w-fit transition-all duration-200 ease-out hover:translate-x-3')}
       >
         {link.label}
@@ -120,6 +121,8 @@ export default function PrimaryNav() {
               onClick={() => setIsOpen((open) => !open)}
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={isOpen}
+              data-cuelume-hover="tick"
+              data-cuelume-toggle
               className="relative flex h-6 w-5 shrink-0 cursor-pointer items-center justify-center text-black/80 transition-colors hover:text-black dark:text-white/80 dark:hover:text-white"
             >
               <Menu
@@ -160,13 +163,14 @@ export default function PrimaryNav() {
 
         <div className="px-3 py-28 sm:py-32 md:px-4 lg:px-6">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6">
-            <ul className="flex flex-col gap-3 font-sans font-normal text-4xl normal-case sm:text-5xl lg:text-4xl lg:gap-5 [text-shadow:none] dark:[text-shadow:0_0_5px_currentColor]">
+            <ul className="flex flex-col gap-4 font-sans font-normal text-3xl normal-case sm:text-5xl lg:text-4xl lg:gap-5 [text-shadow:none] dark:[text-shadow:0_0_5px_currentColor]">
               {NAV_LINKS.map(renderLink)}
             </ul>
 
             <Link
               href="mailto:hi@cortes.us"
-              className="w-fit font-sans text-sm font-normal mt-3 text-black/70 transition-colors hover:text-black sm:text-2xl dark:text-white/70 dark:hover:text-white"
+              data-cuelume-hover="tick"
+              className="w-fit font-sans text-base font-normal mt-3 text-black/70 transition-colors hover:text-black sm:text-2xl dark:text-white/70 dark:hover:text-white"
             >
               hi@cortes.us
             </Link>
@@ -179,6 +183,7 @@ export default function PrimaryNav() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
+                  data-cuelume-hover="tick"
                   className="text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
                 >
                   <social.icon size={20} className="svg-shadow" />

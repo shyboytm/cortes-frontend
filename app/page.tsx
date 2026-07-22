@@ -37,8 +37,8 @@ export default async function IndexPage() {
         </div>
 
         <div className="font-light my-6 space-y-4 sm:text-5xl max-w-5xl text-3xl leading-[1.25] pb-6 dark:text-white/80 ">
-          <h2 className="mb-12">I'm a software designer, musician, and photographer. Currently a Principal Designer at <Link className="link-underline opacity-50" href="https://www.aboon.com">Aboon</Link>, previously at <Link className="link-underline opacity-50" href="https://www.instagram.com">Instagram</Link>.</h2>
-          <h2 className="mb-12">Outside of work, I build <Link className="link-underline opacity-50" href="https://apple.co/4gUqHBR">GamePal</Link>, restore and mod old consoles, take photos, and make music as <Link className="link-underline opacity-50" href="#">Cordio</Link> and <Link className="link-underline opacity-50" href="#">Horizon Radar</Link> which you can stream anywhere or support me on <Link className="link-underline opacity-50" href="https://cordio.bandcamp.com">Bandcamp</Link>.</h2>
+          <h2 className="mb-12">I&apos;m a software designer, musician, and photographer. Currently a Principal Designer at <Link className="link-underline opacity-50" data-cuelume-hover="tick" href="https://www.aboon.com">Aboon</Link>, previously at <Link className="link-underline opacity-50" data-cuelume-hover="tick" href="https://www.instagram.com">Instagram</Link>.</h2>
+          <h2 className="mb-12">Outside of work, I build <Link className="link-underline opacity-50" data-cuelume-hover="tick" href="https://apple.co/4gUqHBR">GamePal</Link>, restore and mod old consoles, take photos, and make music as <Link className="link-underline opacity-50" data-cuelume-hover="tick" href="#">Cordio</Link> and <Link className="link-underline opacity-50" data-cuelume-hover="tick" href="#">Horizon Radar</Link> which you can stream anywhere or support me on <Link className="link-underline opacity-50" data-cuelume-hover="tick" href="https://cordio.bandcamp.com">Bandcamp</Link>.</h2>
         </div>
 
       </div>
@@ -51,6 +51,8 @@ export default async function IndexPage() {
           <h2 className="text-2xl font-normal tracking-wide text-black dark:text-white">Featured Projects</h2>
           <Link
             href="/work"
+            data-cuelume-hover="tick"
+            data-cuelume-press
             className={buttonVariants({ variant: "secondary", size: "sm" })}
           >
             View All
