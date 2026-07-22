@@ -228,11 +228,15 @@ export default function PrimaryNav() {
               className="flex w-fit items-center gap-3 text-sm font-normal text-black/70 transition-colors hover:text-black sm:text-base dark:text-white/70 dark:hover:text-white"
             >
               {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-              {/* Fixed width (sized to fit "Sound Off", the longer of the
-                  two states) so the label swapping between "On"/"Off"
+              {/* Fixed width (sized to fit "SOUND OFF", the longer of the
+                  two states) so the label swapping between "ON"/"OFF"
                   doesn't change this button's layout width and shove the
-                  toggle over. */}
-              <span className="w-[4.75rem] whitespace-nowrap sm:w-[5.75rem]">Sound {soundEnabled ? 'On' : 'Off'}</span>
+                  toggle over. Uppercase/tracking-widest/glow match every
+                  other small label in this overlay (e.g. the nav links'
+                  own dark:[text-shadow:0_0_5px_currentColor] treatment). */}
+              <span className="w-14 whitespace-nowrap text-xs tracking-widest uppercase sm:w-16 dark:[text-shadow:0_0_5px_currentColor]">
+                Sound {soundEnabled ? 'On' : 'Off'}
+              </span>
               {/* The actual switch: a pill track that fills solid once "on"
                   and a thumb that slides to the far side, same on/off
                   language as any standard toggle. Purely decorative — the

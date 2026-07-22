@@ -96,7 +96,7 @@ export default async function PhotosPage() {
         <JumpNav
           ariaLabel="Find my photography"
           sentinelId="photos-nav-sentinel"
-          className="mt-10 flex flex-wrap gap-3 border-b border-black/10 pb-10 dark:border-white/10"
+          className="my-10 flex flex-wrap gap-3 border-b border-black/10 pb-10 dark:border-white/10"
           items={PHOTO_LINKS.map(({ label, href, Icon }) => (
             <Link
               key={label}

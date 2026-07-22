@@ -33,13 +33,13 @@ export default function ScreenOverlay() {
       <FilmGrain strength={1} bias={2} animated />
 
       <CRTScreen
-        pixelSize={256}
-        colorShift={isDark ? 0.8 : 0.3}
+        pixelSize={50}
+        colorShift={0}
         scanlineIntensity={isDark ? 0.7 : 0.35}
         scanlineFrequency={350}
-        brightness={0.9}
+        brightness={1}
         contrast={1}
-        vignetteIntensity={0}
+        vignetteIntensity={1}
       />
     </Shader>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Camera as CameraIcon,
+  Loader2,
   MapPin,
   Settings2,
   ShoppingBag,
@@ -71,6 +72,17 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
   const activeThumbRef = useRef<HTMLButtonElement>(null)
   const touchStartRef = useRef<{ x: number; y: number } | null>(null)
   const item = items[selectedIndex]
+
+  // Tracks whether the current item's full-size image has finished
+  // loading, only used to drive the no-blur-data fallback skeleton below.
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
+  useEffect(() => {
+    // Resets the skeleton back on for the newly-selected item — its own
+    // Image has a `key={item._id}` so it remounts, but this boolean lives
+    // up here in the parent and wouldn't otherwise know to flip back.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting state to match a remounted child keyed on the same id, not a derived/re-render loop
+    setIsImageLoaded(false)
+  }, [item?._id])
 
   // Locks background scroll while the lightbox is open
   useLockBodyScroll(true)
@@ -158,18 +170,53 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
             anywhere in that box, not just the image's own visible pixels.
             The Image below sizes itself intrinsically (no `fill`) so its
             own element bounds match what's actually rendered, and only it
-            stops propagation. */}
-        <div className="flex min-h-0 w-full max-w-4xl flex-1 items-center justify-center self-stretch lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
+            stops propagation.
+            No max-w cap here (there used to be one, capping out at
+            max-w-7xl) — that was width-constraining wide/landscape images
+            (common for Feed screenshots) well before they'd need the full
+            available height, making them look small on wide viewports even
+            though there was plenty of room. Now it's just flex-1 bounded by
+            the meta panel's own fixed width and the image's own max-h-full. */}
+        <div className="relative flex min-h-0 w-full flex-1 items-center justify-center self-stretch">
+          {/* Loading state while the full-size image downloads — no
+              blur-up: deliberately not using next/image's placeholder="blur"
+              (the LQIP swap read as an unwanted transition), so this is the
+              only thing shown until the real image is ready, then the real
+              image just appears. */}
+          {!isImageLoaded && (
+            <div
+              aria-hidden
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-black/40 dark:text-white/40"
+            >
+              <Loader2 size={28} className="animate-spin" />
+              <span className="dot-font font-doto text-xs tracking-widest uppercase">Loading image…</span>
+            </div>
+          )}
+          {/* `fill` + object-contain instead of intrinsic width/height +
+              w-auto/h-auto: with the latter, once the real image loads the
+              browser's CSS auto-sizing algorithm falls back to the actual
+              *natural* pixel dimensions of the loaded resource (the
+              width/height props are only a pre-load layout hint) — capped
+              downward by max-w/max-h-full but never scaled *up* past that
+              natural size. Sanity's `fit("max")` on the source URL won't
+              upscale past the original asset's real resolution either, so a
+              modestly-sized source (e.g. square album art) rendered small
+              regardless of how much room the lightbox had. `fill` sizes the
+              image to its positioned ancestor (this relative wrapper) and
+              object-contain scales it up or down to fit, independent of the
+              source's natural resolution. No placeholder="blur" here (see
+              above) — it just fades straight in from nothing once loaded. */}
           <Image
             key={item._id}
             src={item.fullSrc}
             alt={item.alt}
-            width={2000}
-            height={Math.max(1, Math.round(2000 / item.aspectRatio))}
-            placeholder={item.blurDataURL ? "blur" : undefined}
-            blurDataURL={item.blurDataURL}
+            fill
             onClick={(event) => event.stopPropagation()}
-            className="h-auto max-h-full w-auto max-w-full cursor-default"
+            onLoad={() => setIsImageLoaded(true)}
+            className={cn(
+              "cursor-default object-contain transition-opacity duration-300",
+              isImageLoaded ? "opacity-100" : "opacity-0"
+            )}
             sizes="(max-width: 1024px) 90vw, 75vw"
             priority
           />
@@ -200,6 +247,8 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(event) => event.stopPropagation()}
+                data-cuelume-hover="tick"
+                data-cuelume-press
                 className="mb-1 flex w-fit items-center gap-2 text-sm text-black/70 underline decoration-black/30 underline-offset-4 transition-colors hover:text-black hover:decoration-black/60 dark:text-white/70 dark:decoration-white/30 dark:hover:text-white dark:hover:decoration-white/60"
               >
                 <ArrowUpRight size={16} className="shrink-0" />

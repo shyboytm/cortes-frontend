@@ -27,7 +27,12 @@ export default function GlobalShader() {
       className="fixed inset-0 z-0 w-screen h-screen pointer-events-none opacity-80"
       disableTelemetry
     >
-      <ChromaticAberration strength={0.6} angle={45}>
+      {/* strength was 0.6 — this is a separate RGB-channel-split effect from
+          CRTScreen's colorShift in ScreenOverlay.tsx, and was producing its
+          own rainbow/color-fringe banding across the page (independent of
+          that other fix). Zeroed out here too; ChromaFlow's own four accent
+          colors below are unaffected and still render as intended. */}
+      <ChromaticAberration strength={0} angle={45}>
         <ChromaFlow
           baseColor={isDark ? '#000000' : '#ffffff'}
           upColor="#00ffff"

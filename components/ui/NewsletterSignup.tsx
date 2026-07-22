@@ -75,7 +75,7 @@ export default function NewsletterSignup({ className }: NewsletterSignupProps) {
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@email.com"
           aria-label="Email address"
-          className="w-full min-w-0 rounded-md border border-black/10 bg-black/10 py-4 px-4 text-sm text-black placeholder:text-black/40 transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:bg-white/10 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white/30"
+          className="w-full min-w-0 rounded-md border border-black/10 dark:bg-black/50 py-4 px-4 text-sm text-black placeholder:text-black/40 transition-colors outline-none focus:border-black/30 dark:border-white/10 bg-white/50 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white/30"
         />
         {/* Sits inside the input itself, right-aligned and vertically
             centered, rather than as a separate element below/beside it. */}
