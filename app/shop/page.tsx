@@ -13,9 +13,6 @@ const PRODUCTS_QUERY = `*[
 
 const options = sanityFetchOptions(900);
 
-// Each product card links out to wherever it's sold (Gumroad, Etsy, a Notion
-// template marketplace, etc.) rather than handling checkout on this site.
-// Shows an empty-state message if no products exist in Sanity yet.
 export default async function ShopPage() {
   const products = await client.fetch<SanityDocument[]>(PRODUCTS_QUERY, {}, options);
 
@@ -26,7 +23,7 @@ export default async function ShopPage() {
       <div className="px-6">
         <PageHeader
           title="Shop"
-          subtitle="A few things I've made that you can actually buy."
+          subtitle="A few things I've made that you can buy to support me directly and get something cool in return."
         />
 
         {products.length === 0 ? (
