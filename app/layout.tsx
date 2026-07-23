@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { IBM_Plex_Sans, Doto, Space_Mono } from "next/font/google";
+import { IBM_Plex_Sans, Space_Mono, Doto } from "next/font/google";
 import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
 import PrimaryFooter from '@/components/ui/PrimaryFooter'
@@ -19,18 +19,24 @@ const ibmPlexSans = IBM_Plex_Sans({
   weight: ["300", "400", "500", "700"],
 });
 
-const doto = Doto({
-  variable: "--font-doto",
-  subsets: ["latin"],
-  weight: "variable",
-  axes: ["ROND"],
-});
-
 const spaceMono = Space_Mono({
   variable: "--font-space-mono",
   subsets: ["latin"],
   weight: ["400", "700"],
   style: ["normal", "italic"],
+});
+
+// Doto again, but scoped this time: it's the rounded variable-weight font
+// this site used to use everywhere (see the --font-doto/dot-font naming
+// still sprinkled through the codebase, now aliased to Space Mono instead —
+// see globals.scss). Rather than reclaim that name and flip the whole site
+// back, this is its own variable used in exactly one spot: the scrolling
+// background phrase in WorkTogetherCTA.
+const doto = Doto({
+  variable: "--font-doto-marquee",
+  subsets: ["latin"],
+  weight: "variable",
+  axes: ["ROND"],
 });
 
 export const metadata: Metadata = {
@@ -44,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${ibmPlexSans.variable} ${doto.variable} ${spaceMono.variable} antialiased`}>
+    <html lang="en" className={`${ibmPlexSans.variable} ${spaceMono.variable} ${doto.variable} antialiased`}>
       <body className="bg-white text-black dark:bg-black dark:text-white gradient-background">
         <ScrollRestoration />
         <NavigationHistoryTracker />

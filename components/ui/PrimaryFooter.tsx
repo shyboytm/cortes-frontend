@@ -173,15 +173,18 @@ export default async function PrimaryFooter() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-8 lg:col-span-7">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-7">
             <NewsletterSignup />
 
             <div>
               <p className="dot-font mb-4 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                 / Social
               </p>
-              {/* Bare icons with no pill or label. */}
-              <div className="flex flex-wrap gap-4">
+              {/* Bare icons with no pill or label. Sized/spaced to match the
+                  nav overlay's own social row (20px icons, gap-5) — was
+                  smaller and tighter here, which read oddly next to the
+                  overlay's larger touch targets on mobile. */}
+              <div className="flex flex-wrap gap-5">
                 {SOCIAL_LINKS.map((link) => (
                   <Link
                     key={link.href}
@@ -191,7 +194,7 @@ export default async function PrimaryFooter() {
                     aria-label={link.label}
                     className="text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
                   >
-                    <link.icon size={18} className="svg-shadow" />
+                    <link.icon size={20} className="svg-shadow" />
                   </Link>
                 ))}
               </div>
@@ -202,7 +205,14 @@ export default async function PrimaryFooter() {
         <div className="mt-16 flex flex-col items-start gap-2 border-t border-black/10 pt-6 text-xs tracking-widest text-black/60 uppercase dark:border-white/10 dark:text-white/60">
           <p className="dot-font font-doto leading-[1.5]">CRTS v1.0.0 | Next.js, TypeScript, Tailwind, Shaders, Vercel, Three.js</p>
           <ViewportSize className="dot-font font-doto" />
-          <p className="dot-font font-doto">© {new Date().getFullYear()} Dennis Cortes</p>
+          <p className="dot-font font-doto">
+            {/* Space Mono's © glyph sits noticeably smaller/lighter in its
+                character cell than the surrounding text — bumped up and
+                aligned to compensate, sized relative to the parent's own
+                font-size (via em) so it still tracks correctly if this
+                line's text size ever changes. */}
+            <span className="align-middle text-[1.4em]">©</span> {new Date().getFullYear()} Dennis Cortes
+          </p>
 
           <div aria-hidden className="mt-4 flex flex-wrap items-end gap-4 opacity-25 sm:gap-2">
             {ACCENT_GRAPHICS.map(({ file, width, height }) => (

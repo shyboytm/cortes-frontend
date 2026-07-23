@@ -31,6 +31,11 @@ export interface MediaCardProps {
   // MusicReleaseCard's key off hovering just the artwork, since "group"
   // lives on the image wrapper instead. Default matches MusicReleaseCard.
   groupScope?: "card" | "image";
+  // Plays Cuelume's "tick" sound on hover, same as other hoverable cards
+  // site-wide. Opt-in (only MusicReleaseCard turns it on) rather than
+  // sitewide on this shared component, since it wasn't asked for on Shop's
+  // ProductCard.
+  hoverSound?: boolean;
 }
 
 // Shared markup for the Shop and Music release cards: a bordered image
@@ -51,6 +56,7 @@ export default function MediaCard({
   likeButtonClassName,
   imageSizes,
   groupScope = "image",
+  hoverSound,
 }: MediaCardProps) {
   const card = (
     <div className="flex flex-col gap-3">
@@ -101,6 +107,7 @@ export default function MediaCard({
       target="_blank"
       rel="noopener noreferrer"
       className={cn("block", groupScope === "card" && "group")}
+      {...(hoverSound ? { "data-cuelume-hover": "tick" } : {})}
     >
       {card}
     </Link>

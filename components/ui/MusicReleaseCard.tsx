@@ -54,6 +54,7 @@ export default function MusicReleaseCard({
       aspectRatio="aspect-square"
       FallbackIcon={Disc3}
       groupScope="image"
+      hoverSound
       likeButtonClassName="opacity-0 group-hover:opacity-100"
       imageSizes="(max-width: 768px) 50vw, 380px"
       meta={

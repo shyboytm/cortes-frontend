@@ -94,9 +94,16 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-doto);
-  --font-doto: var(--font-doto);
+  --font-mono: var(--font-space-mono);
+  // --font-doto aliases to the same Space Mono variable rather than loading
+  // the same family twice under two names.
+  --font-doto: var(--font-space-mono);
   --font-space-mono: var(--font-space-mono);
+  // Scoped reintroduction of the original Doto font — see the comment on
+  // the `doto` local font call in layout.tsx. Only used via the
+  // font-doto-marquee utility this generates, on WorkTogetherCTA's
+  // background phrase.
+  --font-doto-marquee: var(--font-doto-marquee);
 }
 
 html {
@@ -229,8 +236,7 @@ summary {
 }
 
 .dot-font {
-  // font-variation-settings: "ROND" 100;
-  font-weight: 700;
+  font-weight: normal;
   text-shadow: none;
 }
 

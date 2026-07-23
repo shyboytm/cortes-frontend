@@ -233,8 +233,13 @@ export default function PrimaryNav() {
                   doesn't change this button's layout width and shove the
                   toggle over. Uppercase/tracking-widest/glow match every
                   other small label in this overlay (e.g. the nav links'
-                  own dark:[text-shadow:0_0_5px_currentColor] treatment). */}
-              <span className="w-14 whitespace-nowrap text-xs tracking-widest uppercase sm:w-16 dark:[text-shadow:0_0_5px_currentColor]">
+                  own dark:[text-shadow:0_0_5px_currentColor] treatment).
+                  Widened from w-14/w-16 — that was sized for a narrower,
+                  non-monospace font; now that this text renders in the
+                  site's mono font, tracking-widest on top of monospace
+                  characters made "SOUND OFF" run right up against the
+                  toggle, overflowing the old fixed width. */}
+              <span className="w-20 whitespace-nowrap text-xs tracking-widest uppercase sm:w-24 dark:[text-shadow:0_0_5px_currentColor]">
                 Sound {soundEnabled ? 'On' : 'Off'}
               </span>
               {/* The actual switch: a pill track that fills solid once "on"

@@ -67,7 +67,7 @@ export default function NewsletterSignup({ className }: NewsletterSignupProps) {
       </p>
       <p className="text-sm text-black/60 dark:text-white/60">Occasional work and music updates, no spam.</p>
 
-      <form onSubmit={handleSubmit} className="relative mt-1 w-full max-w-[380px]">
+      <form onSubmit={handleSubmit} className="relative mt-1 w-full sm:max-w-[380px]">
         <input
           type="email"
           required
