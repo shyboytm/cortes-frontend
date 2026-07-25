@@ -35,17 +35,29 @@ export default async function IndexPage() {
         <div className="dot-font mb-6 flex flex-col gap-3 py-4 font-doto text-black dark:text-white">
           <div className="flex items-center gap-2 tracking-widest text-black/70 dark:text-white/60">
             <GlobeIcon className="h-3.5 w-auto mr-2 svg-shadow" />
-            <span>36.1627° N, 86.7816° W</span>
+            <span className="text-sm">36.162° N, 86.781° W</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 tracking-widest uppercase">
-            <span className="text-blue-800 dark:text-blue-400">Design</span>
+          <div className="flex flex-wrap items-center gap-3  tracking-widest uppercase">
+            <span className="group text-blue-900 dark:text-blue-400">
+              <span className="grid group-hover:hidden">設計</span>
+              <span className="hidden group-hover:grid">Design</span>
+            </span>
             <span className="text-black/20 dark:text-white/20">/</span>
-            <span className="text-green-800 dark:text-green-400">Music</span>
+            <span className="group text-green-800 dark:text-green-400">
+              <span className="grid group-hover:hidden">音楽</span>
+              <span className="hidden group-hover:grid">Music</span>
+            </span>
             <span className="text-black/20 dark:text-white/20">/</span>
-            <span className="text-red-800 dark:text-red-400">Photo</span>
+            <span className="group text-red-900 dark:text-red-400">
+              <span className="grid group-hover:hidden">写真撮影</span>
+              <span className="hidden group-hover:grid">Photo</span>
+            </span>
             <span className="text-black/20 dark:text-white/20">/</span>
-            <span className="text-amber-800 dark:text-amber-400">Code</span>
+            <span className="group text-amber-800 dark:text-amber-400">
+              <span className="grid group-hover:hidden">コード</span>
+              <span className="hidden group-hover:grid">Code</span>
+            </span>
           </div>
         </div>
 

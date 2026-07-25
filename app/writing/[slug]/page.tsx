@@ -139,7 +139,7 @@ export default async function WritingPostPage({
         <div className="flex items-center justify-between gap-4">
           <BackLink href="/writing" iconSize={18} />
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-7">
             <ShareButtons url={shareUrl} title={post.title} className="hidden sm:flex" />
             <LikeButton id={post._id} initialLikes={post.likes ?? 0} />
           </div>

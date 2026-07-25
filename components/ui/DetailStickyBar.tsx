@@ -63,7 +63,7 @@ export default function DetailStickyBar({
           <p className="truncate text-sm tracking-wide text-black dark:text-white">{title}</p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-4">
+        <div className="flex shrink-0 items-center gap-7">
           {shareUrl && <ShareButtons url={shareUrl} title={shareTitle ?? title} className="hidden md:flex" />}
           <LikeButton id={id} initialLikes={likes ?? 0} className="font-sans" />
         </div>
