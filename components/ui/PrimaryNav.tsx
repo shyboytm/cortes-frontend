@@ -212,6 +212,7 @@ export default function PrimaryNav() {
                   rel="noopener noreferrer"
                   aria-label={social.label}
                   data-cuelume-hover="tick"
+                  data-cuelume-press
                   className="text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
                 >
                   <social.icon size={20} className="svg-shadow" />

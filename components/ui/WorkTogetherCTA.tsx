@@ -26,6 +26,8 @@ export default function WorkTogetherCTA() {
 
       <Link
         href="mailto:hi@cortes.us"
+        data-cuelume-hover="tick"
+        data-cuelume-press
         className="cta-gradient-hover uppercase relative z-10 rounded-full bg-black px-8 py-4 text-base tracking-wide text-white transition-transform hover:scale-105 sm:text-lg dark:bg-white dark:text-black"
       >
         hi@cortes.us

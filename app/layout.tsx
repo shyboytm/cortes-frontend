@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { IBM_Plex_Sans, Space_Mono, Doto } from "next/font/google";
+import { Space_Grotesk, Space_Mono, Doto } from "next/font/google";
 import GlobalShader from '@/components/GlobalShaders'
 import ScreenOverlay from '@/components/ScreenOverlay'
 import PrimaryFooter from '@/components/ui/PrimaryFooter'
@@ -12,8 +12,17 @@ import { Analytics } from '@vercel/analytics/next';
 
 import "./globals.scss";
 
-// Loads IBM Plex Sans with static weights 300/400/500/700.
-const ibmPlexSans = IBM_Plex_Sans({
+// Was IBM Plex Sans; swapped to Space Grotesk site-wide. Kept the
+// "--font-ibm-plex-sans" variable name (same reasoning as the --font-doto
+// and --font-space-mono aliases elsewhere in this file/globals.scss — a
+// stable slot name for "the site's sans font", not a literal description)
+// so --font-sans in globals.scss and the couple of explicit font-sans
+// classes (PrimaryNav's wordmark/email link, DetailStickyBar's back
+// button/like count) all pick this up with no further changes. Same static
+// weights as before — 300/400/500/700 are all real static cuts Google
+// serves for Space Grotesk, matching what was actually in use (400/500 body
+// text, 700 for font-bold).
+const ibmPlexSans = Space_Grotesk({
   variable: "--font-ibm-plex-sans",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],

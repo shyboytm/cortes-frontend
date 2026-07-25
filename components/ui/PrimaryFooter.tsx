@@ -192,6 +192,8 @@ export default async function PrimaryFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.label}
+                    data-cuelume-hover="tick"
+                    data-cuelume-press
                     className="text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
                   >
                     <link.icon size={20} className="svg-shadow" />

@@ -26,6 +26,10 @@ const POST_QUERY = `*[
     ...,
     _type == "image" => {
       "aspectRatio": asset->metadata.dimensions.aspectRatio
+    },
+    _type == "video" => {
+      "url": asset->url,
+      "mimeType": asset->mimeType
     }
   }
 }`;
