@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { type SanityDocument } from "next-sanity";
 import { client, sanityFetchOptions } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
@@ -5,6 +6,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import PostList, { type PostListItem } from "@/components/ui/PostList";
 import JumpNav from "@/components/ui/JumpNav";
 import { buttonVariants } from "@/components/ui/button";
+import { resolvePageMetadata } from "@/lib/page-meta";
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -18,6 +20,17 @@ const POSTS_QUERY = `*[
 }`;
 
 const options = sanityFetchOptions(30);
+
+export async function generateMetadata(): Promise<Metadata> {
+  return resolvePageMetadata(
+    "writing",
+    {
+      title: "Writing — Dennis Cortés",
+      description: "Sometimes I write about design, hobbies, and other random thoughts.",
+    },
+    "/writing"
+  );
+}
 
 // Groups posts by the year they were published, falling back to "Undated"
 // for posts with no publish date. Posts arrive sorted newest-first from the

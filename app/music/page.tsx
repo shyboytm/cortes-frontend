@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { ArrowRight, Instagram } from 'lucide-react';
 import {
   SiSpotify,
@@ -18,6 +19,7 @@ import VinylDisc from '@/components/ui/VinylDisc';
 import DraggableVinyl from '@/components/ui/DraggableVinyl';
 import JumpNav from '@/components/ui/JumpNav';
 import { buttonVariants } from '@/components/ui/button';
+import { resolvePageMetadata } from '@/lib/page-meta';
 
 const STREAMING_LINKS = [
   { label: '@cordiofm', href: 'https://www.instagram.com/cordiofm', Icon: Instagram },
@@ -48,6 +50,14 @@ const RELEASE_ARTWORK_QUERY = `*[
 }`;
 
 const options = sanityFetchOptions(30);
+
+export async function generateMetadata(): Promise<Metadata> {
+  return resolvePageMetadata(
+    "music",
+    { title: "Cordio — Dennis Cortés", description: "Music that scores the moments in between." },
+    "/music"
+  );
+}
 
 // Returns a random item from the list, or null if the list is empty. Picks
 // a fresh item on every request/page load rather than a fixed release.
@@ -170,7 +180,7 @@ export default async function MusicPage() {
             )}
             <h2 className="mb-3 text-2xl font-normal text-black dark:text-white text-center">Make your own Cordio remix</h2>
             <p className="mb-6 text-black/60 dark:text-white/60 text-center">
-              Ever wanted to make your own music? Let's collab right here, right now with this browser-based remix toy built from 
+              Ever wanted to make your own music? Let&apos;s collab right here, right now with this browser-based remix toy built from
               actual pieces of my Cordio music tracks. Pick a song from the dropdown, toggle stems from the tracks, and layer in your own 
               drum loop pads to see what you land on!
             </p>

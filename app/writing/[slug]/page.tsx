@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { cache } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { type SanityDocument } from "next-sanity";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
@@ -9,9 +11,13 @@ import PageHeader from "@/components/ui/PageHeader";
 import { BackLink } from "@/components/ui/LinkPill";
 import { formatPostDate } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
+import ShareButtons from "@/components/ui/ShareButtons";
 import DetailStickyBar from "@/components/ui/DetailStickyBar";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
 import { prepareImageBlocks, createPortableTextComponents, textSpacingClassName } from "@/lib/portable-text-images";
+import { portableTextToPlainText } from "@/lib/portable-text-to-plain";
+import { buildMetadata } from "@/lib/page-meta";
+import { DEFAULT_OG_IMAGE, SITE_URL } from "@/lib/site-config";
 
 const POST_QUERY = `*[
   _type == "post"
@@ -35,6 +41,35 @@ const POST_QUERY = `*[
 }`;
 
 const options = sanityFetchOptions(30);
+
+// Cached per request (React's cache(), not Sanity/Next's fetch cache) so
+// generateMetadata and the page body below share one fetch per visit
+// instead of firing this query twice.
+const getPost = cache(async (slug: string) => {
+  return client.fetch<SanityDocument>(POST_QUERY, { slug }, options);
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
+  if (!post) return {};
+
+  const description =
+    portableTextToPlainText(post.body, 160) || "Sometimes I write about design, hobbies, and other random thoughts.";
+  const imageUrl = post.image ? urlFor(post.image).width(1200).height(630).fit("crop").url() : DEFAULT_OG_IMAGE;
+
+  return buildMetadata({
+    title: post.title,
+    description,
+    imageUrl,
+    path: `/writing/${slug}`,
+    type: "article",
+  });
+}
 
 // Creates a new set of PortableText components for each render. The figure
 // counter (inside createPortableImageTypes) and "has the lede been
@@ -79,13 +114,14 @@ export default async function WritingPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await client.fetch<SanityDocument>(POST_QUERY, { slug }, options);
+  const post = await getPost(slug);
 
   if (!post) {
     notFound();
   }
 
   const body = Array.isArray(post.body) ? prepareImageBlocks(post.body) : [];
+  const shareUrl = `${SITE_URL}/writing/${slug}`;
 
   return (
     <div className="pt-32 pb-24">
@@ -96,13 +132,17 @@ export default async function WritingPostPage({
         likes={post.likes ?? 0}
         backHref="/writing"
         sentinelId="post-title-sentinel"
+        shareUrl={shareUrl}
       />
 
       <div className="px-6">
         <div className="flex items-center justify-between gap-4">
           <BackLink href="/writing" iconSize={18} />
 
-          <LikeButton id={post._id} initialLikes={post.likes ?? 0} />
+          <div className="flex items-center gap-4">
+            <ShareButtons url={shareUrl} title={post.title} className="hidden sm:flex" />
+            <LikeButton id={post._id} initialLikes={post.likes ?? 0} />
+          </div>
         </div>
 
         <PageHeader

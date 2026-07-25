@@ -423,19 +423,28 @@ export function createPortableTextComponents({
         );
       },
       imageRow: ({ value }: { value: { images: PortableMediaBlock[] } }) => (
-        <div
-          className={`my-8 grid grid-cols-1 gap-6 ${value.images.length >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
-        >
-          {value.images.map((media) => {
-            if (media.caption) figureNumber += 1;
-            return (
-              <MediaFigure
-                key={media._key}
-                media={media}
-                figureNumber={media.caption ? figureNumber : null}
-              />
-            );
-          })}
+        // Same viewport-breakout + max-w-6xl re-center as offsetSection
+        // below: a paired row had no width of its own before this, so a
+        // 2-across or 3-across grid was squeezed down to the blog page's
+        // narrow max-w-3xl reading column (each image far smaller than a
+        // "half"/"third" is supposed to be) while looking fine on the work
+        // page's much wider max-w-7xl wrapper. This gives both pages the
+        // same effective row width regardless of the ambient container.
+        <div className="mx-[calc(50%-50vw)] my-8 w-screen px-6 sm:px-12 md:px-16">
+          <div
+            className={`mx-auto grid max-w-6xl grid-cols-1 gap-6 ${value.images.length >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+          >
+            {value.images.map((media) => {
+              if (media.caption) figureNumber += 1;
+              return (
+                <MediaFigure
+                  key={media._key}
+                  media={media}
+                  figureNumber={media.caption ? figureNumber : null}
+                />
+              );
+            })}
+          </div>
         </div>
       ),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

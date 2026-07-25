@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { type SanityDocument } from "next-sanity";
 import { Compass, BookOpen, Mic, Video, Newspaper, Smartphone, Music, Package, Globe, type LucideIcon } from "lucide-react";
 import { SiBuymeacoffee } from "@icons-pack/react-simple-icons";
@@ -10,6 +11,7 @@ import RecRow, { type Platform } from "@/components/ui/RecRow";
 import JumpNav from "@/components/ui/JumpNav";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { resolvePageMetadata } from "@/lib/page-meta";
 
 const RECS_QUERY = `*[
   _type == "recommendation"
@@ -33,6 +35,17 @@ const RECS_QUERY = `*[
 }`;
 
 const options = sanityFetchOptions(30);
+
+export async function generateMetadata(): Promise<Metadata> {
+  return resolvePageMetadata(
+    "recs",
+    {
+      title: "Recs — Dennis Cortés",
+      description: "Things I think are cool or useful, and want to share with other people.",
+    },
+    "/recs"
+  );
+}
 
 // Fixed display order regardless of how Sanity happens to return them —
 // alphabetical by label.

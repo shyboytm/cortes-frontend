@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { client, sanityFetchOptions } from "@/sanity/client";
 import { WORK_QUERY } from "@/sanity/queries";
 import { shuffleArray } from "@/lib/utils";
@@ -5,6 +6,7 @@ import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import WorkGrid, { type WorkGridItem } from "@/components/ui/WorkGrid";
 import FeedGrid, { type FeedItem } from "@/components/ui/FeedGrid";
+import { resolvePageMetadata } from "@/lib/page-meta";
 
 const FEED_QUERY = `*[
   _type == "feedItem"
@@ -29,6 +31,10 @@ const WORK_SUBTITLE =
   "Some of my featured work from over the years including full-time jobs, personal projects, and freelance contracts.";
 
 const options = sanityFetchOptions(30);
+
+export async function generateMetadata(): Promise<Metadata> {
+  return resolvePageMetadata("work", { title: "Work — Dennis Cortés", description: WORK_SUBTITLE }, "/work");
+}
 
 export default async function WorkIndexPage() {
   const [workItems, feedItems] = await Promise.all([

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { type SanityImageSource } from "@sanity/image-url";
 import { Aperture, Camera, Instagram, ShoppingBag } from "lucide-react";
 import { client, sanityFetchOptions } from "@/sanity/client";
@@ -9,6 +10,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import PhotoGrid, { type PhotoItem } from "@/components/ui/PhotoGrid";
 import JumpNav from "@/components/ui/JumpNav";
 import { buttonVariants } from "@/components/ui/button";
+import { resolvePageMetadata } from "@/lib/page-meta";
 
 // Same treatment as Music page's streaming-links row: a horizontal set of
 // pill links (also mirrored into the sticky sub-nav via JumpNav) for where
@@ -60,6 +62,18 @@ const PHOTOS_QUERY = `*[
 }`;
 
 const options = sanityFetchOptions(900);
+
+export async function generateMetadata(): Promise<Metadata> {
+  return resolvePageMetadata(
+    "photos",
+    {
+      title: "Photos — Dennis Cortés",
+      description:
+        "A collection of my favorite photography I've shot over the years. Camera and lens info as well as buy print links included.",
+    },
+    "/photos"
+  );
+}
 
 export default async function PhotosPage() {
   const photos = await client.fetch<PhotoDocument[]>(PHOTOS_QUERY, {}, options);

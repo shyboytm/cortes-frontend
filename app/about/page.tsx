@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import { type SanityDocument } from "next-sanity";
 import { client, sanityFetchOptions } from "@/sanity/client";
@@ -10,6 +11,7 @@ import PressSection from "@/components/ui/PressSection";
 import ExperienceSection from "@/components/ui/ExperienceSection";
 import { buttonVariants } from "@/components/ui/button";
 import { SOCIAL_LINKS } from "@/lib/social-links";
+import { resolvePageMetadata } from "@/lib/page-meta";
 
 // Photos that rotate through the portrait; InteractivePortrait controls the cycle interval.
 const PORTRAIT_PHOTOS = [
@@ -33,6 +35,18 @@ const TESTIMONIALS_QUERY = `*[
 }`;
 
 const options = sanityFetchOptions(900);
+
+export async function generateMetadata(): Promise<Metadata> {
+  return resolvePageMetadata(
+    "about",
+    {
+      title: "About — Dennis Cortés",
+      description:
+        "I currently work at Aboon, and I was most recently a designer at Instagram on the Growth Web team.",
+    },
+    "/about"
+  );
+}
 
 export default async function AboutPage() {
   const [services, testimonials] = await Promise.all([

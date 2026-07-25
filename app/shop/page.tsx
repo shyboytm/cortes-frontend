@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import { type SanityDocument } from "next-sanity";
 import { client, sanityFetchOptions } from "@/sanity/client";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import ProductCard from "@/components/ui/ProductCard";
+import { resolvePageMetadata } from "@/lib/page-meta";
 
 const PRODUCTS_QUERY = `*[
   _type == "product"
@@ -12,6 +14,18 @@ const PRODUCTS_QUERY = `*[
 }`;
 
 const options = sanityFetchOptions(900);
+
+export async function generateMetadata(): Promise<Metadata> {
+  return resolvePageMetadata(
+    "shop",
+    {
+      title: "Shop — Dennis Cortés",
+      description:
+        "A few things I've made that you can buy to support me directly and get something cool in return.",
+    },
+    "/shop"
+  );
+}
 
 export default async function ShopPage() {
   const products = await client.fetch<SanityDocument[]>(PRODUCTS_QUERY, {}, options);

@@ -9,6 +9,7 @@ import ScrollRestoration from '@/components/ScrollRestoration'
 import NavigationHistoryTracker from '@/components/NavigationHistoryTracker'
 import CuelumeSetup from '@/components/CuelumeSetup'
 import { Analytics } from '@vercel/analytics/next';
+import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from '@/lib/site-config';
 
 import "./globals.scss";
 
@@ -48,9 +49,27 @@ const doto = Doto({
   axes: ["ROND"],
 });
 
+// Root fallback: covers any route that doesn't export its own generateMetadata
+// (currently none — every page does — but this is what a future one, or an
+// error/not-found boundary, would inherit). Every real page overrides
+// title/description/openGraph/twitter with its own via resolvePageMetadata
+// or, for Writing/Work [slug] pages, the post/case study's own content (see
+// lib/page-meta.ts). metadataBase turns the relative DEFAULT_OG_IMAGE path
+// (and any other relative metadata URL) into an absolute one, which social
+// scrapers require.
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Dennis Cortés - Designer & Music Producer",
   description: "Software Designer, Musician, and Photographer based in Nashville, TN",
+  openGraph: {
+    siteName: SITE_NAME,
+    type: "website",
+    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 export default function RootLayout({

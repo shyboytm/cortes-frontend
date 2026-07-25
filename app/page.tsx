@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import {client, sanityFetchOptions} from "@/sanity/client";
 import {WORK_QUERY} from "@/sanity/queries";
@@ -6,8 +7,20 @@ import PrimaryNav from "@/components/ui/PrimaryNav";
 import WorkGrid, {type WorkGridItem} from "@/components/ui/WorkGrid";
 import GlobeIcon from "@/components/ui/GlobeIcon";
 import { buttonVariants } from "@/components/ui/button";
+import { resolvePageMetadata } from "@/lib/page-meta";
 
 const options = sanityFetchOptions(30);
+
+export async function generateMetadata(): Promise<Metadata> {
+  return resolvePageMetadata(
+    "home",
+    {
+      title: "Dennis Cortés - Designer & Music Producer",
+      description: "Software Designer, Musician, and Photographer based in Nashville, TN",
+    },
+    "/"
+  );
+}
 
 export default async function IndexPage() {
   const workItems = await client.fetch<WorkGridItem[]>(WORK_QUERY, {}, options);

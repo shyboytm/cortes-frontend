@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import LikeButton from "@/components/ui/LikeButton";
+import ShareButtons from "@/components/ui/ShareButtons";
 import { useSentinelVisible } from "@/lib/hooks/useSentinelVisible";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,11 @@ export interface DetailStickyBarProps {
   // Id of the sentinel element the page renders right after its title.
   // Watched via IntersectionObserver to know when to reveal this bar.
   sentinelId: string;
+  // Renders a ShareButtons row next to the like count when set. Opt-in
+  // (only Writing posts pass these) rather than shown on every caller of
+  // this shared bar, since Work case studies weren't asked for sharing.
+  shareUrl?: string;
+  shareTitle?: string;
 }
 
 // Shows a Back/Like row pinned under PrimaryNav once a detail page's title
@@ -22,7 +28,15 @@ export interface DetailStickyBarProps {
 // watching a sentinel element the page renders right after its title. Used
 // by both Writing posts and Work case studies. Padding matches PrimaryNav's
 // own bar exactly (px-5 py-3) so the two feel like the same bar handing off.
-export default function DetailStickyBar({ id, title, likes, backHref, sentinelId }: DetailStickyBarProps) {
+export default function DetailStickyBar({
+  id,
+  title,
+  likes,
+  backHref,
+  sentinelId,
+  shareUrl,
+  shareTitle,
+}: DetailStickyBarProps) {
   const visible = useSentinelVisible(sentinelId);
 
   return (
@@ -49,7 +63,10 @@ export default function DetailStickyBar({ id, title, likes, backHref, sentinelId
           <p className="truncate text-sm tracking-wide text-black dark:text-white">{title}</p>
         </div>
 
-        <LikeButton id={id} initialLikes={likes ?? 0} className="font-sans" />
+        <div className="flex shrink-0 items-center gap-4">
+          {shareUrl && <ShareButtons url={shareUrl} title={shareTitle ?? title} className="hidden md:flex" />}
+          <LikeButton id={id} initialLikes={likes ?? 0} className="font-sans" />
+        </div>
       </div>
     </div>
   );
