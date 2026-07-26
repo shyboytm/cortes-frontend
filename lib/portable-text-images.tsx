@@ -6,12 +6,15 @@ import { resolveVideoEmbed } from "@/lib/video-embed";
 
 export type PortableMediaSize = "inset" | "half" | "third" | "wide" | "full" | "offsetLeft";
 
+export type PortableImageRatio = "original" | "1:1" | "4:3" | "3:2" | "16:9" | "9:16";
+
 export type PortableImageBlock = {
   _type: "image";
   _key: string;
   alt?: string;
   caption?: string;
   size?: PortableMediaSize;
+  ratio?: PortableImageRatio;
   aspectRatio?: number | null;
   asset?: SanityImageSource;
 };
@@ -166,6 +169,21 @@ function MediaCaption({ caption, figureNumber }: { caption?: string; figureNumbe
   );
 }
 
+const FIXED_IMAGE_RATIOS: Record<Exclude<PortableImageRatio, "original">, number> = {
+  "1:1": 1,
+  "4:3": 4 / 3,
+  "3:2": 3 / 2,
+  "16:9": 16 / 9,
+  "9:16": 9 / 16,
+};
+
+function resolveImageRatio(image: PortableImageBlock): number {
+  if (image.ratio && image.ratio !== "original") {
+    return FIXED_IMAGE_RATIOS[image.ratio];
+  }
+  return image.aspectRatio && image.aspectRatio > 0 ? image.aspectRatio : 16 / 9;
+}
+
 function PortableImageFigure({
   image,
   figureNumber,
@@ -176,7 +194,7 @@ function PortableImageFigure({
   className?: string;
 }) {
   if (!image?.asset) return null;
-  const ratio = image.aspectRatio && image.aspectRatio > 0 ? image.aspectRatio : 16 / 9;
+  const ratio = resolveImageRatio(image);
 
   return (
     <figure className={className}>
@@ -255,6 +273,8 @@ function PortableVideoEmbedFigure({
           href={embed.url}
           target="_blank"
           rel="noopener noreferrer"
+          data-cuelume-hover="tick"
+          data-cuelume-press
           className="link-underline block text-black underline underline-offset-4 dark:text-white"
         >
           Watch video ↗

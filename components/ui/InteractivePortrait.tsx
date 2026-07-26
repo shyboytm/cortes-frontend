@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-const MODES = ["dither", "ascii", "halftone", "hue", "normal"] as const;
+const MODES = ["dither", "ascii", "halftone", "normal"] as const;
 type Mode = (typeof MODES)[number];
 
 const MODE_LABELS: Record<Mode, string> = {
@@ -12,7 +12,6 @@ const MODE_LABELS: Record<Mode, string> = {
   dither: "Dithered",
   ascii: "ASCII",
   halftone: "Halftone",
-  hue: "Color Shift",
 };
 
 const ASCII_RAMP = " .:-=+*#%@";
@@ -104,7 +103,7 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
 
     const { width, height, data } = source;
 
-    if (modeToRender === "normal" || modeToRender === "hue") {
+    if (modeToRender === "normal") {
       ctx.putImageData(source, 0, 0);
       return;
     }
@@ -398,17 +397,13 @@ export default function InteractivePortrait({ src, alt, className }: Interactive
           ref={canvasRef}
           className={cn(
             "absolute inset-0 h-full w-full opacity-0 transition-opacity duration-200",
-            ready && "opacity-100",
-            mode === "hue" && "animate-hue-cycle"
+            ready && "opacity-100"
           )}
         />
         <canvas
           ref={transitionCanvasRef}
           aria-hidden
-          className={cn(
-            "pointer-events-none absolute inset-0 h-full w-full opacity-0",
-            mode === "hue" && "animate-hue-cycle"
-          )}
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-0"
         />
       </div>
 

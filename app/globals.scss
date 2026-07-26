@@ -129,6 +129,7 @@ summary {
   position: relative;
   display: inline-block;
   text-decoration: none;
+  opacity: 0.6;
   transition: all 0.25s ease-in-out;
 
   &::after {
@@ -190,18 +191,6 @@ summary {
   to {
     transform: translateX(-50%);
   }
-}
-@keyframes hue-cycle {
-  from {
-    filter: hue-rotate(0deg) saturate(1.6);
-  }
-  to {
-    filter: hue-rotate(360deg) saturate(1.6);
-  }
-}
-
-.animate-hue-cycle {
-  animation: hue-cycle 6s linear infinite;
 }
 @keyframes preview-pulse {
   0%,

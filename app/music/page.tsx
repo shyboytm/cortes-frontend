@@ -117,7 +117,7 @@ export default async function MusicPage() {
           <p className="mb-4 break-inside-avoid-column text-lg leading-relaxed text-black/80 dark:text-white/80">
             If you&apos;re a fan of immersive compositions that are hip-hop-inspired, ambient,
             electronic, and sample-heavy, I invite you to explore my music and experience the unique soundscapes I create.
-            You can find my music on all major streaming platforms, and you can directly support my work by purchasing my music on <Link href="https://cordio.bandcamp.com" data-cuelume-hover="tick" className="link-underline">Bandcamp</Link>.
+            You can find my music on all major streaming platforms, and you can directly support my work by purchasing my music on <Link href="https://cordio.bandcamp.com" data-cuelume-hover="tick" data-cuelume-press className="link-underline">Bandcamp</Link>.
           </p>
         </div>
 

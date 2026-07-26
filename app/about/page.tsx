@@ -64,6 +64,7 @@ export default async function AboutPage() {
             <Link
               href="mailto:hi@cortes.us"
               data-cuelume-hover="tick"
+              data-cuelume-press
               className="transition-colors link-underline hover:text-black dark:hover:text-white"
             >
               hi@cortes.us
@@ -75,25 +76,44 @@ export default async function AboutPage() {
           <div>
             <div className="space-y-4 max-w-3xl">
               <p className="text-lg leading-relaxed text-black/80 dark:text-white/80">
-                I currently work at Aboon, and I was most recently a designer at Instagram on the
-                Growth Web team. Outside of work, I build the game journaling app GamePal, I create
-                music as Cordio &amp; Horizon Radar, restore and mod old game consoles, and take
-                photos.
+                I&apos;m a Hispanic creative originally from Bayamón, Puerto Rico, and grew up in
+                Davie, Florida. I moved to Nashville for college to study music business, and
+                believe it or not, I originally wanted to be a rap producer. Instead, I graduated
+                with a degree in graphic design, and I&apos;ve been designing ever since.
               </p>
               <p className="text-lg leading-relaxed text-black/80 dark:text-white/80">
-                I specialize in product design for both web and mobile apps and thrive in 0 → 1
-                work. My expertise is in design leadership, visual design, user experience, and
-                design systems. I also have a background in engineering, with a focus on React, CSS
-                architecture, and component systems.
+                I currently work at Aboon. Before that, I spent time at Instagram on the Growth Web
+                team, and before that I was Head of Design at Northstar, leading design and
+                building out the team.
               </p>
               <p className="text-lg leading-relaxed text-black/80 dark:text-white/80">
-                I&apos;m currently available for full time and contract design roles for early stage
-                startups and sound/music design projects for games, apps, podcasts, and films.
+                I&apos;ve been designing products for 12+ years now, both as an individual
+                contributor and in design leadership, with a particular strength in holistic,
+                cross-departmental product thinking. I specialize in product design for web and
+                mobile and thrive in 0 → 1 work, drawing on expertise in design leadership, visual
+                design, user experience, and design systems, plus a background in engineering
+                focused on React, Typescript, CSS architecture, and component systems. Along the way
+                I&apos;ve worked at design agencies, and in-house at companies 
+                big and small, helping scale companies and ship products used by millions of people.
               </p>
               <p className="text-lg leading-relaxed text-black/80 dark:text-white/80">
-                I produce music under the alias Cordio, and create tracks for films, shows, and
-                podcasts. Listen to all my music anywhere you stream music, or snag some on my
-                Bandcamp.
+                I&apos;m currently available for freelance design roles for early
+                stage startups, and for sound and music design projects for games, apps, podcasts,
+                and films.
+              </p>
+              <p className="text-lg leading-relaxed text-black/80 dark:text-white/80">
+                Outside of work, I build the game journaling app <Link href="https://apple.co/4gUqHBR" target="_blank" rel="noopener noreferrer" className="link-underline" data-cuelume-hover="tick" data-cuelume-press>GamePal</Link>,
+                restore and mod old game consoles, and take photos. I also make music as <Link href="https://cordio.bandcamp.com" target="_blank" rel="noopener noreferrer" className="link-underline" data-cuelume-hover="tick" data-cuelume-press>Cordio</Link> and Horizon Radar, scoring
+                tracks for films, shows, and podcasts along the way. I&apos;ve released 11 albums
+                under the Cordio name so far, with 2 more in the works. Listen anywhere you stream
+                music, or supprt me directly on my <Link href="https://cordio.bandcamp.com" target="_blank" rel="noopener noreferrer" className="link-underline" data-cuelume-hover="tick" data-cuelume-press>Bandcamp</Link>.
+                Over the years I&apos;ve also put out 250+ videos and 100+ articles on design, code, 
+                product, music, and whatever else I&apos;m into at the time.
+              </p>
+              <p className="text-lg leading-relaxed text-black/80 dark:text-white/80">
+                More than anything, I care about people. Empathy, transparency, vulnerability, and
+                trust matter most to me. I think of myself as a generalist, and at the end of the
+                day, I just want to make things that help others.
               </p>
             </div>
 

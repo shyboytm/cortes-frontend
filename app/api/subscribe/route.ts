@@ -11,9 +11,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const email = (body as { email?: unknown } | null)?.email;
+  const { email, confirmedHuman } = (body as { email?: unknown; confirmedHuman?: unknown } | null) ?? {};
   if (typeof email !== "string" || !EMAIL_PATTERN.test(email)) {
     return NextResponse.json({ error: "Enter a valid email address" }, { status: 400 });
+  }
+
+  if (confirmedHuman !== true) {
+    return NextResponse.json({ error: "Please confirm you're not a robot" }, { status: 400 });
   }
 
   if (!process.env.RESEND_API_KEY || !process.env.RESEND_SEGMENT_ID) {
