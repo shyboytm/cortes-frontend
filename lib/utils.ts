@@ -5,7 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Formats a date for blog posts, e.g. "Sep 18, 2025".
 export function formatPostDate(date: string | Date) {
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",
@@ -14,8 +13,6 @@ export function formatPostDate(date: string | Date) {
   })
 }
 
-// Fisher-Yates shuffle. Returns a new array, leaving the input untouched.
-// Used to randomize grid order (e.g. Photos, Feed) on each server render.
 export function shuffleArray<T>(items: T[]): T[] {
   const shuffled = [...items]
   for (let i = shuffled.length - 1; i > 0; i--) {

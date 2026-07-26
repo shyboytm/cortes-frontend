@@ -12,37 +12,15 @@ export interface MediaCardProps {
   likes?: number;
   imageUrl?: string;
   imageAlt?: string;
-  // Tailwind aspect-ratio class for the image wrapper, e.g. "aspect-[4/3]"
-  // or "aspect-square".
   aspectRatio: string;
-  // Icon shown in place of the image when there's no artwork/photo set.
   FallbackIcon: ComponentType<{ size?: number }>;
-  // Secondary content rendered below the title (a meta line, genre tag,
-  // description, etc.) — whatever each caller needs, or nothing.
   meta?: ReactNode;
-  // Extra classes forwarded to the corner LikeButton (e.g. the hover-only
-  // opacity classes MusicReleaseCard uses).
   likeButtonClassName?: string;
-  // `sizes` attr for the underlying <Image>, since Product and Music
-  // release grids use different column counts.
   imageSizes: string;
-  // ProductCard's hover affordances (arrow badge, like button) key off
-  // hovering the whole card, since "group" lives on the outer link.
-  // MusicReleaseCard's key off hovering just the artwork, since "group"
-  // lives on the image wrapper instead. Default matches MusicReleaseCard.
   groupScope?: "card" | "image";
-  // Plays Cuelume's "tick" sound on hover, same as other hoverable cards
-  // site-wide. Opt-in (only MusicReleaseCard turns it on) rather than
-  // sitewide on this shared component, since it wasn't asked for on Shop's
-  // ProductCard.
   hoverSound?: boolean;
 }
 
-// Shared markup for the Shop and Music release cards: a bordered image
-// wrapper (falls back to an icon when there's no artwork), an ArrowUpRight
-// hover badge in the corner, a corner LikeButton, and a title + meta slot
-// underneath. ProductCard and MusicReleaseCard each just supply their own
-// aspect ratio, fallback icon, and meta content.
 export default function MediaCard({
   id,
   title,

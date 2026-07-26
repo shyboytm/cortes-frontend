@@ -24,9 +24,6 @@ function formatPressDate(date?: string) {
   return new Date(date).toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-// Fetches press mentions from Sanity and renders nothing until at least
-// one exists. Displays a divided list (2 columns on large screens) of
-// icon, title, and outlet.
 export default async function PressSection() {
   const mentions = await client.fetch<SanityDocument[]>(PRESS_QUERY, {}, options);
 

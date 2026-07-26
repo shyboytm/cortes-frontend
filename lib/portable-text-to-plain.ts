@@ -1,16 +1,11 @@
-// Flattens a Portable Text body/caseStudy array down to a plain-text
-// snippet suitable for a meta description: joins every plain text block's
-// spans (skipping images, videos, video embeds, and offset/end-offset
-// markers, which contribute no text of their own), collapses whitespace,
-// and truncates at a word boundary once it passes maxLength.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function portableTextToPlainText(blocks: any[] | undefined, maxLength = 160): string {
+type PlainTextBlock = { _type?: string; children?: Array<{ text?: string }> };
+
+export function portableTextToPlainText(blocks: unknown[] | undefined, maxLength = 160): string {
   if (!Array.isArray(blocks)) return "";
 
-  const text = blocks
+  const text = (blocks as PlainTextBlock[])
     .filter((block) => block?._type === "block" && Array.isArray(block.children))
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .map((block) => block.children.map((child: any) => child?.text || "").join(""))
+    .map((block) => block.children!.map((child) => child?.text || "").join(""))
     .join(" ")
     .replace(/\s+/g, " ")
     .trim();

@@ -2,13 +2,8 @@ import { NextResponse } from "next/server";
 import { client } from "@/sanity/client";
 import { writeClient } from "@/sanity/writeClient";
 
-// Document types with a `likes` field. The increment target's `_type` is
-// checked against this list before any write happens.
 const LIKEABLE_TYPES = ["post", "feedItem", "recommendation", "musicRelease", "product", "photo", "work"];
 
-// Increments (or, with `action: "unlike"`, decrements) a document's `likes`
-// field by 1 and returns the new total. The id is only ever used as the
-// target of that update.
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -25,7 +20,6 @@ export async function POST(request: Request) {
   const action = (body as { action?: unknown } | null)?.action;
   const delta = action === "unlike" ? -1 : 1;
 
-  // Returns a specific error response when SANITY_API_WRITE_TOKEN isn't set in the environment.
   if (!process.env.SANITY_API_WRITE_TOKEN) {
     console.error("SANITY_API_WRITE_TOKEN is not set in this environment.");
     return NextResponse.json(

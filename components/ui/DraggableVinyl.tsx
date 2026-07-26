@@ -9,28 +9,13 @@ export interface DraggableVinylProps {
   className?: string;
 }
 
-// A few pixels of wiggle room before a pointer-down counts as an actual
-// drag rather than a plain click/tap.
 const DRAG_THRESHOLD_PX = 4;
 
-// Per-frame velocity decay, scaled by each frame's real elapsed time, and
-// the speed (px/ms) below which the throw is considered stopped.
 const FRICTION_PER_16MS = 0.94;
 const MIN_VELOCITY = 0.02;
 
-// Lets its children be picked up and dragged anywhere in the viewport, such
-// as the Music page's spinning vinyl. A click/tap-drag detaches the element
-// from its normal spot in the layout and moves it via `position: fixed`,
-// measured and applied in viewport coordinates, so it can be dragged outside
-// any parent's `overflow-hidden` or column layout. Releasing mid-drag
-// carries the recent pointer velocity into a short, decelerating "throw"
-// animated with a single requestAnimationFrame loop. A same-size invisible
-// placeholder holds its original spot open in the layout while it's picked
-// up. It resets back to its default position on every route change.
 export default function DraggableVinyl({ children, className }: DraggableVinylProps) {
   const pathname = usePathname();
-  // Tracks the pathname the drag state was last computed for; reset happens
-  // directly during render when the route changes.
   const [renderedPathname, setRenderedPathname] = useState(pathname);
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
@@ -40,9 +25,6 @@ export default function DraggableVinyl({ children, className }: DraggableVinylPr
   const velocityRef = useRef({ x: 0, y: 0 });
   const lastMoveRef = useRef<{ x: number; y: number; t: number } | null>(null);
   const throwFrameRef = useRef<number | null>(null);
-  // Holds the currently-attached pointermove/pointerup handlers while a drag
-  // is in progress, so a mid-drag unmount/route-change can remove them even
-  // though handlePointerUp (which normally removes them) never fires.
   const activeListenersRef = useRef<{
     move: (moveEvent: PointerEvent) => void;
     up: () => void;
@@ -52,15 +34,8 @@ export default function DraggableVinyl({ children, className }: DraggableVinylPr
     setRenderedPathname(pathname);
     setPosition(null);
     setIsDragging(false);
-    // draggedRef/throwFrameRef are left untouched here; the effect below
-    // cancels any in-flight throw animation on route change, and
-    // handlePointerDown clears draggedRef at the start of every new drag.
   }
 
-  // Cancels any in-flight throw animation when the route changes, and
-  // removes any still-attached drag listeners if the route changed (or the
-  // component unmounted) mid-drag, since handlePointerUp never got a chance
-  // to remove them itself.
   useEffect(() => {
     return () => {
       if (throwFrameRef.current !== null) {
@@ -159,8 +134,6 @@ export default function DraggableVinyl({ children, className }: DraggableVinylPr
     activeListenersRef.current = { move: handlePointerMove, up: handlePointerUp };
   };
 
-  // Suppresses the click event that follows a real drag's pointerup, for
-  // cases where this wraps a clickable element.
   const handleClickCapture = (e: React.MouseEvent) => {
     if (draggedRef.current) {
       e.preventDefault();

@@ -7,8 +7,6 @@ export interface FeedVideoProps {
   mimeType?: string;
 }
 
-// Renders a video, falling back to a text message if the browser can't play
-// back the uploaded container/codec (e.g. an iPhone .mov saved with HEVC).
 export default function FeedVideo({ url, mimeType }: FeedVideoProps) {
   const [failed, setFailed] = useState(false);
 

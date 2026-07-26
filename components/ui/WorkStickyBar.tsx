@@ -9,10 +9,6 @@ export interface WorkStickyBarProps {
   likes?: number;
 }
 
-// Thin wrapper around DetailStickyBar for Work case studies: its Back link
-// needs to resolve client-side (same "came from /work vs. the homepage"
-// logic as WorkBackLink), which an async Server Component page can't do
-// itself.
 export default function WorkStickyBar({ id, title, likes }: WorkStickyBarProps) {
   const backHref = useSmartBackHref("/#work", "/work", "/work");
   return (

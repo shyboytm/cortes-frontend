@@ -49,9 +49,6 @@ const WORK_BY_SLUG_QUERY = `*[
 
 const options = sanityFetchOptions(30);
 
-// Cached per request (React's cache(), not Sanity/Next's fetch cache) so
-// generateMetadata and the page body below share one fetch per visit
-// instead of firing this query twice.
 const getWork = cache(async (slug: string) => {
   return client.fetch(WORK_BY_SLUG_QUERY, { slug }, options);
 });
@@ -74,7 +71,7 @@ export async function generateMetadata({
     : DEFAULT_OG_IMAGE;
 
   return buildMetadata({
-    title: work.title,
+    title: `${work.title} Project`,
     description,
     imageUrl,
     path: `/work/${slug}`,
@@ -82,12 +79,6 @@ export async function generateMetadata({
   });
 }
 
-// Creates a new set of PortableText components for each render, mirroring
-// the blog post case-study body: images support the same inset/half/wide/
-// full layout options and optional numbered captions (see
-// lib/portable-text-images.tsx). The figure-number counter inside
-// createPortableImageTypes must reset on each render, so this is called
-// fresh per page load rather than defined as a static object.
 function createCaseStudyComponents(): PortableTextComponents {
   return createPortableTextComponents({
     marks: {
@@ -114,8 +105,6 @@ export default async function WorkCaseStudyPage({
   const { slug } = await params;
   const work = await getWork(slug);
 
-  // Coming-soon projects aren't publicly reachable, even via direct URL —
-  // same not-found boundary as a missing/mistyped slug.
   if (!work || work.comingSoon) {
     notFound();
   }
@@ -135,8 +124,6 @@ export default async function WorkCaseStudyPage({
         </div>
 
         <PageHeader title={work.title} subtitle={work.description || work.dateRange} className="mt-6" />
-        {/* Marks where the title ends; WorkStickyBar watches this via
-            IntersectionObserver and reveals itself once it scrolls out of view. */}
         <div id="work-title-sentinel" />
 
         {(() => {

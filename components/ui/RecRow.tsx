@@ -15,11 +15,6 @@ const PLATFORM_LABELS: Record<Platform, string> = {
   all: "All Platforms",
 };
 
-// Per-variant thumbnail styling: container classes (shape/border/shadow)
-// and the <Image sizes> value that matches that box. The CD variant's
-// gloss/spine overlay is genuinely extra markup (not just a style string),
-// so it stays as a separate isCd-gated block in the render below instead
-// of living in this lookup.
 const IMAGE_VARIANT_STYLES: Record<NonNullable<RecRowProps["imageVariant"]>, { containerClassName: string; imageSizes: string }> = {
   default: { containerClassName: "h-12 w-12 rounded-xl border-black/10 dark:border-white/10", imageSizes: "48px" },
   cd: {
@@ -42,25 +37,11 @@ export interface RecRowProps {
   imageAlt?: string;
   platform?: Platform;
   likes?: number;
-  // Optional "Hover Preview" image set in Sanity — shown in the little
-  // browser-window card on hover. No auto-generated screenshot fallback:
-  // if this isn't set, the hover card just doesn't render for that item.
   hoverPreviewUrl?: string;
   hoverPreviewAlt?: string;
-  // "cd" gives the thumbnail a jewel-case look (square corners, a glossy
-  // diagonal sheen, and a spine line) — used for the Music section on Recs.
-  // "book" gives it a hardcover look (square corners, a shaded spine along
-  // the left edge, a sliver of page-edge along the right) — used for the
-  // Books section.
   imageVariant?: "default" | "cd" | "book";
 }
 
-// One recommendation's row: optional thumbnail, name (external link), and
-// a short blurb underneath, with a hover tint and sliding arrow. Renders
-// nothing without a link. `platform` renders a small tag (only apps set
-// this). Hovering reveals a preview of the destination page (a "Hover
-// Preview" image set on the recommendation in Sanity), framed like a
-// little browser window.
 export default function RecRow({
   id,
   title,
@@ -87,9 +68,6 @@ export default function RecRow({
   }
 
   return (
-    // The list this renders into is a single column on mobile and a
-    // 2-column grid at md+. The bottom border is hidden on the last child
-    // below md, and on the last two children at md+.
     <li className="border-b border-black/10 last:border-b-0 md:[&:nth-last-child(2)]:border-b-0 dark:border-white/10">
       <Link
         href={url}
@@ -136,11 +114,7 @@ export default function RecRow({
             />
             {isCd && (
               <>
-                {/* Plastic-case gloss — a soft diagonal highlight across the
-                    artwork, like light catching a jewel case's cover. */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-white/0 via-white/50 to-white/0 opacity-40 mix-blend-overlay" />
-                {/* Black plastic spine along the left edge, like a jewel
-                    case's hinge, solid in both themes. */}
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-black" />
                 <div className="pointer-events-none absolute inset-y-0 left-[3px] w-px bg-white/10" />
               </>

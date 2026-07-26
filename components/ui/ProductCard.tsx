@@ -17,11 +17,6 @@ export interface ProductCardProps {
   } | null;
 }
 
-// A product card for the Shop page: a 4:3 landscape image, title, and a
-// price/storefront meta line, with a hover arrow badge in the corner and a
-// like button (always visible below lg, hover-revealed at lg). Links out
-// to wherever the product is sold (Gumroad, Etsy, a Notion template
-// marketplace, etc.) rather than handling checkout on this site.
 export default function ProductCard({
   id,
   title,

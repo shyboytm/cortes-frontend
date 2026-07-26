@@ -1,7 +1,5 @@
 import PrimaryNav from "@/components/ui/PrimaryNav";
 
-// Instant loading placeholder shown while the Recs page's Sanity fetch
-// resolves, so navigation doesn't leave a blank tab.
 export default function RecsLoading() {
   return (
     <div className="pt-32 pb-24">

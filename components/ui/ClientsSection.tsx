@@ -12,23 +12,6 @@ const CLIENTS_QUERY = `*[
 
 const options = sanityFetchOptions(900);
 
-// Fetches its own client data, so it can be dropped into any page without
-// query wiring at the call site. Renders nothing (no heading, no border) if
-// there's no client data yet.
-//
-// Logos are rendered as a flat monochrome silhouette (grayscale + brightness
-// crushed to 0), then inverted in dark mode, so every logo ends up as a
-// single dark shape in light mode and a single light shape in dark mode. A
-// plain <img> is used rather than next/image.
-//
-// All logos are constrained to the same base height. `displaySize` is a
-// per-client manual scale for balancing out logos that read as visually
-// bigger or smaller than others at the same pixel height.
-//
-// The scale is applied via the actual `height` (through a --logo-h custom
-// property, so it still respects the responsive h-6/h-8 base) rather than a
-// CSS `transform: scale`, so the surrounding link's clickable area stays in
-// sync with the logo's rendered size.
 export default async function ClientsSection() {
   const clients = await client.fetch<SanityDocument[]>(CLIENTS_QUERY, {}, options);
   const withLogos = clients.filter((c) => c.logo?.asset);
@@ -45,9 +28,6 @@ export default async function ClientsSection() {
           const scale = c.displaySize ?? 1;
 
           const logo = (
-            /* eslint-disable-next-line @next/next/no-img-element -- these
-               are commonly uploaded as SVGs, and next/image's optimizer
-               refuses to process remote SVGs without dangerouslyAllowSVG. */
             <img
               src={urlFor(c.logo.asset).height(80).fit("max").url()}
               alt={c.logo.alt || c.name}

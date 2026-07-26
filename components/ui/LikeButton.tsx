@@ -8,29 +8,18 @@ import { cn } from "@/lib/utils";
 export interface LikeButtonProps {
   id: string;
   initialLikes: number;
-  // "inline" renders a standalone bordered pill. "corner" renders a badge
-  // pinned to the top-right of a card, visible always on touch/tablet and
-  // revealed on hover on desktop. "minimal" renders a bare heart and count
-  // with no border, used inline in list rows. "toolbar" renders a bordered
-  // circular-height pill matching the lightbox's arrow/close buttons, for
-  // use inline in a row of icon buttons rather than absolutely positioned.
   variant?: "inline" | "corner" | "minimal" | "toolbar";
   className?: string;
 }
 
 const STORAGE_PREFIX = "liked:";
 
-// Allows toggling a like per browser, tracked in localStorage, incrementing
-// or decrementing a shared `likes` count stored on the Sanity document.
-// Updates the displayed count immediately on click and rolls back if the
-// request to /api/like fails.
 export default function LikeButton({ id, initialLikes, variant = "inline", className }: LikeButtonProps) {
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
   const [pending, setPending] = useState(false);
   const [justLiked, setJustLiked] = useState(false);
 
-  // Reads localStorage after mount to check whether this id is already liked.
   useEffect(() => {
     setLiked(window.localStorage.getItem(STORAGE_PREFIX + id) === "1");
   }, [id]);
@@ -46,9 +35,6 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       setJustLiked(true);
       window.setTimeout(() => setJustLiked(false), 300);
       window.localStorage.setItem(STORAGE_PREFIX + id, "1");
-      // Audible confirmation for the positive action, right alongside the
-      // optimistic UI update — matches how justLiked's bounce animation
-      // fires immediately rather than waiting on the network request.
       play("success");
     } else {
       window.localStorage.removeItem(STORAGE_PREFIX + id);
@@ -65,7 +51,6 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
       if (typeof data.likes === "number") setLikes(data.likes);
     } catch (error) {
-      // Reverts the optimistic update and logs the error.
       console.error("Like failed to save:", error);
       setLiked(!nextLiked);
       setLikes((n) => Math.max(0, n + (nextLiked ? -1 : 1)));
@@ -81,8 +66,6 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
 
   const label = liked ? `Unlike (${likes} likes so far)` : `Like this post (${likes} likes so far)`;
 
-  // Stops the click from propagating so a like tap doesn't also trigger
-  // navigation on a row/card wrapped in a Link.
   const onClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();

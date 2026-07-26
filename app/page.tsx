@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
     "home",
     {
-      title: "Dennis Cortés - Designer & Music Producer",
+      title: "Designer & Music Producer",
       description: "Software Designer, Musician, and Photographer based in Nashville, TN",
     },
     "/"

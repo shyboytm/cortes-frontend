@@ -25,9 +25,6 @@ const RELEASE_TYPE_LABELS: Record<string, string> = {
   single: "Single",
 };
 
-// One release's card: square artwork (falls back to a plain disc icon if
-// none is set), title, and a meta line of artist, release type, and year.
-// The whole card links out to wherever the release lives.
 export default function MusicReleaseCard({
   id,
   title,

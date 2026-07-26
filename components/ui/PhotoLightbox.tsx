@@ -21,17 +21,10 @@ import { useLockBodyScroll } from "@/lib/hooks/useLockBodyScroll"
 import LikeButton from "@/components/ui/LikeButton"
 import { buttonVariants } from "@/components/ui/button"
 
-// Shared by the Photos grid (camera/lens/settings/location/date all set,
-// no link) and the Work page's Feed grid (just caption + an optional
-// external link, everything else left undefined and simply not rendered).
 export interface LightboxItem {
   _id: string
-  // Small size used for the grid tile and lightbox filmstrip thumbnail.
   thumbSrc: string
-  // Larger size only downloaded once this item is open in the lightbox.
   fullSrc: string
-  // Base64 low-quality placeholder (Sanity's auto-generated LQIP), shown
-  // as a blurred preview while the real image loads in.
   blurDataURL?: string
   alt: string
   caption?: string
@@ -40,9 +33,7 @@ export interface LightboxItem {
   dateTaken?: string
   settings?: string
   location?: string
-  // External link shown under the caption (Feed items only).
   link?: string
-  // "Buy Print" button shown under the caption (Photos only).
   printsUrl?: string
   likes?: number
   aspectRatio: number
@@ -55,36 +46,18 @@ export interface PhotoLightboxProps {
   onSelect: (index: number) => void
 }
 
-// Minimum horizontal drag distance (in px) before a touch gesture counts as
-// an intentional swipe rather than a tap or an incidental wobble.
 const SWIPE_THRESHOLD = 50
 
-// Full-screen media viewer: the selected item (plus its caption/camera/lens/
-// date/link) fills the space above a horizontal filmstrip of every item
-// pinned to the bottom of the viewport. Steps through items via the arrow
-// buttons, Left/Right keys, a horizontal swipe on touch devices, or clicking
-// a filmstrip thumbnail. Closes on Escape, the close button, or clicking
-// anywhere that isn't the image itself or one of the interactive controls
-// (filmstrip, toolbar, meta links) — mirroring PrimaryNav's click-outside-
-// to-close overlay. Each item has a small thumbnail size (used here and in
-// the grid) and a larger size that's only downloaded once it's the one open.
 export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect }: PhotoLightboxProps) {
   const activeThumbRef = useRef<HTMLButtonElement>(null)
   const touchStartRef = useRef<{ x: number; y: number } | null>(null)
   const item = items[selectedIndex]
 
-  // Tracks whether the current item's full-size image has finished
-  // loading, only used to drive the no-blur-data fallback skeleton below.
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   useEffect(() => {
-    // Resets the skeleton back on for the newly-selected item — its own
-    // Image has a `key={item._id}` so it remounts, but this boolean lives
-    // up here in the parent and wouldn't otherwise know to flip back.
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting state to match a remounted child keyed on the same id, not a derived/re-render loop
     setIsImageLoaded(false)
   }, [item?._id])
 
-  // Locks background scroll while the lightbox is open
   useLockBodyScroll(true)
 
   useEffect(() => {
@@ -97,10 +70,6 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [selectedIndex, items.length, onClose, onSelect])
 
-  // Keeps the active filmstrip thumbnail in view as selection changes —
-  // `inline` covers the sm+ horizontal bar, `block` covers the mobile
-  // vertical strip, and "nearest" on both means whichever axis isn't
-  // actually scrollable is a no-op.
   useEffect(() => {
     activeThumbRef.current?.scrollIntoView({ inline: "nearest", block: "nearest", behavior: "smooth" })
   }, [selectedIndex])
@@ -119,8 +88,6 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
     const deltaX = touch.clientX - start.x
     const deltaY = touch.clientY - start.y
 
-    // Ignores short taps and mostly-vertical gestures so this doesn't
-    // interfere with an accidental tap or scroll attempt.
     if (Math.abs(deltaX) < SWIPE_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY)) return
 
     if (deltaX < 0) {
@@ -156,33 +123,12 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
       className="glass fixed inset-0 z-[60] flex cursor-zoom-out flex-col bg-white/80 dark:bg-black/80"
       onClick={onClose}
     >
-      {/* Image + meta. No stopPropagation here (beyond the image/links
-          themselves below) so clicking the surrounding empty space counts
-          as clicking outside the image and closes the lightbox. */}
       <div
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 p-6 sm:p-10 lg:flex-row lg:gap-10"
       >
-        {/* No stopPropagation on this wrapper — it's sized to fill the
-            available space so the lightbox can center the image, which
-            would otherwise make "click outside the image" trigger from
-            anywhere in that box, not just the image's own visible pixels.
-            The Image below sizes itself intrinsically (no `fill`) so its
-            own element bounds match what's actually rendered, and only it
-            stops propagation.
-            No max-w cap here (there used to be one, capping out at
-            max-w-7xl) — that was width-constraining wide/landscape images
-            (common for Feed screenshots) well before they'd need the full
-            available height, making them look small on wide viewports even
-            though there was plenty of room. Now it's just flex-1 bounded by
-            the meta panel's own fixed width and the image's own max-h-full. */}
         <div className="relative flex min-h-0 w-full flex-1 items-center justify-center self-stretch">
-          {/* Loading state while the full-size image downloads — no
-              blur-up: deliberately not using next/image's placeholder="blur"
-              (the LQIP swap read as an unwanted transition), so this is the
-              only thing shown until the real image is ready, then the real
-              image just appears. */}
           {!isImageLoaded && (
             <div
               aria-hidden
@@ -192,20 +138,6 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
               <span className="dot-font font-doto text-xs tracking-widest uppercase">Loading image…</span>
             </div>
           )}
-          {/* `fill` + object-contain instead of intrinsic width/height +
-              w-auto/h-auto: with the latter, once the real image loads the
-              browser's CSS auto-sizing algorithm falls back to the actual
-              *natural* pixel dimensions of the loaded resource (the
-              width/height props are only a pre-load layout hint) — capped
-              downward by max-w/max-h-full but never scaled *up* past that
-              natural size. Sanity's `fit("max")` on the source URL won't
-              upscale past the original asset's real resolution either, so a
-              modestly-sized source (e.g. square album art) rendered small
-              regardless of how much room the lightbox had. `fill` sizes the
-              image to its positioned ancestor (this relative wrapper) and
-              object-contain scales it up or down to fit, independent of the
-              source's natural resolution. No placeholder="blur" here (see
-              above) — it just fades straight in from nothing once loaded. */}
           <Image
             key={item._id}
             src={item.fullSrc}
@@ -289,9 +221,6 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
         )}
       </div>
 
-      {/* Filmstrip: hidden entirely on mobile (swipe/arrows are the only
-          way to step through items there) — pinned to the bottom of the
-          viewport and scrolling horizontally from sm+ up. */}
       <div
         onClick={(event) => event.stopPropagation()}
         className="scrollbar-hide hidden shrink-0 cursor-default items-center gap-2 overflow-x-auto overflow-y-hidden px-4 py-2 sm:flex sm:h-24 sm:w-full sm:px-6 sm:py-3 lg:h-28 xl:h-32"

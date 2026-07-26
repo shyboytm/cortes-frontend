@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
     "shop",
     {
-      title: "Shop — Dennis Cortés",
+      title: "Shop",
       description:
         "A few things I've made that you can buy to support me directly and get something cool in return.",
     },

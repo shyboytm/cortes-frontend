@@ -5,10 +5,6 @@ export interface VideoEmbedInfo {
   embedUrl: string;
 }
 
-// Parses a YouTube or Vimeo URL — any of their common watch/share/short-link
-// forms — into an iframe-embeddable URL. Returns null for anything else
-// (including a malformed URL) so callers can fall back to a plain link
-// instead of pointing an iframe at a non-embeddable page.
 export function resolveVideoEmbed(rawUrl: string | undefined | null): VideoEmbedInfo | null {
   if (!rawUrl) return null;
 

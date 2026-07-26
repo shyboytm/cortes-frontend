@@ -5,22 +5,12 @@ import { cn } from "@/lib/utils";
 
 export interface NashvilleStatusProps {
   className?: string;
-  // Weather fetched server-side (e.g. by an async Server Component like
-  // PrimaryFooter) and passed down so the first render already has real
-  // data instead of showing nothing until the client-side fetch resolves.
-  // Optional so client-only call sites (e.g. PrimaryNav) can omit it and
-  // fall back to the client-side fetch below.
   initialWeather?: Weather;
 }
 
-// Coordinates for Nashville, TN, used to fetch weather from the
-// Open-Meteo API. Exported so server-side callers can replicate the same
-// request ahead of the client-side fetch below.
 export const LATITUDE = 36.1627;
 export const LONGITUDE = -86.7816;
 
-// Maps Open-Meteo's WMO weather codes to short, human-readable labels.
-// Exported so server-side callers can decode the same API response.
 export const WEATHER_LABELS: Record<number, string> = {
   0: "Clear",
   1: "Mostly clear",
@@ -62,10 +52,6 @@ export default function NashvilleStatus({ className, initialWeather }: Nashville
   const [weather, setWeather] = useState<Weather | null>(initialWeather ?? null);
   const [weatherFailed, setWeatherFailed] = useState(false);
 
-  // Updates the displayed time every second, but only while the tab is
-  // visible: the interval is torn down on `visibilitychange` when the tab
-  // is hidden, and restarted (ticking immediately) when it becomes visible
-  // again, so backgrounded tabs don't keep a timer running forever.
   useEffect(() => {
     const formatter = new Intl.DateTimeFormat("en-US", {
       timeZone: "America/Chicago",
@@ -107,7 +93,6 @@ export default function NashvilleStatus({ className, initialWeather }: Nashville
     };
   }, []);
 
-  // Fetches weather on mount and refreshes it every 10 minutes.
   useEffect(() => {
     let cancelled = false;
 

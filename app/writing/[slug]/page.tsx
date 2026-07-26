@@ -42,9 +42,6 @@ const POST_QUERY = `*[
 
 const options = sanityFetchOptions(30);
 
-// Cached per request (React's cache(), not Sanity/Next's fetch cache) so
-// generateMetadata and the page body below share one fetch per visit
-// instead of firing this query twice.
 const getPost = cache(async (slug: string) => {
   return client.fetch<SanityDocument>(POST_QUERY, { slug }, options);
 });
@@ -71,9 +68,6 @@ export async function generateMetadata({
   });
 }
 
-// Creates a new set of PortableText components for each render. The figure
-// counter (inside createPortableImageTypes) and "has the lede been
-// rendered" flag are local state closed over by the returned components.
 function createPostComponents(): PortableTextComponents {
   let hasRenderedLede = false;
 
@@ -83,8 +77,6 @@ function createPostComponents(): PortableTextComponents {
     },
     block: {
       normal: ({ children, value }) => {
-        // The very first paragraph of a post renders as a larger "lede"
-        // statement — everything after it is regular body copy.
         if (!hasRenderedLede) {
           hasRenderedLede = true;
           return (
@@ -150,8 +142,6 @@ export default async function WritingPostPage({
           subtitle={post.publishedAt ? formatPostDate(post.publishedAt) : undefined}
           className="mt-6"
         />
-        {/* Marks where the title ends; DetailStickyBar watches this via
-            IntersectionObserver and reveals itself once it scrolls out of view. */}
         <div id="post-title-sentinel" />
       </div>
 

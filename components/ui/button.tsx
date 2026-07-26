@@ -4,17 +4,6 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// Base button styling: a rounded-full pill shape with hairline black/10 -
-// white/10 borders, uppercase tracking-widest labels, and hover states that
-// shift text/border opacity without a colored fill or shadow.
-//
-// pt-[2px] (with no matching pb) is a 1px optical-centering nudge, not a
-// spacing choice: these buttons have a fixed height (h-8/h-9/h-10) and rely
-// on `items-center` to vertically center their label, but the label still
-// read as sitting slightly high inside the pill. Since box-sizing is
-// border-box, the height itself doesn't grow — padding-top just shrinks the
-// content box from the top, which shifts the centered content down by half
-// of whatever padding-top is added. 2px in nets a 1px visible shift.
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full pt-[2px] text-xs font-medium tracking-widest uppercase transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/30 dark:focus-visible:ring-white/30 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
@@ -59,10 +48,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        // Default Cuelume feedback for every button built on this
-        // component: a hover tick, and a press knock on click. Callers can
-        // still override either by passing their own data-cuelume-* prop,
-        // since these come before the {...props} spread below.
         data-cuelume-hover="tick"
         data-cuelume-press
         {...props}

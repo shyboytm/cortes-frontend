@@ -25,16 +25,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
     "writing",
     {
-      title: "Writing — Dennis Cortés",
+      title: "Writing",
       description: "Sometimes I write about design, hobbies, and other random thoughts.",
     },
     "/writing"
   );
 }
 
-// Groups posts by the year they were published, falling back to "Undated"
-// for posts with no publish date. Posts arrive sorted newest-first from the
-// query, so only the year buckets need sorting, not the posts within them.
 function groupPostsByYear(posts: PostListItem[]) {
   const buckets = new Map<number | "undated", PostListItem[]>();
 

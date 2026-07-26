@@ -1,13 +1,7 @@
 import Link from "next/link";
 
-// The marquee phrase, including its own trailing separator, so the two
-// copies below can sit directly adjacent with zero gap for a seamless loop.
 const MARQUEE_PHRASE = Array.from({ length: 1 }, () => "Let's Chat // Contact // HMU // Emailsss // ").join(" / ");
 
-// Sits at the top of the footer on every page: a big, low-opacity phrase
-// scrolling behind a centered mailto button. Purely decorative background
-// text, so it's hidden from screen readers — the actual email link is the
-// only interactive/meaningful part.
 export default function WorkTogetherCTA() {
   return (
     <div className="relative z-10 mx-6 mt-6 flex h-48 items-center justify-center overflow-hidden bg-white/40 dark:bg-black/40 rounded-2xl border border-black/10 sm:h-64 dark:border-white/10">

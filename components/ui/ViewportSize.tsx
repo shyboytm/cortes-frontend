@@ -7,9 +7,6 @@ export interface ViewportSizeProps {
   className?: string;
 }
 
-// Live window.innerWidth/innerHeight, updated on resize. Starts as null
-// until the first effect runs, matching the server-rendered markup before
-// the client measures the viewport.
 export default function ViewportSize({ className }: ViewportSizeProps) {
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
 

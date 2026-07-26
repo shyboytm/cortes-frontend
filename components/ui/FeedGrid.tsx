@@ -19,8 +19,6 @@ export interface FeedItem {
     alt?: string;
     asset?: SanityImageSource;
     aspectRatio?: number | null;
-    // Sanity's auto-generated low-quality placeholder, used as the
-    // lightbox's blurred loading state while the full-size image loads in.
     lqip?: string | null;
   } | null;
   video?: {
@@ -34,8 +32,6 @@ export interface FeedGridProps {
 }
 
 export default function FeedGrid({ items }: FeedGridProps) {
-  // Only image items (not video) open in the lightbox — this is the
-  // filmstrip/selection order it steps through via the arrows/keyboard.
   const lightboxItems: LightboxItem[] = items
     .filter((item) => !item.video?.url && item.image?.asset)
     .map((item) => ({
@@ -71,11 +67,6 @@ export default function FeedGrid({ items }: FeedGridProps) {
               ? item.image.aspectRatio
               : 4 / 3;
 
-          // Video items keep the old behavior: the whole card links out if
-          // a link is set, otherwise it's just the inline player. Images
-          // always open in the shared lightbox (same as Photos), regardless
-          // of whether a link is set — any link shows up under the caption
-          // inside the lightbox instead.
           const isVideoLink = hasVideo && Boolean(item.link);
           const lightboxIndex = !hasVideo ? lightboxItems.findIndex((li) => li._id === item._id) : -1;
 
@@ -99,9 +90,6 @@ export default function FeedGrid({ items }: FeedGridProps) {
               )}
 
               {item.caption && (
-                // Solid drawer that slides up from the bottom edge on hover,
-                // showing the caption on an opaque, theme-aware panel clipped
-                // to the card's rounded corners by the parent's overflow-hidden.
                 <div className="absolute inset-x-0 bottom-0 z-10 flex translate-y-full items-center justify-between gap-4 border-t border-black/10 bg-white px-3 py-2.5 transition-transform duration-200 ease-out group-hover:translate-y-0 dark:border-white/10 dark:bg-black">
                   <p className="font-space-mono line-clamp-2 text-sm text-black dark:text-white">{item.caption}</p>
                   {(isVideoLink || (!hasVideo && item.link)) && (
@@ -127,10 +115,6 @@ export default function FeedGrid({ items }: FeedGridProps) {
                   {media}
                 </Link>
               ) : !hasVideo ? (
-                // A <div> rather than a <button>, since it contains the
-                // nested LikeButton — browsers don't allow interactive
-                // elements inside a <button>. Keyboard-activatable via
-                // role/tabIndex/onKeyDown, same pattern as PhotoGrid.
                 <div
                   role="button"
                   tabIndex={0}

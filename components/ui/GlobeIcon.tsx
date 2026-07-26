@@ -1,5 +1,3 @@
-// Wireframe globe icon. Single-path outline, colored via `currentColor` so
-// it inherits the surrounding text color.
 export default function GlobeIcon({ className }: { className?: string }) {
   return (
     <svg

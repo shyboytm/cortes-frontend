@@ -6,12 +6,6 @@ import { useIsDark } from "@/lib/hooks/useIsDark";
 const BASE_OPACITY = 0.08;
 const FADE_DURATION_MS = 1400;
 
-// A large, faint wireframe shape that drifts toward the cursor and
-// occasionally dissolves into a different geometry. Purely decorative: sits
-// behind the footer's content (pointer-events-none, aria-hidden) and
-// dynamically imports three.js — deferred until the container first nears
-// the viewport (see the IntersectionObserver effect below) since it's below
-// the fold on first paint.
 export default function FooterScene() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isDark = useIsDark();
@@ -22,8 +16,6 @@ export default function FooterScene() {
     isDarkRef.current = isDark;
   }, [isDark]);
 
-  // Only start downloading/booting three.js once the footer's container is
-  // within (or close to) the viewport, rather than unconditionally on mount.
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -69,16 +61,9 @@ export default function FooterScene() {
       camera.position.z = 9;
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      // Capped to 1x rather than the usual min(devicePixelRatio, 2): this is
-      // a faint, thin-lined wireframe shape, so retina sharpness buys very
-      // little here relative to the framebuffer memory a 2x-resolution
-      // full-bleed canvas costs on top of the two shader-library canvases
-      // already running site-wide.
       renderer.setPixelRatio(1);
       container.appendChild(renderer.domElement);
 
-      // Shape pool the background cycles through: box, tetrahedron, and
-      // octahedron.
       const geometries = [
         () => new THREE.BoxGeometry(3.4, 3.4, 3.4),
         () => new THREE.TetrahedronGeometry(3.2, 0),
@@ -93,9 +78,6 @@ export default function FooterScene() {
           opacity: 0,
         });
 
-      // Two meshes cross-fade (dissolve) between shapes: one is the visible
-      // mesh at rest, the other sits pre-loaded at opacity 0 with whichever
-      // shape comes next.
       const materials = [makeMaterial(), makeMaterial()];
       const meshes = [
         new THREE.Mesh(geometries[0](), materials[0]),
@@ -117,8 +99,6 @@ export default function FooterScene() {
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(container);
 
-      // Cursor position (normalized -1..1), tracked across the whole
-      // viewport.
       const pointer = { x: 0, y: 0 };
       const targetRotation = { x: 0, y: 0 };
       const rotationState = { x: 0, y: 0 };
@@ -177,8 +157,6 @@ export default function FooterScene() {
             if (t >= 1) {
               fading = false;
               activeIdx = hiddenIdx;
-              // Pre-load a fresh shape into the now-hidden mesh, ready for
-              // the next dissolve.
               const staleIdx = 1 - activeIdx;
               const nextGeomIdx = pickNextGeometryIndex(geomIdx[activeIdx]);
               geomIdx[staleIdx] = nextGeomIdx;
@@ -196,12 +174,6 @@ export default function FooterScene() {
         renderer.render(scene, camera);
       };
 
-      // Unlike the "wait to start" gate above (which only defers the initial
-      // three.js setup until the footer nears the viewport once), this
-      // observer keeps running for the scene's whole lifetime: it actually
-      // stops the rAF loop whenever the footer scrolls back out of view, and
-      // restarts it when it scrolls back in, rather than letting the loop
-      // run forever in the background for the rest of the session.
       const visibilityObserver = new IntersectionObserver(
         (entries) => {
           const entry = entries[entries.length - 1];
@@ -209,9 +181,6 @@ export default function FooterScene() {
 
           if (entry.isIntersecting) {
             if (frameId === 0) {
-              // Reset the swap timer so a long time spent paused doesn't
-              // read as elapsed animation time and trigger an instant
-              // dissolve the moment the loop resumes.
               lastSwap = performance.now();
               frameId = requestAnimationFrame(animate);
             }

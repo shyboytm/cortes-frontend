@@ -12,7 +12,6 @@ export interface PostListProps {
   posts: PostListItem[];
 }
 
-// Renders the blog's list view as a divided list of PostRows.
 export default function PostList({ posts }: PostListProps) {
   if (posts.length === 0) {
     return <p className="text-black/60 dark:text-white/60">No posts yet — write one in Sanity.</p>;

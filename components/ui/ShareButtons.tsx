@@ -10,14 +10,6 @@ export interface ShareButtonsProps {
   className?: string;
 }
 
-// Each platform's own share-intent URL — no SDK/JS popup needed, just a
-// plain link opened in a new tab, same as any other outbound link on the
-// site. X and LinkedIn accept a title/text; Facebook's sharer only takes
-// the URL (it reads title/description from the page's own OG tags once it
-// fetches it, which is exactly what the rest of this feature sets up).
-// X's glyph is a bold, edge-to-edge logomark, so at the same pixel size it
-// reads noticeably larger/heavier than LinkedIn's or Facebook's — sized down
-// a bit here so all three feel like the same visual weight.
 function shareTargets(url: string, title: string) {
   const encodedUrl = encodeURIComponent(url);
   return [
@@ -42,9 +34,6 @@ function shareTargets(url: string, title: string) {
   ];
 }
 
-// A "Share" label plus a bare icon row (same treatment as the site's other
-// social-icon lists — footer, nav overlay: no pill, just an icon whose
-// color shifts on hover, with the standard tick/press Cuelume feedback).
 export default function ShareButtons({ url, title, className }: ShareButtonsProps) {
   return (
     <div className={cn("flex items-center gap-3", className)}>

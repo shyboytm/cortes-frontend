@@ -30,9 +30,6 @@ const STREAMING_LINKS = [
   { label: 'YouTube Music', href: '#', Icon: SiYoutubemusic },
 ];
 
-// Newest first: by year, then the optional manual "order" tiebreaker, then
-// creation time as a last resort. Singles are left out here — this teaser
-// grid is meant to highlight full releases, not one-off tracks.
 const LATEST_RELEASES_QUERY = `*[
   _type == "musicRelease" && releaseType in ["album", "ep", "remix"]
 ] | order(releaseYear desc, order asc, _createdAt desc)[0...4]{
@@ -40,8 +37,6 @@ const LATEST_RELEASES_QUERY = `*[
   artwork{ alt, asset }
 }`;
 
-// Fetches the fields needed to draw the vinyl label. Includes every release
-// with artwork, singles included, since one is picked at random to display.
 const RELEASE_ARTWORK_QUERY = `*[
   _type == "musicRelease" && defined(artwork.asset)
 ]{
@@ -54,13 +49,11 @@ const options = sanityFetchOptions(30);
 export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
     "music",
-    { title: "Cordio — Dennis Cortés", description: "Music that scores the moments in between." },
+    { title: "Cordio", description: "Music that scores the moments in between." },
     "/music"
   );
 }
 
-// Returns a random item from the list, or null if the list is empty. Picks
-// a fresh item on every request/page load rather than a fixed release.
 function pickRandomRelease<T>(list: T[]): T | null {
   if (list.length === 0) return null;
   return list[Math.floor(Math.random() * list.length)];

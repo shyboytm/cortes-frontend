@@ -33,7 +33,7 @@ const WORK_SUBTITLE =
 const options = sanityFetchOptions(30);
 
 export async function generateMetadata(): Promise<Metadata> {
-  return resolvePageMetadata("work", { title: "Work — Dennis Cortés", description: WORK_SUBTITLE }, "/work");
+  return resolvePageMetadata("work", { title: "Work", description: WORK_SUBTITLE }, "/work");
 }
 
 export default async function WorkIndexPage() {
@@ -54,15 +54,11 @@ export default async function WorkIndexPage() {
           className="mt-8 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
         />
 
-        {/* Feed: smaller, more informal work items shown underneath the featured projects. */}
         <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
           <PageHeader
             title="Feed"
             subtitle="Random bits of work, experiments, and personal projects that don't have a proper place but I don't want them to live on my hard drive and not see the light of day."
           />
-          {/* Randomized on every render (bounded by the fetch cache's
-              revalidate window above) so the feed order isn't the same
-              every visit. */}
           <FeedGrid items={shuffleArray(feedItems)} />
         </div>
       </div>

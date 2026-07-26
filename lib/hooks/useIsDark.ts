@@ -2,10 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-// Tracks the OS light/dark preference via the prefers-color-scheme media
-// query, listening for changes and cleaning up on unmount. Defaults to dark
-// until the listener attaches (SSR-safe: no window access outside the
-// effect).
 export function useIsDark() {
   const [isDark, setIsDark] = useState(true);
 

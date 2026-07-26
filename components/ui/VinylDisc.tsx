@@ -7,14 +7,10 @@ import { cn } from "@/lib/utils";
 export interface VinylDiscProps {
   imageUrl?: string;
   imageAlt?: string;
-  // Diameter in px. The label hole and center spindle scale proportionally
-  // with it.
   size?: number;
   className?: string;
 }
 
-// A spinning record: black disc + groove rings + album art as the center
-// label, falling back to a plain disc icon if no art is given.
 export default function VinylDisc({ imageUrl, imageAlt, size = 64, className }: VinylDiscProps) {
   const labelSize = Math.round(size * 0.4375);
 

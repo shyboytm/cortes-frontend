@@ -2,8 +2,6 @@ import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import { BackLink } from "@/components/ui/LinkPill";
 
-// Rendered automatically by Next when the page.tsx above calls notFound()
-// because a /work/[slug] doesn't resolve to a Sanity document.
 export default function WorkCaseStudyNotFound() {
   return (
     <div className="pt-32 pb-24">

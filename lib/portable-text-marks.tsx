@@ -1,9 +1,6 @@
 import { type PortableTextMarkComponent, type PortableTextBlockComponent } from "@portabletext/react";
 import { textSpacingClassName } from "@/lib/portable-text-images";
 
-// Shared `marks.link` renderer for Sanity PortableText bodies (case studies,
-// blog posts, etc). Renders an external link with target=_blank/rel, and an
-// internal link as a plain in-app anchor — both get the same underline style.
 export const portableTextLinkMark: PortableTextMarkComponent = ({ value, children }) => {
   const href = value?.href || "#";
   const isExternal = /^https?:\/\//.test(href);
@@ -19,13 +16,6 @@ export const portableTextLinkMark: PortableTextMarkComponent = ({ value, childre
   );
 };
 
-// Shared `block.h1`-`block.h6` renderers for Sanity PortableText bodies —
-// identical heading treatment across case studies and blog posts. Capped to
-// a max-w-3xl reading column and centered so headings stay legible even
-// inside a wide page container (e.g. the Work case study page, whose outer
-// container is max-w-7xl to leave room for full/wide/offset image bleed).
-// Margins swap to the wider textSpacingClassName treatment on whichever
-// edge sits directly against an image block (see portable-text-images.tsx).
 export const portableTextHeadings: Record<"h1" | "h2" | "h3" | "h4" | "h5" | "h6", PortableTextBlockComponent> = {
   h1: ({ children, value }) => (
     <h1

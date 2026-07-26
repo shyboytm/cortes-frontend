@@ -13,7 +13,6 @@ import { buttonVariants } from "@/components/ui/button";
 import { SOCIAL_LINKS } from "@/lib/social-links";
 import { resolvePageMetadata } from "@/lib/page-meta";
 
-// Photos that rotate through the portrait; InteractivePortrait controls the cycle interval.
 const PORTRAIT_PHOTOS = [
   "/info-portrait-dennis-cortes.jpeg",
   "/info-portrait-dennis-cortes-2.jpeg",
@@ -40,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
     "about",
     {
-      title: "About — Dennis Cortés",
+      title: "About",
       description:
         "I currently work at Aboon, and I was most recently a designer at Instagram on the Growth Web team.",
     },

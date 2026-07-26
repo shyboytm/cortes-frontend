@@ -16,7 +16,6 @@ type NavLink = {
   href: string
 }
 
-// One flat, left-aligned column of every menu link, in display order.
 const NAV_LINKS: NavLink[] = [
   { label: 'Work', href: '/work' },
   { label: 'Music', href: '/music' },
@@ -30,11 +29,7 @@ const NAV_LINKS: NavLink[] = [
 export default function PrimaryNav() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
-  // Tracks the pathname the menu's open state was last computed for. When
-  // the route changes, the menu closes during render.
   const [menuPathname, setMenuPathname] = useState(pathname)
-  // Defaults to true so server and first client render match; synced from
-  // localStorage right after mount, same pattern as LikeButton's liked state.
   const [soundEnabled, setSoundEnabled] = useState(true)
 
   if (pathname !== menuPathname) {
@@ -43,19 +38,9 @@ export default function PrimaryNav() {
   }
 
   useEffect(() => {
-    // localStorage only exists client-side, so this can't be computed during
-    // the initial (possibly server) render without risking a hydration
-    // mismatch — it has to resolve here, once, after mount.
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time read of a browser-only value, not a derived/re-render loop
     setSoundEnabled(getStoredSoundEnabled())
   }, [])
 
-  // Flips Cuelume's global enabled flag, persists the choice, and — only
-  // when turning sound back on — plays a confirmation tick. Turning it off
-  // stays silent, since a mute action making noise would be a bit ironic.
-  // stopPropagation keeps this from bubbling up to the overlay's own
-  // click-outside-to-close handler, which would otherwise close the menu
-  // every time this is clicked.
   const handleToggleSound = (event: React.MouseEvent) => {
     event.stopPropagation()
     const next = !soundEnabled
@@ -65,10 +50,8 @@ export default function PrimaryNav() {
     if (next) play('toggle')
   }
 
-  // Locks background scroll while the fullscreen menu is open.
   useLockBodyScroll(isOpen)
 
-  // Closes the fullscreen menu on Escape, same as the lightbox.
   useEffect(() => {
     if (!isOpen) return
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -78,14 +61,9 @@ export default function PrimaryNav() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isOpen])
 
-  // Determines whether a nav link matches the current route. "/work" and
-  // "/writing" match both their index page and any subpage under them
-  // (e.g. "/work/foo"). Links without a real route ("#") are never active.
-  // "/" matches only the exact homepage.
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : href !== '#' && (pathname === href || pathname.startsWith(`${href}/`))
 
-  // Applies a red accent color to whichever link matches the current route.
   const linkClassName = (href: string) =>
     cn(
       'transition-colors',
@@ -94,9 +72,6 @@ export default function PrimaryNav() {
         : 'text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white'
     )
 
-  // Shared between every link in the flat column. The label shifts right
-  // on hover. Each item slides/fades in with a small per-index stagger when
-  // the menu opens, and fades back out together (no stagger) on close.
   const renderLink = (link: NavLink, index: number) => (
     <li
       key={link.href}
@@ -108,12 +83,6 @@ export default function PrimaryNav() {
     >
       <Link
         href={link.href}
-        // Closes the menu (and unlocks body scroll) synchronously on click,
-        // rather than waiting for the pathname-change check to catch up on
-        // the next render. Without this, the body was still scroll-locked
-        // at the moment Next.js tried to scroll the new page to the top, so
-        // that call was a no-op — the old page's scroll position just
-        // carried over once the lock released a beat later.
         onClick={() => setIsOpen(false)}
         data-cuelume-hover="tick"
         className={cn(linkClassName(link.href), 'inline-block w-fit transition-all duration-200 ease-out hover:translate-x-3')}
@@ -125,10 +94,6 @@ export default function PrimaryNav() {
 
   return (
     <header>
-      {/* Fixed positioning is relative to the viewport; this max-w-7xl
-          wrapper lines the nav up with the content underneath it on large
-          screens. z-50 keeps the hamburger/X above the fullscreen menu
-          regardless of DOM order. */}
       <div className="fixed inset-x-0 top-8 z-50 px-3 md:px-4 lg:px-6">
         <div
           id="primary-nav"
@@ -137,13 +102,6 @@ export default function PrimaryNav() {
 
           <div className="relative z-10 flex items-center gap-4">
 
-            {/* Real SVG icons rather than two hand-built <span> bars: the
-                bars looked fine as parallel lines but turned out fragile
-                across browsers/first paint (a hairline anti-aliasing
-                difference between a 2px flex-centered bar and its rotated
-                counterpart is enough to make one arm of the X look thicker,
-                or vanish entirely on first render before layout settles).
-                Vector icons don't have that problem. */}
             <button
               type="button"
               onClick={() => setIsOpen((open) => !open)}
@@ -229,24 +187,9 @@ export default function PrimaryNav() {
               className="flex w-fit items-center gap-3 text-sm font-normal text-black/70 transition-colors hover:text-black sm:text-base dark:text-white/70 dark:hover:text-white"
             >
               {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-              {/* Fixed width (sized to fit "SOUND OFF", the longer of the
-                  two states) so the label swapping between "ON"/"OFF"
-                  doesn't change this button's layout width and shove the
-                  toggle over. Uppercase/tracking-widest/glow match every
-                  other small label in this overlay (e.g. the nav links'
-                  own dark:[text-shadow:0_0_5px_currentColor] treatment).
-                  Widened from w-14/w-16 — that was sized for a narrower,
-                  non-monospace font; now that this text renders in the
-                  site's mono font, tracking-widest on top of monospace
-                  characters made "SOUND OFF" run right up against the
-                  toggle, overflowing the old fixed width. */}
               <span className="w-20 whitespace-nowrap text-xs tracking-widest uppercase sm:w-24 dark:[text-shadow:0_0_5px_currentColor]">
                 Sound {soundEnabled ? 'On' : 'Off'}
               </span>
-              {/* The actual switch: a pill track that fills solid once "on"
-                  and a thumb that slides to the far side, same on/off
-                  language as any standard toggle. Purely decorative — the
-                  surrounding <button> is what's actually interactive/focusable. */}
               <span
                 aria-hidden
                 className={cn(

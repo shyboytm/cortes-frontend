@@ -6,8 +6,6 @@ export interface PageHeaderProps {
   className?: string;
 }
 
-// Page title and optional subtitle block rendered at the top of pages
-// other than the homepage.
 export default function PageHeader({ title, subtitle, className }: PageHeaderProps) {
   return (
     <div className={cn("mb-5 flex flex-col lg:mb-10 lg:flex-row items-start lg:justify-between gap-2 lg:gap-8", className)}>

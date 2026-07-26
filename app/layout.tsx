@@ -9,20 +9,11 @@ import ScrollRestoration from '@/components/ScrollRestoration'
 import NavigationHistoryTracker from '@/components/NavigationHistoryTracker'
 import CuelumeSetup from '@/components/CuelumeSetup'
 import { Analytics } from '@vercel/analytics/next';
-import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from '@/lib/site-config';
+import { SITE_URL } from '@/lib/site-config';
+import { resolvePageMetadata } from '@/lib/page-meta';
 
 import "./globals.scss";
 
-// Was IBM Plex Sans; swapped to Space Grotesk site-wide. Kept the
-// "--font-ibm-plex-sans" variable name (same reasoning as the --font-doto
-// and --font-space-mono aliases elsewhere in this file/globals.scss — a
-// stable slot name for "the site's sans font", not a literal description)
-// so --font-sans in globals.scss and the couple of explicit font-sans
-// classes (PrimaryNav's wordmark/email link, DetailStickyBar's back
-// button/like count) all pick this up with no further changes. Same static
-// weights as before — 300/400/500/700 are all real static cuts Google
-// serves for Space Grotesk, matching what was actually in use (400/500 body
-// text, 700 for font-bold).
 const ibmPlexSans = Space_Grotesk({
   variable: "--font-ibm-plex-sans",
   subsets: ["latin"],
@@ -36,12 +27,6 @@ const spaceMono = Space_Mono({
   style: ["normal", "italic"],
 });
 
-// Doto again, but scoped this time: it's the rounded variable-weight font
-// this site used to use everywhere (see the --font-doto/dot-font naming
-// still sprinkled through the codebase, now aliased to Space Mono instead —
-// see globals.scss). Rather than reclaim that name and flip the whole site
-// back, this is its own variable used in exactly one spot: the scrolling
-// background phrase in WorkTogetherCTA.
 const doto = Doto({
   variable: "--font-doto-marquee",
   subsets: ["latin"],
@@ -49,28 +34,21 @@ const doto = Doto({
   axes: ["ROND"],
 });
 
-// Root fallback: covers any route that doesn't export its own generateMetadata
-// (currently none — every page does — but this is what a future one, or an
-// error/not-found boundary, would inherit). Every real page overrides
-// title/description/openGraph/twitter with its own via resolvePageMetadata
-// or, for Writing/Work [slug] pages, the post/case study's own content (see
-// lib/page-meta.ts). metadataBase turns the relative DEFAULT_OG_IMAGE path
-// (and any other relative metadata URL) into an absolute one, which social
-// scrapers require.
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: "Dennis Cortés - Designer & Music Producer",
-  description: "Software Designer, Musician, and Photographer based in Nashville, TN",
-  openGraph: {
-    siteName: SITE_NAME,
-    type: "website",
-    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    images: [DEFAULT_OG_IMAGE],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const homeMetadata = await resolvePageMetadata(
+    "home",
+    {
+      title: "Designer & Music Producer",
+      description: "Software Designer, Musician, and Photographer based in Nashville, TN",
+    },
+    "/"
+  );
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    ...homeMetadata,
+  };
+}
 
 export default function RootLayout({
   children,
@@ -87,20 +65,13 @@ export default function RootLayout({
         <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}
           <Analytics />
-          {/* PrimaryFooter awaits a Last.fm fetch server-side; Suspense keeps
-              that from blocking the initial HTML flush for every route. */}
           <Suspense fallback={<div className="h-[400px]" />}>
             <PrimaryFooter />
           </Suspense>
         </div>
-
-        {/* One canvas, every page */}
+        
         <GlobalShader />
-
-        {/* Film grain + CRT overlay, above all content on every page */}
         <ScreenOverlay />
-
-        {/* Back-to-top, every page */}
         <ScrollToTopButton />
       </body>
     </html>

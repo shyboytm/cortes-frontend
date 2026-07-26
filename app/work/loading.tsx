@@ -1,7 +1,5 @@
 import PrimaryNav from "@/components/ui/PrimaryNav";
 
-// Instant loading placeholder shown while the Work index page's Sanity
-// fetch resolves, so navigation doesn't leave a blank tab.
 export default function WorkLoading() {
   return (
     <div className="pt-32 pb-24">

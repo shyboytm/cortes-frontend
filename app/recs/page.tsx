@@ -40,15 +40,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
     "recs",
     {
-      title: "Recs — Dennis Cortés",
+      title: "Recs",
       description: "Things I think are cool or useful, and want to share with other people.",
     },
     "/recs"
   );
 }
 
-// Fixed display order regardless of how Sanity happens to return them —
-// alphabetical by label.
 const CATEGORY_SECTIONS: { value: string; label: string; icon: LucideIcon }[] = [
   { value: "app", label: "Apps", icon: Smartphone },
   { value: "blog", label: "Blogs & Articles", icon: Newspaper },
@@ -64,7 +62,6 @@ const CATEGORY_SECTIONS: { value: string; label: string; icon: LucideIcon }[] = 
 export default async function RecsPage() {
   const recs = await client.fetch<SanityDocument[]>(RECS_QUERY, {}, options);
 
-  // Sorts by lower `order` value first; items with no order value fall back to newest-first.
   const sorted = [...recs].sort((a, b) => {
     if (a.order != null && b.order != null) return a.order - b.order;
     if (a.order != null) return -1;
@@ -72,8 +69,6 @@ export default async function RecsPage() {
     return 0;
   });
 
-  // Group once so the jump nav and the sections below agree on exactly
-  // which categories actually have content.
   const sections = CATEGORY_SECTIONS.map((section) => ({
     ...section,
     items: sorted.filter((rec) => rec.category === section.value),

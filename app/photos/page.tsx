@@ -12,9 +12,6 @@ import JumpNav from "@/components/ui/JumpNav";
 import { buttonVariants } from "@/components/ui/button";
 import { resolvePageMetadata } from "@/lib/page-meta";
 
-// Same treatment as Music page's streaming-links row: a horizontal set of
-// pill links (also mirrored into the sticky sub-nav via JumpNav) for where
-// else to find/buy the work shown on this page.
 const PHOTO_LINKS = [
   { label: "Buy Prints", href: "https://fineartamerica.com/profiles/dennis-cortes", Icon: ShoppingBag },
   { label: "Glass", href: "https://glass.photo/cortes", Icon: Aperture },
@@ -67,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
     "photos",
     {
-      title: "Photos — Dennis Cortés",
+      title: "Photos",
       description:
         "A collection of my favorite photography I've shot over the years. Camera and lens info as well as buy print links included.",
     },
@@ -78,8 +75,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PhotosPage() {
   const photos = await client.fetch<PhotoDocument[]>(PHOTOS_QUERY, {}, options);
 
-  // Randomized on every render (bounded by the fetch cache's revalidate
-  // window above) so the gallery order isn't the same every visit.
   const items: PhotoItem[] = shuffleArray(photos)
     .filter((photo) => photo.image?.asset)
     .map((photo) => ({

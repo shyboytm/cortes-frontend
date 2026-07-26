@@ -11,9 +11,6 @@ export interface PostRowProps {
   likes?: number;
 }
 
-// One blog post's teaser row: title on the left, published date on the
-// right, the whole row linking to the post. A background tint and sliding
-// arrow appear on hover. Renders nothing if the post has no slug.
 export default function PostRow({ _id, title, slug, publishedAt, likes }: PostRowProps) {
   if (!slug) return null;
 

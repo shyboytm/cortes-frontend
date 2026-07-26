@@ -17,14 +17,8 @@ export interface WorkGridProps {
   className?: string;
 }
 
-// Both callers (homepage and /work) lay these cards out in an identical
-// column grid — this is just the default, overridable via `className` if a
-// future caller needs a different column count/gap.
 const DEFAULT_GRID_CLASSNAME = "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3";
 
-// Shared rendering of a WORK_QUERY result into a grid of WorkRow cards. Only
-// the first card is marked `priority` since it's the largest-priority LCP
-// candidate on both pages that render this grid.
 export default function WorkGrid({ workItems, className }: WorkGridProps) {
   return (
     <div className={className ?? DEFAULT_GRID_CLASSNAME}>

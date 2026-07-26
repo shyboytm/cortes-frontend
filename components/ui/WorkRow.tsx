@@ -12,37 +12,21 @@ export interface WorkRowImage {
 }
 
 export interface WorkRowProps {
-  // Sanity document id, used as the like button's target.
   id: string;
   title: string;
   dateRange?: string;
-  // Sanity returns null (not undefined) for an unset image field, so both
-  // are handled explicitly below.
   mainImage?: WorkRowImage | null;
   hoverImage?: WorkRowImage | null;
-  // Slug and whether the case study field has content, both from the
-  // homepage's WORK_QUERY. The card is a link only when both are present.
   slug?: string;
   hasCaseStudy?: boolean;
-  // When on, overrides hasCaseStudy: the card never links anywhere (the
-  // case study page itself also 404s, see app/work/[slug]/page.tsx) and a
-  // "Coming soon" tag shows in place of the hover arrow.
   comingSoon?: boolean;
   likes?: number;
-  // Set by WorkGrid for whichever card is the largest-priority LCP
-  // candidate (the first one in the grid); left unset otherwise.
   priority?: boolean;
 }
 
-// Every homepage thumbnail is cropped to this exact box via Sanity's
-// width+height image URL params, which crop around the image's hotspot.
 const THUMB_WIDTH = 1200;
 const THUMB_HEIGHT = 900;
 
-// One project's card on the homepage: a thumbnail (crossfades to a second
-// image on hover, if one's set in Sanity), the title and date range, and an
-// arrow badge that appears on hover. The whole card links to the case study
-// page once one's been written — otherwise it's just a static preview.
 export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, comingSoon, likes, priority }: WorkRowProps) {
   const hasHoverImage = Boolean(hoverImage?.asset);
   const isClickable = Boolean(hasCaseStudy && slug && !comingSoon);

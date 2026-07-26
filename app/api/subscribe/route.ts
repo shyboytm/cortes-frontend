@@ -1,14 +1,8 @@
 import { NextResponse } from "next/server";
 import { resend } from "@/lib/resend";
 
-// Deliberately simple — just enough to catch typos/empty input, not a full
-// RFC 5322 validator. Resend itself is the real source of truth on whether
-// an address is deliverable.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Adds an email as a contact to a single Resend Audience (the site's
-// newsletter list). Actual broadcast emails are composed and sent from the
-// Resend dashboard by hand, so this route's only job is capturing sign-ups.
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -31,19 +25,12 @@ export async function POST(request: Request) {
   }
 
   try {
-    // `segments` is the current API — Resend renamed Audiences to Segments
-    // and deprecated the old `audienceId` field (still works, but is marked
-    // deprecated in the SDK's types as of the version this project pins).
     const { error } = await resend.contacts.create({
       email,
       unsubscribed: false,
       segments: [{ id: process.env.RESEND_SEGMENT_ID }],
     });
 
-    // Resend's SDK returns an `error` object on the result rather than
-    // throwing for most failure modes — re-subscribing an already-present,
-    // non-unsubscribed contact is one of them, and isn't a real error from
-    // the visitor's point of view.
     if (error && !/already exists/i.test(error.message)) {
       console.error("Failed to add newsletter contact:", error.message);
       return NextResponse.json({ error: "Something went wrong, try again" }, { status: 500 });

@@ -4,11 +4,8 @@ import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Scroll distance in px after which the button becomes visible.
 const SHOW_AFTER_PX = 480;
 
-// Mounted once in the root layout. Fixed positioning keeps it tracking the
-// viewport regardless of the current page's scroll position.
 export default function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
 

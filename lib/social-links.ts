@@ -7,8 +7,6 @@ import {
   SiBuymeacoffee,
 } from "@icons-pack/react-simple-icons";
 
-// Shared social link list used across the nav overlay, footer, and About
-// page's Socials section, so hrefs/icons only need to be maintained once.
 export const SOCIAL_LINKS = [
   { label: "Instagram", href: "https://www.instagram.com/shyboytm/", icon: Instagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/fromcortes/", icon: Linkedin },

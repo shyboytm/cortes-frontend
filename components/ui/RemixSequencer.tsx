@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { Sequence } from 'tone';
 import { Play, Square, Shuffle, RotateCcw, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -41,8 +42,6 @@ type Song = {
   urls: Record<PadId, string>;
 };
 
-// Each song has three stems (one per pad), all the same length and
-// tempo-locked to the song's own BPM (4 bars per song).
 const SONGS: Song[] = [
   {
     id: 'chips-2une',
@@ -76,15 +75,10 @@ const SONGS: Song[] = [
   },
 ];
 
-// Track 1 is on by default whenever a song loads (initial load or a song
-// change).
 const defaultPads = (): Record<PadId, boolean> => ({ track1: true, track2: false, track3: false });
 
-// The three pads are Tone.Player instances synced to the Transport;
-// toggling a pad mutes/unmutes it in place. The dropdown selects which
-// song's stems are loaded and sets the Transport's BPM; switching songs
-// stops playback, disposes the old players, and loads the new ones in at
-// that song's tempo.
+type ToneModule = typeof import('tone');
+
 export default function RemixSequencer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1);
@@ -95,38 +89,19 @@ export default function RemixSequencer() {
   const gridRef = useRef(grid);
   gridRef.current = grid;
 
-  // Holds the currently selected song id for use inside setup(), which
-  // only runs once.
   const songIdRef = useRef(songId);
   songIdRef.current = songId;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const toneRef = useRef<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const synthsRef = useRef<Record<LaneId, any> | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const loopsRef = useRef<Record<PadId, any> | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sequenceRef = useRef<any>(null);
-  // Holds the in-flight setup() promise while the first setup() call is
-  // still running, so concurrent calls (e.g. Play clicked right after a
-  // step pad is tapped) await the same build instead of each starting their
-  // own audio graph.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const setupPromiseRef = useRef<Promise<any> | null>(null);
-  // Tracks whether the eager 'tone' preload on first interaction has
-  // already fired, so hovering/focusing the sequencer more than once
-  // doesn't re-trigger the dynamic import.
+  const toneRef = useRef<ToneModule | null>(null);
+  const synthsRef = useRef<Record<LaneId, InstanceType<ToneModule['Sampler']>> | null>(null);
+  const loopsRef = useRef<Record<PadId, InstanceType<ToneModule['Player']>> | null>(null);
+  const sequenceRef = useRef<Sequence<number> | null>(null);
+  const setupPromiseRef = useRef<Promise<ToneModule> | null>(null);
   const preloadStartedRef = useRef(false);
 
-  // (Re)creates the three stem players for whichever song is passed in,
-  // disposing any previous set first. Shared by the initial setup and by
-  // switching songs later.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const loadSong = useCallback(async (Tone: any, song: Song) => {
+  const loadSong = useCallback(async (Tone: ToneModule, song: Song) => {
     if (loopsRef.current) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Object.values(loopsRef.current).forEach((player: any) => player.dispose());
+      Object.values(loopsRef.current).forEach((player) => player.dispose());
       loopsRef.current = null;
     }
 
@@ -137,8 +112,6 @@ export default function RemixSequencer() {
     await Tone.loaded();
 
     loopsRef.current = players;
-    // Sets mute state on the players to match `defaultPads()` (only Track 1
-    // unmuted).
     const defaults = defaultPads();
     Object.entries(players).forEach(([padId, player]) => {
       player.mute = !defaults[padId as PadId];
@@ -149,16 +122,6 @@ export default function RemixSequencer() {
     setActivePads(defaults);
   }, []);
 
-  // Builds the whole audio graph on the first Play/pad click, importing
-  // Tone lazily and calling Tone.start() inside the click handler.
-  //
-  // Re-entrancy is guarded with an in-flight promise (setupPromiseRef)
-  // rather than just checking toneRef.current: the checks/assignments below
-  // are synchronous, but the work in between is async, so two calls that
-  // both land before the first one finishes (e.g. Play clicked right after
-  // a step pad tap) would otherwise both pass a plain `if (toneRef.current)`
-  // guard and each build a duplicate audio graph. Storing the promise lets
-  // any concurrent caller await the same in-flight build instead.
   const setup = useCallback(async () => {
     if (toneRef.current) return toneRef.current;
     if (setupPromiseRef.current) return setupPromiseRef.current;
@@ -167,9 +130,6 @@ export default function RemixSequencer() {
       const Tone = await import('tone');
       await Tone.start();
 
-      // Drum samples loaded as Tone.Sampler instances; each triggerAttack
-      // call spawns its own voice. Each sampler has one sample, so the note
-      // name used to trigger it ('C1') is just a key into the urls map.
       const kick = new Tone.Sampler({ urls: { C1: '/music/drums/kick.wav' } }).toDestination();
       const snare = new Tone.Sampler({ urls: { C1: '/music/drums/snare.wav' } }).toDestination();
       const hat = new Tone.Sampler({ urls: { C1: '/music/drums/hat.wav' } }).toDestination();
@@ -204,22 +164,13 @@ export default function RemixSequencer() {
     try {
       return await buildPromise;
     } catch (err) {
-      // Resets so a failed setup doesn't permanently block future attempts
-      // behind a rejected promise.
       setupPromiseRef.current = null;
       throw err;
     } finally {
-      // On success, toneRef.current is now set, so subsequent calls short
-      // circuit on the first check above; clearing the ref here just avoids
-      // holding onto a resolved promise forever.
       if (toneRef.current) setupPromiseRef.current = null;
     }
   }, [loadSong]);
 
-  // Preloads the 'tone' dynamic import on the sequencer's first meaningful
-  // interaction (pointer entering the container, or focus landing on it),
-  // rather than unconditionally on mount, so visitors who never touch the
-  // sequencer don't download the Tone.js bundle. Fires at most once.
   const preloadTone = useCallback(() => {
     if (preloadStartedRef.current) return;
     preloadStartedRef.current = true;
@@ -229,10 +180,8 @@ export default function RemixSequencer() {
   useEffect(() => {
     return () => {
       sequenceRef.current?.dispose();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (loopsRef.current) Object.values(loopsRef.current).forEach((l: any) => l.dispose());
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (synthsRef.current) Object.values(synthsRef.current).forEach((s: any) => s.dispose());
+      if (loopsRef.current) Object.values(loopsRef.current).forEach((l) => l.dispose());
+      if (synthsRef.current) Object.values(synthsRef.current).forEach((s) => s.dispose());
       if (toneRef.current) {
         const transport = toneRef.current.getTransport();
         transport.stop();
@@ -275,7 +224,6 @@ export default function RemixSequencer() {
     const song = SONGS.find((s) => s.id === nextSongId);
     if (!song) return;
 
-    // Stops the transport before switching songs.
     if (toneRef.current) {
       const transport = toneRef.current.getTransport();
       if (isPlaying) {
@@ -285,9 +233,6 @@ export default function RemixSequencer() {
       }
       await loadSong(toneRef.current, song);
     }
-    // If audio hasn't been initialized yet, setup() loads whichever song
-    // is selected (via `songId` state) the first time Play/a pad is
-    // pressed.
   };
 
   const clearGrid = () => {
@@ -352,9 +297,6 @@ export default function RemixSequencer() {
               Song
             </span>
             <div className="relative">
-              {/* appearance-none removes the native select arrow; the
-                  ChevronDown below renders a custom one, inset to match the
-                  pill's left-side text padding. */}
               <select
                 value={songId}
                 onChange={(e) => changeSong(e.target.value as SongId)}
@@ -408,11 +350,6 @@ export default function RemixSequencer() {
                 {lane.label}
               </span>
               <div className="grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1 sm:flex-1">
-                {/* Deliberately no Cuelume tick/press here, unlike the rest
-                    of the sequencer's controls: these 64 step buttons are
-                    tapped rapidly while composing a beat, and layering a
-                    synthesized UI click on every tap would clash with the
-                    actual drum samples the sequencer is already playing. */}
                 {grid[lane.id].map((active, step) => (
                   <button
                     key={step}
