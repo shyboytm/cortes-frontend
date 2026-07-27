@@ -11,6 +11,7 @@ import CuelumeSetup from '@/components/CuelumeSetup'
 import { Analytics } from '@vercel/analytics/next';
 import { SITE_URL } from '@/lib/site-config';
 import { resolvePageMetadata } from '@/lib/page-meta';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import "./globals.scss";
 
@@ -65,6 +66,7 @@ export default function RootLayout({
         <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}
           <Analytics />
+          <SpeedInsights/>
           <Suspense fallback={<div className="h-[400px]" />}>
             <PrimaryFooter />
           </Suspense>
