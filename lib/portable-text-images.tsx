@@ -3,6 +3,7 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
 import { resolveVideoEmbed } from "@/lib/video-embed";
+import { highlightCode } from "@/lib/code-highlight";
 
 export type PortableMediaSize = "inset" | "half" | "third" | "wide" | "full" | "offsetLeft";
 
@@ -34,6 +35,15 @@ export type PortableVideoEmbedBlock = {
   caption?: string;
   size?: PortableMediaSize;
   url?: string;
+};
+
+export type PortableCodeBlock = {
+  _type: "code";
+  _key: string;
+  code?: string;
+  language?: string;
+  filename?: string;
+  _highlightedHtml?: string;
 };
 
 export type PortableMediaBlock = PortableImageBlock | PortableVideoBlock | PortableVideoEmbedBlock;
@@ -114,7 +124,7 @@ export function groupOffsetSections(blocks: PortableRawBlock[]): PortableRawBloc
   return result;
 }
 
-const IMAGE_LIKE_TYPES = new Set(["image", "video", "videoEmbed", "imageRow", "offsetSection"]);
+const IMAGE_LIKE_TYPES = new Set(["image", "video", "videoEmbed", "imageRow", "offsetSection", "code"]);
 
 function annotateTextSpacing(blocks: PortableRawBlock[]): PortableRawBlock[] {
   return blocks.map((block, index) => {
@@ -140,8 +150,28 @@ export function textSpacingClassName(value: unknown, defaultTop: string, default
   return `${top} ${bottom}`;
 }
 
-export function prepareImageBlocks(blocks: PortableRawBlock[]): PortableRawBlock[] {
-  return annotateTextSpacing(groupOffsetSections(groupAdjacentImages(blocks)));
+async function highlightCodeBlocks(blocks: PortableRawBlock[]): Promise<PortableRawBlock[]> {
+  return Promise.all(
+    blocks.map(async (block) => {
+      if (block._type === "code") {
+        const code = typeof block.code === "string" ? block.code : "";
+        if (!code) return block;
+        const language = typeof block.language === "string" ? block.language : undefined;
+        const _highlightedHtml = await highlightCode(code, language);
+        return { ...block, _highlightedHtml };
+      }
+      if (block._type === "offsetSection") {
+        const content = await highlightCodeBlocks(block.content as PortableRawBlock[]);
+        return { ...block, content };
+      }
+      return block;
+    })
+  );
+}
+
+export async function prepareImageBlocks(blocks: PortableRawBlock[]): Promise<PortableRawBlock[]> {
+  const grouped = annotateTextSpacing(groupOffsetSections(groupAdjacentImages(blocks)));
+  return highlightCodeBlocks(grouped);
 }
 
 function sizeWrapperClass(size: PortableMediaSize | undefined) {
@@ -285,6 +315,38 @@ function PortableVideoEmbedFigure({
   );
 }
 
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function CodeBlockFigure({ value, className }: { value: PortableCodeBlock; className?: string }) {
+  if (!value?.code) return null;
+  const label = value.filename || value.language;
+
+  return (
+    <figure className={className}>
+      <div className="overflow-hidden rounded-sm border border-black/10 dark:border-white/10">
+        {label && (
+          <div className="flex items-center justify-between gap-3 border-b border-black/10 bg-black/5 px-4 py-2 dark:border-white/10 dark:bg-white/5">
+            <span className="font-mono text-xs text-black/60 dark:text-white/60">{label}</span>
+            {value.filename && value.language && (
+              <span className="dot-font font-doto text-[10px] tracking-widest text-black/40 uppercase dark:text-white/40">
+                {value.language}
+              </span>
+            )}
+          </div>
+        )}
+        <div
+          className="font-mono text-sm leading-relaxed"
+          dangerouslySetInnerHTML={{
+            __html: value._highlightedHtml || `<pre class="shiki"><code>${escapeHtml(value.code)}</code></pre>`,
+          }}
+        />
+      </div>
+    </figure>
+  );
+}
+
 function MediaFigure({
   media,
   figureNumber,
@@ -345,6 +407,9 @@ export function createPortableTextComponents({
           />
         );
       },
+      code: ({ value }: { value: PortableCodeBlock }) => (
+        <CodeBlockFigure value={value} className="my-8" />
+      ),
       imageRow: ({ value }: { value: { images: PortableMediaBlock[] } }) => (
         <div className="mx-[calc(50%-50vw)] my-8 w-screen px-6 sm:px-12 md:px-16">
           <div

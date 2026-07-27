@@ -112,7 +112,7 @@ export default async function WritingPostPage({
     notFound();
   }
 
-  const body = Array.isArray(post.body) ? prepareImageBlocks(post.body) : [];
+  const body = Array.isArray(post.body) ? await prepareImageBlocks(post.body) : [];
   const shareUrl = `${SITE_URL}/writing/${slug}`;
 
   return (

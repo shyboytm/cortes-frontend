@@ -109,7 +109,7 @@ export default async function WorkCaseStudyPage({
     notFound();
   }
 
-  const caseStudy = Array.isArray(work.caseStudy) ? prepareImageBlocks(work.caseStudy) : [];
+  const caseStudy = Array.isArray(work.caseStudy) ? await prepareImageBlocks(work.caseStudy) : [];
 
   return (
     <div className="pt-32 pb-24">
