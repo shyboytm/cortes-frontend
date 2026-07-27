@@ -13,6 +13,8 @@ import { formatPostDate } from "@/lib/utils";
 import LikeButton from "@/components/ui/LikeButton";
 import ShareButtons from "@/components/ui/ShareButtons";
 import DetailStickyBar from "@/components/ui/DetailStickyBar";
+import CommentSection from "@/components/ui/CommentSection";
+import { getComments } from "@/lib/comments";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
 import { prepareImageBlocks, createPortableTextComponents, textSpacingClassName } from "@/lib/portable-text-images";
 import { portableTextToPlainText } from "@/lib/portable-text-to-plain";
@@ -113,6 +115,7 @@ export default async function WritingPostPage({
   }
 
   const body = Array.isArray(post.body) ? await prepareImageBlocks(post.body) : [];
+  const comments = await getComments(post._id);
   const shareUrl = `${SITE_URL}/writing/${slug}`;
 
   return (
@@ -167,6 +170,8 @@ export default async function WritingPostPage({
         ) : (
           <p className="text-black/60 dark:text-white/60">This post has no content yet.</p>
         )}
+
+        <CommentSection parentId={post._id} initialComments={comments} className="mt-20" />
       </div>
     </div>
   );

@@ -9,6 +9,8 @@ import PageHeader from "@/components/ui/PageHeader";
 import WorkBackLink from "@/components/ui/WorkBackLink";
 import WorkStickyBar from "@/components/ui/WorkStickyBar";
 import LikeButton from "@/components/ui/LikeButton";
+import CommentSection from "@/components/ui/CommentSection";
+import { getComments } from "@/lib/comments";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
 import { prepareImageBlocks, createPortableTextComponents, textSpacingClassName } from "@/lib/portable-text-images";
 import { portableTextToPlainText } from "@/lib/portable-text-to-plain";
@@ -110,6 +112,7 @@ export default async function WorkCaseStudyPage({
   }
 
   const caseStudy = Array.isArray(work.caseStudy) ? await prepareImageBlocks(work.caseStudy) : [];
+  const comments = await getComments(work._id);
 
   return (
     <div className="pt-32 pb-24">
@@ -157,6 +160,8 @@ export default async function WorkCaseStudyPage({
             No case study has been written for this project yet.
           </p>
         )}
+
+        <CommentSection parentId={work._id} initialComments={comments} className="mt-20" />
       </div>
     </div>
   );
