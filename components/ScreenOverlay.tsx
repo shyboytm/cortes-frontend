@@ -22,7 +22,7 @@ export default function ScreenOverlay() {
       <CRTScreen
         pixelSize={50}
         colorShift={0}
-        scanlineIntensity={isDark ? 0.7 : 0.35}
+        scanlineIntensity={isDark ? 0.7 : 0.15}
         scanlineFrequency={350}
         brightness={1}
         contrast={1}
