@@ -35,7 +35,10 @@ export function buildMetadata({
   type?: "website" | "article";
 }): Metadata {
   const url = `${SITE_URL}${path}`;
-  const prefixedTitle = title.startsWith(`${SITE_NAME} - `) ? title : `${SITE_NAME} - ${title}`;
+  const diacriticPattern = new RegExp("[\\u0300-\\u036f]", "g");
+  const normalize = (value: string) => value.normalize("NFD").replace(diacriticPattern, "").toLowerCase();
+  const alreadyPrefixed = normalize(title).startsWith(normalize(`${SITE_NAME} - `));
+  const prefixedTitle = alreadyPrefixed ? title : `${SITE_NAME} - ${title}`;
   return {
     title: prefixedTitle,
     description,
