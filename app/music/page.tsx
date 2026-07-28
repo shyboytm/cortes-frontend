@@ -174,8 +174,7 @@ export default async function MusicPage() {
             <h2 className="mb-3 text-2xl font-normal text-black dark:text-white text-center">Make your own Cordio remix</h2>
             <p className="mb-6 text-black/60 dark:text-white/60 text-center">
               Ever wanted to make your own music? Let&apos;s collab right here, right now with this browser-based remix toy built from
-              actual pieces of my Cordio music tracks. Pick a song from the dropdown, toggle stems from the tracks, and layer in your own 
-              drum loop pads to see what you land on!
+              actual pieces of my Cordio music tracks.
             </p>
           </div>
 
