@@ -15,12 +15,12 @@ export default function ImageProtection() {
       if (isImageTarget(event.target)) event.preventDefault();
     };
 
-    document.addEventListener("contextmenu", handleContextMenu);
-    document.addEventListener("dragstart", handleDragStart);
+    document.addEventListener("contextmenu", handleContextMenu, true);
+    document.addEventListener("dragstart", handleDragStart, true);
 
     return () => {
-      document.removeEventListener("contextmenu", handleContextMenu);
-      document.removeEventListener("dragstart", handleDragStart);
+      document.removeEventListener("contextmenu", handleContextMenu, true);
+      document.removeEventListener("dragstart", handleDragStart, true);
     };
   }, []);
 
