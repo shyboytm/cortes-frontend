@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
 import { cn } from "@/lib/utils";
@@ -20,6 +20,7 @@ export interface WorkRowProps {
   slug?: string;
   hasCaseStudy?: boolean;
   comingSoon?: boolean;
+  hasPreviewPassword?: boolean;
   likes?: number;
   priority?: boolean;
 }
@@ -27,9 +28,9 @@ export interface WorkRowProps {
 const THUMB_WIDTH = 1200;
 const THUMB_HEIGHT = 900;
 
-export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, comingSoon, likes, priority }: WorkRowProps) {
+export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, comingSoon, hasPreviewPassword, likes, priority }: WorkRowProps) {
   const hasHoverImage = Boolean(hoverImage?.asset);
-  const isClickable = Boolean(hasCaseStudy && slug && !comingSoon);
+  const isClickable = Boolean(slug && (comingSoon ? hasPreviewPassword : hasCaseStudy));
 
   const card = (
     <div
@@ -67,12 +68,12 @@ export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, s
 
         {isClickable && (
           <span className="absolute right-3 bottom-3 flex h-9 w-9 scale-75 items-center justify-center rounded-full border border-black/20 bg-white/80 text-black opacity-0 backdrop-blur-sm transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 dark:border-white/20 dark:bg-black/70 dark:text-white">
-            <ArrowRight size={18} />
+            {comingSoon ? <Lock size={16} /> : <ArrowRight size={18} />}
           </span>
         )}
 
         {comingSoon && (
-          <span className="dot-font font-doto absolute right-3 bottom-3 rounded-full border border-black/20 bg-white/80 px-3 py-1 text-xs tracking-widest text-black/70 uppercase backdrop-blur-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
+          <span className="dot-font font-doto absolute bottom-3 left-3 rounded-full border border-black/20 bg-white/80 px-3 py-1 text-xs tracking-widest text-black/70 uppercase backdrop-blur-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
             Coming soon
           </span>
         )}

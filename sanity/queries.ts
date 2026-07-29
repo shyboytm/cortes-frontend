@@ -17,5 +17,6 @@ export const WORK_QUERY = `*[
     asset
   },
   "hasCaseStudy": count(caseStudy) > 0,
-  comingSoon
+  comingSoon,
+  "hasPreviewPassword": defined(comingSoonPassword) && comingSoonPassword != ""
 }`;
