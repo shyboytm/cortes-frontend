@@ -4,6 +4,7 @@ import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/image";
 import { resolveVideoEmbed } from "@/lib/video-embed";
 import { highlightCode } from "@/lib/code-highlight";
+import ImageCarousel from "@/components/ui/ImageCarousel";
 
 export type PortableMediaSize = "inset" | "half" | "third" | "wide" | "full" | "offsetLeft";
 
@@ -44,6 +45,17 @@ export type PortableCodeBlock = {
   language?: string;
   filename?: string;
   _highlightedHtml?: string;
+};
+
+export type PortableImageCarouselBlock = {
+  _type: "imageCarousel";
+  _key: string;
+  images?: PortableImageBlock[];
+};
+
+export type PortableDividerBlock = {
+  _type: "divider";
+  _key: string;
 };
 
 export type PortableMediaBlock = PortableImageBlock | PortableVideoBlock | PortableVideoEmbedBlock;
@@ -124,7 +136,16 @@ export function groupOffsetSections(blocks: PortableRawBlock[]): PortableRawBloc
   return result;
 }
 
-const IMAGE_LIKE_TYPES = new Set(["image", "video", "videoEmbed", "imageRow", "offsetSection", "code"]);
+const IMAGE_LIKE_TYPES = new Set([
+  "image",
+  "video",
+  "videoEmbed",
+  "imageRow",
+  "offsetSection",
+  "code",
+  "imageCarousel",
+  "divider",
+]);
 
 function annotateTextSpacing(blocks: PortableRawBlock[]): PortableRawBlock[] {
   return blocks.map((block, index) => {
@@ -347,6 +368,25 @@ function CodeBlockFigure({ value, className }: { value: PortableCodeBlock; class
   );
 }
 
+function ImageCarouselFigure({ value }: { value: PortableImageCarouselBlock }) {
+  const slides = (value.images ?? [])
+    .filter((image) => image?.asset)
+    .map((image, index) => ({
+      key: image._key || String(index),
+      src: urlFor(image.asset!).width(2400).fit("max").url(),
+      alt: image.alt || image.caption || "",
+      caption: image.caption,
+    }));
+
+  if (slides.length === 0) return null;
+
+  return (
+    <div className="my-8 mx-[calc(50%-50vw)] w-screen">
+      <ImageCarousel slides={slides} />
+    </div>
+  );
+}
+
 function MediaFigure({
   media,
   figureNumber,
@@ -409,6 +449,12 @@ export function createPortableTextComponents({
       },
       code: ({ value }: { value: PortableCodeBlock }) => (
         <CodeBlockFigure value={value} className="my-8" />
+      ),
+      imageCarousel: ({ value }: { value: PortableImageCarouselBlock }) => (
+        <ImageCarouselFigure value={value} />
+      ),
+      divider: () => (
+        <hr className="my-12 mx-auto max-w-3xl border-t border-black/10 dark:border-white/10" />
       ),
       imageRow: ({ value }: { value: { images: PortableMediaBlock[] } }) => (
         <div className="mx-[calc(50%-50vw)] my-8 w-screen px-6 sm:px-12 md:px-16">
