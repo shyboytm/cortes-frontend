@@ -56,7 +56,7 @@ export default function ImageCarousel({ slides, className }: ImageCarouselProps)
       <div
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="relative h-[45vh] w-full touch-pan-y overflow-hidden select-none sm:h-[60vh] lg:h-[75vh]"
+        className="relative h-[45vh] w-full touch-pan-y overflow-hidden rounded-sm border border-black/10 select-none sm:h-[60vh] lg:h-[75vh] dark:border-white/10"
       >
         <Image
           key={active.key}
