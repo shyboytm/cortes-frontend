@@ -8,6 +8,7 @@ import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
 import ScrollRestoration from '@/components/ScrollRestoration'
 import NavigationHistoryTracker from '@/components/NavigationHistoryTracker'
 import CuelumeSetup from '@/components/CuelumeSetup'
+import ImageProtection from '@/components/ImageProtection'
 import { Analytics } from '@vercel/analytics/next';
 import { SITE_URL } from '@/lib/site-config';
 import { resolvePageMetadata } from '@/lib/page-meta';
@@ -71,6 +72,7 @@ export default function RootLayout({
         <ScrollRestoration />
         <NavigationHistoryTracker />
         <CuelumeSetup />
+        <ImageProtection />
 
         <div id="site-content" className="mx-auto w-full max-w-7xl">
           {children}

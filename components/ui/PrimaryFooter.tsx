@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Copyright } from "lucide-react";
 import { SiLastdotfm } from "@icons-pack/react-simple-icons";
 import { getNowPlaying } from "@/lib/lastfm";
 import FooterScene from "@/components/ui/FooterScene";
@@ -182,8 +183,9 @@ export default async function PrimaryFooter() {
         <div className="mt-16 flex flex-col items-start gap-2 border-t border-black/10 pt-6 text-xs tracking-widest text-black/60 uppercase dark:border-white/10 dark:text-white/60">
           <p className="dot-font font-doto leading-[1.5]">CRTS v1.0.0 | Next.js, TypeScript, Tailwind, Shaders, Vercel, Three.js</p>
           <ViewportSize className="dot-font font-doto" />
-          <p className="dot-font font-doto">
-            <span className="align-middle text-[1.4em]">©</span> {new Date().getFullYear()} Dennis Cortes
+          <p className="dot-font font-doto flex items-center gap-1.5">
+            <Copyright size={14} className="svg-shadow shrink-0" />
+            <span>{new Date().getFullYear()} Dennis Cortes</span>
           </p>
 
           <div aria-hidden className="mt-4 flex flex-wrap items-end gap-4 opacity-25 sm:gap-2">
