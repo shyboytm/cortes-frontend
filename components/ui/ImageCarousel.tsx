@@ -50,7 +50,6 @@ export default function ImageCarousel({ slides, className }: ImageCarouselProps)
 
   const active = slides[index];
   const hasMultiple = slides.length > 1;
-  const showOverlayBar = hasMultiple || Boolean(active.caption);
 
   return (
     <div className={cn("flex flex-col", className)}>
@@ -95,35 +94,32 @@ export default function ImageCarousel({ slides, className }: ImageCarouselProps)
             <div className="dot-font absolute top-4 right-4 rounded-full border border-black/20 bg-white/80 px-2.5 py-1 font-doto text-[10px] tracking-widest text-black/70 uppercase backdrop-blur-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
               {index + 1} / {slides.length}
             </div>
+
+            <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2">
+              {slides.map((slide, slideIndex) => (
+                <button
+                  key={slide.key}
+                  type="button"
+                  onClick={() => goTo(slideIndex)}
+                  aria-label={`Go to image ${slideIndex + 1}`}
+                  data-cuelume-hover="tick"
+                  data-cuelume-press
+                  className={cn(
+                    "h-1.5 cursor-pointer rounded-full transition-all",
+                    slideIndex === index
+                      ? "w-6 bg-black dark:bg-white"
+                      : "w-1.5 bg-black/30 hover:bg-black/50 dark:bg-white/30 dark:hover:bg-white/50"
+                  )}
+                />
+              ))}
+            </div>
           </>
         )}
+      </div>
 
-        {showOverlayBar && (
-          <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-3 bg-gradient-to-t from-black/70 via-black/20 to-transparent px-6 pt-12 pb-4">
-            {active.caption && (
-              <p className="font-space-mono max-w-2xl text-center text-sm text-white/90 italic">
-                {active.caption}
-              </p>
-            )}
-            {hasMultiple && (
-              <div className="flex items-center gap-2">
-                {slides.map((slide, slideIndex) => (
-                  <button
-                    key={slide.key}
-                    type="button"
-                    onClick={() => goTo(slideIndex)}
-                    aria-label={`Go to image ${slideIndex + 1}`}
-                    data-cuelume-hover="tick"
-                    data-cuelume-press
-                    className={cn(
-                      "h-1.5 cursor-pointer rounded-full transition-all",
-                      slideIndex === index ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/60"
-                    )}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+      <div className="min-h-[2.75rem] px-6 pt-3 text-center sm:px-12 sm:pt-4 md:px-16">
+        {active.caption && (
+          <p className="font-space-mono text-sm text-black/60 italic dark:text-white/60">{active.caption}</p>
         )}
       </div>
     </div>
