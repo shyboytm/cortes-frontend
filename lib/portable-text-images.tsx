@@ -381,7 +381,7 @@ function ImageCarouselFigure({ value }: { value: PortableImageCarouselBlock }) {
   if (slides.length === 0) return null;
 
   return (
-    <div className="my-8 mx-[calc(50%-50vw)] w-screen">
+    <div className={`my-8 ${sizeWrapperClass("wide")}`}>
       <ImageCarousel slides={slides} />
     </div>
   );

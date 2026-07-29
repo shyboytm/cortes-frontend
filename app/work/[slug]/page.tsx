@@ -1,5 +1,6 @@
 import { cache } from "react";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client, sanityFetchOptions } from "@/sanity/client";
@@ -8,9 +9,11 @@ import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import WorkBackLink from "@/components/ui/WorkBackLink";
 import WorkStickyBar from "@/components/ui/WorkStickyBar";
+import WorkPasswordGate from "@/components/ui/WorkPasswordGate";
 import LikeButton from "@/components/ui/LikeButton";
 import CommentSection from "@/components/ui/CommentSection";
 import { getComments } from "@/lib/comments";
+import { WORK_UNLOCK_COOKIE_PREFIX } from "@/lib/work-unlock";
 import { portableTextLinkMark, portableTextHeadings } from "@/lib/portable-text-marks";
 import { prepareImageBlocks, createPortableTextComponents, textSpacingClassName } from "@/lib/portable-text-images";
 import { portableTextToPlainText } from "@/lib/portable-text-to-plain";
@@ -29,6 +32,7 @@ const WORK_BY_SLUG_QUERY = `*[
   industry,
   description,
   comingSoon,
+  comingSoonPassword,
   likes,
   mainImage,
   photos[]{
@@ -107,8 +111,21 @@ export default async function WorkCaseStudyPage({
   const { slug } = await params;
   const work = await getWork(slug);
 
-  if (!work || work.comingSoon) {
+  if (!work) {
     notFound();
+  }
+
+  if (work.comingSoon) {
+    if (!work.comingSoonPassword) {
+      notFound();
+    }
+
+    const cookieStore = await cookies();
+    const unlocked = cookieStore.get(`${WORK_UNLOCK_COOKIE_PREFIX}${slug}`)?.value === work.comingSoonPassword;
+
+    if (!unlocked) {
+      return <WorkPasswordGate slug={slug} title={work.title} />;
+    }
   }
 
   const caseStudy = Array.isArray(work.caseStudy) ? await prepareImageBlocks(work.caseStudy) : [];
