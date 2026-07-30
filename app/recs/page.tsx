@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { type SanityDocument } from "next-sanity";
-import { Compass, BookOpen, Mic, Video, Newspaper, Smartphone, Music, Package, Globe, type LucideIcon } from "lucide-react";
+import { Compass, BookOpen, Mic, Video, Smartphone, Music, Package, Globe, type LucideIcon } from "lucide-react";
 import { SiBuymeacoffee } from "@icons-pack/react-simple-icons";
 import { client, sanityFetchOptions } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
@@ -47,16 +47,15 @@ export async function generateMetadata(): Promise<Metadata> {
   );
 }
 
-const CATEGORY_SECTIONS: { value: string; label: string; icon: LucideIcon }[] = [
-  { value: "app", label: "Apps", icon: Smartphone },
-  { value: "blog", label: "Blogs & Articles", icon: Newspaper },
-  { value: "book", label: "Books", icon: BookOpen },
-  { value: "gear", label: "Gear", icon: Package },
-  { value: "music", label: "Music", icon: Music },
-  { value: "podcast", label: "Podcasts", icon: Mic },
-  { value: "resource", label: "Resources", icon: Compass },
-  { value: "video", label: "Videos", icon: Video },
-  { value: "website", label: "Websites", icon: Globe },
+const CATEGORY_SECTIONS: { id: string; values: string[]; label: string; icon: LucideIcon }[] = [
+  { id: "app", values: ["app"], label: "Apps", icon: Smartphone },
+  { id: "book", values: ["book"], label: "Books", icon: BookOpen },
+  { id: "gear", values: ["gear"], label: "Gear", icon: Package },
+  { id: "music", values: ["music"], label: "Music", icon: Music },
+  { id: "podcast", values: ["podcast"], label: "Podcasts", icon: Mic },
+  { id: "resource", values: ["resource", "blog"], label: "Resources", icon: Compass },
+  { id: "video", values: ["video"], label: "Videos", icon: Video },
+  { id: "website", values: ["website"], label: "Websites", icon: Globe },
 ];
 
 export default async function RecsPage() {
@@ -71,7 +70,7 @@ export default async function RecsPage() {
 
   const sections = CATEGORY_SECTIONS.map((section) => ({
     ...section,
-    items: sorted.filter((rec) => rec.category === section.value),
+    items: sorted.filter((rec) => section.values.includes(rec.category)),
   })).filter((section) => section.items.length > 0);
 
   return (
@@ -93,10 +92,10 @@ export default async function RecsPage() {
             <JumpNav
               ariaLabel="Jump to section"
               sentinelId="recs-nav-sentinel"
-              items={sections.map(({ value, label, icon: Icon }) => (
+              items={sections.map(({ id, label, icon: Icon }) => (
                 <a
-                  key={value}
-                  href={`#${value}`}
+                  key={id}
+                  href={`#${id}`}
                   data-cuelume-hover="tick"
                   data-cuelume-press
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
@@ -107,8 +106,8 @@ export default async function RecsPage() {
               ))}
             />
 
-            {sections.map(({ value, label, icon: Icon, items }) => (
-              <div key={value} id={value} className="mb-12 scroll-mt-32">
+            {sections.map(({ id, label, icon: Icon, items }) => (
+              <div key={id} id={id} className="mb-12 scroll-mt-32">
                 <h2 className="dot-font mb-2 flex items-center gap-2 font-doto text-xs tracking-widest text-black/60 uppercase dark:text-white/60">
                   <Icon size={14} />/ {label}
                 </h2>
@@ -124,13 +123,13 @@ export default async function RecsPage() {
                       likes={rec.likes}
                       imageUrl={
                         rec.image?.asset
-                          ? value === "book"
+                          ? id === "book"
                             ? urlFor(rec.image.asset).width(88).height(128).fit("crop").url()
                             : urlFor(rec.image.asset).width(96).height(96).fit("crop").url()
                           : undefined
                       }
                       imageAlt={rec.image?.alt}
-                      imageVariant={value === "music" ? "cd" : value === "book" ? "book" : undefined}
+                      imageVariant={id === "music" ? "cd" : id === "book" ? "book" : undefined}
                       hoverPreviewUrl={
                         rec.hoverPreview?.asset
                           ? urlFor(rec.hoverPreview.asset).width(720).fit("max").url()
