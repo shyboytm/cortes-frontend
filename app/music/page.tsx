@@ -107,6 +107,12 @@ export default async function MusicPage() {
             and consistently drives my passion for music.
           </p>
           <p className="mb-4 break-inside-avoid-column text-lg leading-relaxed text-black/80 dark:text-white/80">
+            I've been playing instruments since I was a child, starting with the violin and later learning the viola, 
+            piano, cello, guitar, drums. This multi-instrumental background allows me to approach music production 
+            with a deep understanding and passion for music, which (hopefully) comes through in my music releases  
+            and production style.
+          </p>
+          <p className="mb-4 break-inside-avoid-column text-lg leading-relaxed text-black/80 dark:text-white/80">
             Drawing inspiration and methods from renowned electronic artists such as Flying Lotus,
             Baths, Shigeto, Shlohmo, and Lemon Jelly, I bring a personal perspective to the music
             scene. My compositions are a fusion of intricate electronic elements, soulful samples,

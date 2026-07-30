@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "writing",
     {
       title: "Writing",
-      description: "Sometimes I write about design, hobbies, and other random thoughts.",
+      description: "Thoughts and reflections on design, music, hobbies, and other random ideas.",
     },
     "/writing"
   );
