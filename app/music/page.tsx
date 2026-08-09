@@ -44,7 +44,7 @@ const RELEASE_ARTWORK_QUERY = `*[
   artwork{ alt, asset }
 }`;
 
-const options = sanityFetchOptions(30);
+const options = sanityFetchOptions();
 
 export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
@@ -107,7 +107,7 @@ export default async function MusicPage() {
             and consistently drives my passion for music.
           </p>
           <p className="mb-4 break-inside-avoid-column text-lg leading-relaxed text-black/80 dark:text-white/80">
-            I've been playing instruments since I was a child, starting with the violin and later learning the viola, 
+            I&apos;ve been playing instruments since I was a child, starting with the violin and later learning the viola,
             piano, cello, guitar, drums. This multi-instrumental background allows me to approach music production 
             with a deep understanding and passion for music, which (hopefully) comes through in my music releases  
             and production style.

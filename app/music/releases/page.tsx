@@ -11,7 +11,7 @@ const ALL_RELEASES_QUERY = `*[
   artwork{ alt, asset }
 }`;
 
-const options = sanityFetchOptions(30);
+const options = sanityFetchOptions();
 
 export default async function MusicReleasesPage() {
   const releases = await client.fetch<ReleaseFilterItem[]>(ALL_RELEASES_QUERY, {}, options);

@@ -19,7 +19,7 @@ const POSTS_QUERY = `*[
   likes
 }`;
 
-const options = sanityFetchOptions(30);
+const options = sanityFetchOptions();
 
 export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(

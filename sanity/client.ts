@@ -7,6 +7,6 @@ export const client = createClient({
   useCdn: false,
 });
 
-export const sanityFetchOptions = (revalidateSeconds: number = 30) => ({
+export const sanityFetchOptions = (revalidateSeconds: number = 3600) => ({
   next: {revalidate: revalidateSeconds},
 });

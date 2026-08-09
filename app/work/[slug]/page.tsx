@@ -53,7 +53,7 @@ const WORK_BY_SLUG_QUERY = `*[
   }
 }`;
 
-const options = sanityFetchOptions(30);
+const options = sanityFetchOptions();
 
 const getWork = cache(async (slug: string) => {
   return client.fetch(WORK_BY_SLUG_QUERY, { slug }, options);

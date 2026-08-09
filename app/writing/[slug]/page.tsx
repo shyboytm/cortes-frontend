@@ -42,7 +42,7 @@ const POST_QUERY = `*[
   }
 }`;
 
-const options = sanityFetchOptions(30);
+const options = sanityFetchOptions();
 
 const getPost = cache(async (slug: string) => {
   return client.fetch<SanityDocument>(POST_QUERY, { slug }, options);

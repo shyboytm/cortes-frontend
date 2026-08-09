@@ -9,7 +9,7 @@ import GlobeIcon from "@/components/ui/GlobeIcon";
 import { buttonVariants } from "@/components/ui/button";
 import { resolvePageMetadata } from "@/lib/page-meta";
 
-const options = sanityFetchOptions(30);
+const options = sanityFetchOptions();
 
 export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(

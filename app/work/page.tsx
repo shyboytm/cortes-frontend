@@ -30,7 +30,7 @@ const FEED_QUERY = `*[
 const WORK_SUBTITLE =
   "Some of my featured work from over the years including full-time jobs, personal projects, and freelance contracts.";
 
-const options = sanityFetchOptions(30);
+const options = sanityFetchOptions();
 
 export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata("work", { title: "Work", description: WORK_SUBTITLE }, "/work");

@@ -19,5 +19,5 @@ const COMMENTS_QUERY = `*[
 }`;
 
 export async function getComments(parentId: string): Promise<CommentDoc[]> {
-  return client.fetch(COMMENTS_QUERY, { parentId }, sanityFetchOptions(30));
+  return client.fetch(COMMENTS_QUERY, { parentId }, sanityFetchOptions());
 }
