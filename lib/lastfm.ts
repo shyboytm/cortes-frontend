@@ -30,7 +30,7 @@ export async function getNowPlaying(): Promise<NowPlayingTrack | null> {
 
   try {
     const res = await fetch(url.toString(), {
-      next: { revalidate: 300 },
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) return null;

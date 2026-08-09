@@ -10,7 +10,7 @@ const CLIENTS_QUERY = `*[
   logo{ alt, asset }
 }`;
 
-const options = sanityFetchOptions(900);
+const options = sanityFetchOptions(3600);
 
 export default async function ClientsSection() {
   const clients = await client.fetch<SanityDocument[]>(CLIENTS_QUERY, {}, options);

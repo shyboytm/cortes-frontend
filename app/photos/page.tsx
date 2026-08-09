@@ -58,7 +58,7 @@ const PHOTOS_QUERY = `*[
   }
 }`;
 
-const options = sanityFetchOptions(900);
+const options = sanityFetchOptions(3600);
 
 export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(

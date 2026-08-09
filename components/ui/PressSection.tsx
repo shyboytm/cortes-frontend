@@ -9,7 +9,7 @@ const PRESS_QUERY = `*[
   _id, title, outlet, type, url, date
 }`;
 
-const options = sanityFetchOptions(900);
+const options = sanityFetchOptions(3600);
 
 const TYPE_ICONS: Record<string, LucideIcon> = {
   article: Newspaper,

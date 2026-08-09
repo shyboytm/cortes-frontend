@@ -15,7 +15,7 @@ interface PageMetaDoc {
 
 const PAGE_META_QUERY = `*[_type == "pageMeta" && page == $page][0]{ title, description, image }`;
 
-const options = sanityFetchOptions(900);
+const options = sanityFetchOptions(3600);
 
 const getPageMetaDoc = cache(async (page: PageKey): Promise<PageMetaDoc | null> => {
   return client.fetch(PAGE_META_QUERY, { page }, options);

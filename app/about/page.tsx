@@ -33,7 +33,7 @@ const TESTIMONIALS_QUERY = `*[
   _id, quote, name, role
 }`;
 
-const options = sanityFetchOptions(900);
+const options = sanityFetchOptions(3600);
 
 export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata(
