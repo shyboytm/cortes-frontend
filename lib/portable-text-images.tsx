@@ -416,6 +416,28 @@ export function createPortableTextComponents({
 
   const components: PortableTextComponents = {
     marks,
+    list: {
+      bullet: ({ children }) => (
+        <ul className="mx-auto mt-4 mb-4 max-w-3xl list-disc space-y-2 pl-6 marker:text-black/30 dark:marker:text-white/30">
+          {children}
+        </ul>
+      ),
+      number: ({ children }) => (
+        <ol className="mx-auto mt-4 mb-4 max-w-3xl list-decimal space-y-2 pl-6 marker:font-medium marker:text-black/50 dark:marker:text-white/50">
+          {children}
+        </ol>
+      ),
+    },
+    listItem: {
+      bullet: ({ children }) => (
+        <li className="text-lg leading-relaxed text-black/80 pl-1.5 marker:text-black/30 dark:text-white/80 dark:marker:text-white/30">
+          {children}
+        </li>
+      ),
+      number: ({ children }) => (
+        <li className="text-lg leading-relaxed text-black/80 pl-1.5 dark:text-white/80">{children}</li>
+      ),
+    },
     types: {
       image: ({ value }: { value: PortableImageBlock }) => {
         if (value.caption) figureNumber += 1;
