@@ -14,6 +14,21 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "videos.cortes.us",
+          },
+        ],
+        destination: "https://www.youtube.com/channel/UClb_E9xtNgWHF2lcTqF2KAw",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
