@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
             value: "videos.cortes.us",
           },
         ],
-        destination: "https://www.youtube.com/channel/UClb_E9xtNgWHF2lcTqF2KAw",
+        destination: "https://www.youtube.com/@CortesArts/videos",
         permanent: true,
       },
     ];
