@@ -17,12 +17,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing slug or password" }, { status: 400 });
   }
 
-  const work = await client.fetch<{ comingSoon?: boolean; comingSoonPassword?: string } | null>(
-    `*[_type == "work" && slug.current == $slug][0]{comingSoon, comingSoonPassword}`,
+  const work = await client.fetch<{ comingSoonPassword?: string } | null>(
+    `*[_type == "work" && slug.current == $slug][0]{comingSoonPassword}`,
     { slug }
   );
 
-  if (!work?.comingSoon || !work.comingSoonPassword || password !== work.comingSoonPassword) {
+  if (!work?.comingSoonPassword || password !== work.comingSoonPassword) {
     return NextResponse.json({ error: "Incorrect password" }, { status: 401 });
   }
 

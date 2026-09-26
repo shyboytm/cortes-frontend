@@ -8,7 +8,6 @@ export interface WorkGridItem {
   hoverImage?: WorkRowImage | null;
   slug?: { current?: string } | null;
   hasCaseStudy?: boolean;
-  comingSoon?: boolean;
   hasPreviewPassword?: boolean;
   likes?: number;
 }
@@ -33,7 +32,6 @@ export default function WorkGrid({ workItems, className }: WorkGridProps) {
           hoverImage={work.hoverImage}
           slug={work.slug?.current}
           hasCaseStudy={work.hasCaseStudy}
-          comingSoon={work.comingSoon}
           hasPreviewPassword={work.hasPreviewPassword}
           likes={work.likes}
           priority={index === 0}

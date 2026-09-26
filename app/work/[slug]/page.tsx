@@ -31,7 +31,6 @@ const WORK_BY_SLUG_QUERY = `*[
   scope,
   industry,
   description,
-  comingSoon,
   comingSoonPassword,
   likes,
   mainImage,
@@ -66,7 +65,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const work = await getWork(slug);
-  if (!work || work.comingSoon) return {};
+  if (!work || work.comingSoonPassword) return {};
 
   const description =
     portableTextToPlainText(work.caseStudy, 160) ||
@@ -115,11 +114,7 @@ export default async function WorkCaseStudyPage({
     notFound();
   }
 
-  if (work.comingSoon) {
-    if (!work.comingSoonPassword) {
-      notFound();
-    }
-
+  if (work.comingSoonPassword) {
     const cookieStore = await cookies();
     const unlocked = cookieStore.get(`${WORK_UNLOCK_COOKIE_PREFIX}${slug}`)?.value === work.comingSoonPassword;
 
