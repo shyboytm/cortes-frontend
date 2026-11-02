@@ -16,7 +16,28 @@ type SanityWebhookPayload = {
   _type?: string;
   slug?: { current?: string } | string | null;
   page?: string;
+  operation?: string;
+  slugChanged?: boolean;
 };
+
+const DEPLOY_TRIGGER_TYPES = ["post", "work"];
+
+function needsRedeploy(payload: SanityWebhookPayload): boolean {
+  if (!payload._type || !DEPLOY_TRIGGER_TYPES.includes(payload._type)) return false;
+  return payload.operation === "create" || payload.slugChanged === true;
+}
+
+async function triggerDeploy(): Promise<boolean> {
+  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
+  if (!hookUrl || process.env.VERCEL_ENV !== "production") return false;
+
+  try {
+    const res = await fetch(hookUrl, { method: "POST" });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
 
 function resolveSlug(payload: SanityWebhookPayload): string | undefined {
   if (typeof payload.slug === "string") return payload.slug;
@@ -67,8 +88,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const paths = pathsForDocument((body as SanityWebhookPayload) ?? {});
+  const payload = (body as SanityWebhookPayload) ?? {};
+  const paths = pathsForDocument(payload);
   paths.forEach((path) => revalidatePath(path));
 
-  return NextResponse.json({ revalidated: paths });
+  const deployTriggered = needsRedeploy(payload) ? await triggerDeploy() : false;
+
+  return NextResponse.json({ revalidated: paths, deployTriggered });
 }

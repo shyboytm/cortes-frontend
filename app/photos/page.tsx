@@ -27,7 +27,6 @@ interface PhotoDocument {
   settings?: string;
   location?: string;
   printsUrl?: string;
-  likes?: number;
   image?: {
     alt?: string;
     asset?: SanityImageSource;
@@ -48,7 +47,6 @@ const PHOTOS_QUERY = `*[
   settings,
   location,
   printsUrl,
-  likes,
   image{
     alt,
     asset,
@@ -89,7 +87,6 @@ export default async function PhotosPage() {
       settings: photo.settings,
       location: photo.location,
       printsUrl: photo.printsUrl,
-      likes: photo.likes,
       aspectRatio:
         photo.image?.aspectRatio && photo.image.aspectRatio > 0 ? photo.image.aspectRatio : 4 / 5,
     }));

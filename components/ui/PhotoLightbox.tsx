@@ -35,7 +35,6 @@ export interface LightboxItem {
   location?: string
   link?: string
   printsUrl?: string
-  likes?: number
   aspectRatio: number
 }
 
@@ -282,7 +281,7 @@ export default function PhotoLightbox({ items, selectedIndex, onClose, onSelect 
           </button>
         </div>
 
-        <LikeButton id={item._id} initialLikes={item.likes ?? 0} variant="toolbar" />
+        <LikeButton id={item._id} variant="toolbar" />
 
         <button
           type="button"

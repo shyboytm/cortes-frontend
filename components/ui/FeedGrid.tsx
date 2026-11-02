@@ -16,7 +16,6 @@ export interface FeedItem {
   _id: string;
   caption?: string;
   link?: string;
-  likes?: number;
   image?: {
     alt?: string;
     asset?: SanityImageSource;
@@ -46,7 +45,6 @@ export default function FeedGrid({ items: sourceItems }: FeedGridProps) {
       aspectRatio: item.image!.aspectRatio && item.image!.aspectRatio > 0 ? item.image!.aspectRatio : 4 / 3,
       caption: item.caption,
       link: item.link,
-      likes: item.likes,
     }));
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -107,7 +105,7 @@ export default function FeedGrid({ items: sourceItems }: FeedGridProps) {
                 </span>
               )}
 
-              <LikeButton id={item._id} initialLikes={item.likes ?? 0} variant="corner" />
+              <LikeButton id={item._id} variant="corner" />
             </div>
           );
 

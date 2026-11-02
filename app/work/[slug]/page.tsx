@@ -32,7 +32,6 @@ const WORK_BY_SLUG_QUERY = `*[
   industry,
   description,
   comingSoonPassword,
-  likes,
   mainImage,
   photos[]{
     _key,
@@ -52,7 +51,16 @@ const WORK_BY_SLUG_QUERY = `*[
   }
 }`;
 
+const WORK_SLUGS_QUERY = `*[_type == "work" && defined(slug.current)].slug.current`;
+
 const options = sanityFetchOptions();
+
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const slugs = await client.fetch<string[]>(WORK_SLUGS_QUERY, {}, options);
+  return slugs.map((slug) => ({ slug }));
+}
 
 const getWork = cache(async (slug: string) => {
   return client.fetch(WORK_BY_SLUG_QUERY, { slug }, options);
@@ -129,13 +137,13 @@ export default async function WorkCaseStudyPage({
   return (
     <div className="pt-32 pb-24">
       <PrimaryNav />
-      <WorkStickyBar id={work._id} title={work.title} likes={work.likes ?? 0} />
+      <WorkStickyBar id={work._id} title={work.title} />
 
       <div className="m-auto w-full max-w-7xl px-6 md:px-10">
         <div className="flex items-center justify-between gap-4">
           <WorkBackLink iconSize={16} />
 
-          <LikeButton id={work._id} initialLikes={work.likes ?? 0} />
+          <LikeButton id={work._id} />
         </div>
 
         <PageHeader title={work.title} subtitle={work.description || work.dateRange} className="mt-6" />

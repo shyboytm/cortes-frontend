@@ -32,7 +32,7 @@ const STREAMING_LINKS = [
 const LATEST_RELEASES_QUERY = `*[
   _type == "musicRelease" && releaseType in ["album", "ep", "remix"]
 ] | order(releaseYear desc, order asc, _createdAt desc)[0...4]{
-  _id, title, artist, releaseType, genre, releaseYear, link, likes,
+  _id, title, artist, releaseType, genre, releaseYear, link,
   artwork{ alt, asset }
 }`;
 
@@ -151,7 +151,6 @@ export default async function MusicPage() {
                   genre={release.genre}
                   releaseYear={release.releaseYear}
                   link={release.link}
-                  likes={release.likes}
                   artwork={release.artwork}
                 />
               ))}

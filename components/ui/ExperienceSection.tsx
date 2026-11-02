@@ -21,7 +21,7 @@ export default async function ExperienceSection() {
   return (
     <div className="mt-14 border-t border-black/10 pt-8 dark:border-white/10">
       <h2 className="mt-6 mb-12 text-2xl font-normal tracking-wide text-black dark:text-white">
-        Where I've Worked
+        Where I&apos;ve Worked
       </h2>
 
       <div className="-mx-6 overflow-x-auto px-6 pb-2 lg:mx-0 lg:overflow-visible lg:px-0">

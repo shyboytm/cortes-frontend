@@ -28,7 +28,6 @@ const POST_QUERY = `*[
   _id,
   title,
   publishedAt,
-  likes,
   image,
   body[]{
     ...,
@@ -42,7 +41,16 @@ const POST_QUERY = `*[
   }
 }`;
 
+const POST_SLUGS_QUERY = `*[_type == "post" && defined(slug.current)].slug.current`;
+
 const options = sanityFetchOptions();
+
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const slugs = await client.fetch<string[]>(POST_SLUGS_QUERY, {}, options);
+  return slugs.map((slug) => ({ slug }));
+}
 
 const getPost = cache(async (slug: string) => {
   return client.fetch<SanityDocument>(POST_QUERY, { slug }, options);
@@ -124,7 +132,6 @@ export default async function WritingPostPage({
       <DetailStickyBar
         id={post._id}
         title={post.title}
-        likes={post.likes ?? 0}
         backHref="/writing"
         sentinelId="post-title-sentinel"
         shareUrl={shareUrl}
@@ -136,7 +143,7 @@ export default async function WritingPostPage({
 
           <div className="flex items-center gap-7">
             <ShareButtons url={shareUrl} title={post.title} className="hidden sm:flex" />
-            <LikeButton id={post._id} initialLikes={post.likes ?? 0} />
+            <LikeButton id={post._id} />
           </div>
         </div>
 

@@ -14,7 +14,6 @@ export interface ReleaseFilterItem {
   genre?: string;
   releaseYear?: string;
   link?: string;
-  likes?: number;
   artwork?: {
     alt?: string;
     asset?: SanityImageSource;
@@ -162,7 +161,6 @@ export default function MusicReleasesFilter({ releases }: { releases: ReleaseFil
               genre={release.genre}
               releaseYear={release.releaseYear}
               link={release.link}
-              likes={release.likes}
               artwork={release.artwork}
             />
           ))}

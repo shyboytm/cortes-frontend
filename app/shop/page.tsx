@@ -9,7 +9,7 @@ import { resolvePageMetadata } from "@/lib/page-meta";
 const PRODUCTS_QUERY = `*[
   _type == "product"
 ] | order(order asc, _createdAt asc){
-  _id, title, description, priceLabel, storefront, url, likes,
+  _id, title, description, priceLabel, storefront, url,
   image{ alt, asset }
 }`;
 
@@ -56,7 +56,6 @@ export default async function ShopPage() {
                   storefront={product.storefront}
                   url={product.url}
                   image={product.image}
-                  likes={product.likes}
                 />
               </li>
             ))}

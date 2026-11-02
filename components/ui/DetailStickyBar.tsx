@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 export interface DetailStickyBarProps {
   id: string;
   title: string;
-  likes?: number;
   backHref: string;
   sentinelId: string;
   shareUrl?: string;
@@ -21,7 +20,6 @@ export interface DetailStickyBarProps {
 export default function DetailStickyBar({
   id,
   title,
-  likes,
   backHref,
   sentinelId,
   shareUrl,
@@ -52,7 +50,7 @@ export default function DetailStickyBar({
 
         <div className="flex shrink-0 items-center gap-7">
           {shareUrl && <ShareButtons url={shareUrl} title={shareTitle ?? title} className="hidden md:flex" />}
-          <LikeButton id={id} initialLikes={likes ?? 0} className="font-sans" />
+          <LikeButton id={id} className="font-sans" />
         </div>
       </div>
     </div>

@@ -11,7 +11,6 @@ export interface MusicReleaseCardProps {
   genre?: string;
   releaseYear?: string;
   link?: string;
-  likes?: number;
   artwork?: {
     alt?: string;
     asset?: SanityImageSource;
@@ -33,7 +32,6 @@ export default function MusicReleaseCard({
   genre,
   releaseYear,
   link,
-  likes,
   artwork,
 }: MusicReleaseCardProps) {
   const meta = [artist, releaseType && (RELEASE_TYPE_LABELS[releaseType] ?? releaseType), releaseYear]
@@ -45,7 +43,6 @@ export default function MusicReleaseCard({
       id={id}
       title={title}
       href={link}
-      likes={likes}
       imageUrl={artwork?.asset ? urlFor(artwork.asset).width(600).height(600).fit("crop").url() : undefined}
       imageAlt={artwork?.alt}
       aspectRatio="aspect-square"

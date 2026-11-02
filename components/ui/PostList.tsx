@@ -5,7 +5,6 @@ export interface PostListItem {
   title: string;
   slug?: string;
   publishedAt?: string;
-  likes?: number;
 }
 
 export interface PostListProps {
@@ -26,7 +25,6 @@ export default function PostList({ posts }: PostListProps) {
           title={post.title}
           slug={post.slug}
           publishedAt={post.publishedAt}
-          likes={post.likes}
         />
       ))}
     </ul>

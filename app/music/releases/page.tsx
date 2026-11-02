@@ -7,7 +7,7 @@ import { BackLink } from "@/components/ui/LinkPill";
 const ALL_RELEASES_QUERY = `*[
   _type == "musicRelease"
 ] | order(releaseYear desc, order asc, _createdAt desc){
-  _id, title, artist, releaseType, genre, releaseYear, link, likes,
+  _id, title, artist, releaseType, genre, releaseYear, link,
   artwork{ alt, asset }
 }`;
 

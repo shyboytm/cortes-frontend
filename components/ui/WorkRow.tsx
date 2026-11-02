@@ -20,14 +20,13 @@ export interface WorkRowProps {
   slug?: string;
   hasCaseStudy?: boolean;
   hasPreviewPassword?: boolean;
-  likes?: number;
   priority?: boolean;
 }
 
 const THUMB_WIDTH = 1200;
 const THUMB_HEIGHT = 900;
 
-export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, hasPreviewPassword, likes, priority }: WorkRowProps) {
+export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, slug, hasCaseStudy, hasPreviewPassword, priority }: WorkRowProps) {
   const hasHoverImage = Boolean(hoverImage?.asset);
   const isClickable = Boolean(slug && (hasCaseStudy || hasPreviewPassword));
 
@@ -71,7 +70,7 @@ export default function WorkRow({ id, title, dateRange, mainImage, hoverImage, s
           </span>
         )}
 
-        <LikeButton id={id} initialLikes={likes ?? 0} variant="corner" />
+        <LikeButton id={id} variant="corner" />
       </div>
 
       <div className="flex items-center justify-between gap-3">

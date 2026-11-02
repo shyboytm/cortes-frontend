@@ -8,10 +8,9 @@ export interface PostRowProps {
   title: string;
   slug?: string;
   publishedAt?: string;
-  likes?: number;
 }
 
-export default function PostRow({ _id, title, slug, publishedAt, likes }: PostRowProps) {
+export default function PostRow({ _id, title, slug, publishedAt }: PostRowProps) {
   if (!slug) return null;
 
   return (
@@ -23,7 +22,7 @@ export default function PostRow({ _id, title, slug, publishedAt, likes }: PostRo
       >
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-normal tracking-wide text-black dark:text-white">{title}</h2>
-          <LikeButton id={_id} initialLikes={likes ?? 0} variant="minimal" />
+          <LikeButton id={_id} variant="minimal" />
         </div>
 
         <div className="flex shrink-0 items-center gap-3">

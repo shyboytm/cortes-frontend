@@ -1,33 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Heart } from "lucide-react";
 import { play } from "cuelume";
 import { cn } from "@/lib/utils";
+import { getLikeCount, setLikeCount } from "@/lib/like-counts";
 
 export interface LikeButtonProps {
   id: string;
-  initialLikes: number;
   variant?: "inline" | "corner" | "minimal" | "toolbar";
   className?: string;
 }
 
 const STORAGE_PREFIX = "liked:";
 
-export default function LikeButton({ id, initialLikes, variant = "inline", className }: LikeButtonProps) {
-  const [likes, setLikes] = useState(initialLikes);
+export default function LikeButton({ id, variant = "inline", className }: LikeButtonProps) {
+  const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [pending, setPending] = useState(false);
   const [justLiked, setJustLiked] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const touchedRef = useRef(false);
 
   useEffect(() => {
     setLiked(window.localStorage.getItem(STORAGE_PREFIX + id) === "1");
+  }, [id]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getLikeCount(id).then((count) => {
+      if (cancelled) return;
+      if (!touchedRef.current) setLikes(count);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const handleToggle = async () => {
     if (pending) return;
     const nextLiked = !liked;
 
+    touchedRef.current = true;
     setPending(true);
     setLiked(nextLiked);
     setLikes((n) => Math.max(0, n + (nextLiked ? 1 : -1)));
@@ -49,7 +64,10 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
       });
       const data = (await res.json().catch(() => ({}))) as { likes?: number; error?: string };
       if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
-      if (typeof data.likes === "number") setLikes(data.likes);
+      if (typeof data.likes === "number") {
+        setLikes(data.likes);
+        setLikeCount(id, data.likes);
+      }
     } catch (error) {
       console.error("Like failed to save:", error);
       setLiked(!nextLiked);
@@ -127,7 +145,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
           size={13}
           className={cn("shrink-0 transition-transform", liked && "fill-current", justLiked && "scale-125")}
         />
-        <span className="tabular-nums">{likes}</span>
+        <span className="tabular-nums">{loaded ? likes : ""}</span>
       </button>
     );
   }
@@ -148,7 +166,7 @@ export default function LikeButton({ id, initialLikes, variant = "inline", class
         size={14}
         className={cn("shrink-0 transition-transform", liked && "fill-current", justLiked && "scale-125")}
       />
-      <span className="tabular-nums">{likes}</span>
+      <span className="tabular-nums">{loaded ? likes : ""}</span>
     </button>
   );
 }

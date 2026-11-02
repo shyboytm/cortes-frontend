@@ -15,8 +15,7 @@ const POSTS_QUERY = `*[
   _id,
   title,
   slug,
-  publishedAt,
-  likes
+  publishedAt
 }`;
 
 const options = sanityFetchOptions();
@@ -56,7 +55,6 @@ export default async function WritingIndexPage() {
     title: post.title,
     slug: post.slug?.current,
     publishedAt: post.publishedAt,
-    likes: post.likes,
   }));
 
   const years = groupPostsByYear(postItems);

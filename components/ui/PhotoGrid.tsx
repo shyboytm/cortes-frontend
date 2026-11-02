@@ -20,7 +20,6 @@ export interface PhotoItem {
   settings?: string
   location?: string
   printsUrl?: string
-  likes?: number
   aspectRatio: number
 }
 
@@ -69,7 +68,7 @@ export default function PhotoGrid({ photos: sourcePhotos }: PhotoGridProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 420px"
             />
 
-            <LikeButton id={photo._id} initialLikes={photo.likes ?? 0} variant="corner" />
+            <LikeButton id={photo._id} variant="corner" />
 
             {photo.caption && (
               <div className="absolute inset-x-0 bottom-0 z-10 flex translate-y-full items-center gap-4 border-t border-black/10 bg-white px-3 py-2.5 transition-transform duration-200 ease-out group-hover:translate-y-0 dark:border-white/10 dark:bg-black">

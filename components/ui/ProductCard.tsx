@@ -10,7 +10,6 @@ export interface ProductCardProps {
   priceLabel?: string;
   storefront?: string;
   url: string;
-  likes?: number;
   image?: {
     alt?: string;
     asset?: SanityImageSource;
@@ -24,7 +23,6 @@ export default function ProductCard({
   priceLabel,
   storefront,
   url,
-  likes,
   image,
 }: ProductCardProps) {
   const meta = [priceLabel, storefront].filter(Boolean).join(" · ");
@@ -34,7 +32,6 @@ export default function ProductCard({
       id={id}
       title={title}
       href={url}
-      likes={likes}
       imageUrl={image?.asset ? urlFor(image.asset).width(800).height(600).fit("crop").url() : undefined}
       imageAlt={image?.alt}
       aspectRatio="aspect-[4/3]"

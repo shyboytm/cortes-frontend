@@ -36,7 +36,6 @@ export interface RecRowProps {
   imageUrl?: string;
   imageAlt?: string;
   platform?: Platform;
-  likes?: number;
   hoverPreviewUrl?: string;
   hoverPreviewAlt?: string;
   imageVariant?: "default" | "cd" | "book";
@@ -50,7 +49,6 @@ export default function RecRow({
   imageUrl,
   imageAlt,
   platform,
-  likes,
   imageVariant = "default",
   hoverPreviewUrl,
   hoverPreviewAlt,
@@ -130,7 +128,7 @@ export default function RecRow({
                 {PLATFORM_LABELS[platform]}
               </span>
             )}
-            <LikeButton id={id} initialLikes={likes ?? 0} variant="minimal" />
+            <LikeButton id={id} variant="minimal" />
             <ArrowUpRight
               size={16}
               className="-translate-x-1 text-black/60 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 dark:text-white/60"

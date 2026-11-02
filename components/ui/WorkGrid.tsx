@@ -9,7 +9,6 @@ export interface WorkGridItem {
   slug?: { current?: string } | null;
   hasCaseStudy?: boolean;
   hasPreviewPassword?: boolean;
-  likes?: number;
 }
 
 export interface WorkGridProps {
@@ -33,7 +32,6 @@ export default function WorkGrid({ workItems, className }: WorkGridProps) {
           slug={work.slug?.current}
           hasCaseStudy={work.hasCaseStudy}
           hasPreviewPassword={work.hasPreviewPassword}
-          likes={work.likes}
           priority={index === 0}
         />
       ))}

@@ -7,7 +7,6 @@ export const WORK_QUERY = `*[
   title,
   dateRange,
   slug,
-  likes,
   mainImage{
     alt,
     asset

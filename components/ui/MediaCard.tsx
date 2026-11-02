@@ -9,7 +9,6 @@ export interface MediaCardProps {
   id: string;
   title: string;
   href?: string;
-  likes?: number;
   imageUrl?: string;
   imageAlt?: string;
   aspectRatio: string;
@@ -25,7 +24,6 @@ export default function MediaCard({
   id,
   title,
   href,
-  likes,
   imageUrl,
   imageAlt,
   aspectRatio,
@@ -65,7 +63,7 @@ export default function MediaCard({
           </span>
         )}
 
-        <LikeButton id={id} initialLikes={likes ?? 0} variant="corner" className={likeButtonClassName} />
+        <LikeButton id={id} variant="corner" className={likeButtonClassName} />
       </div>
 
       <div>

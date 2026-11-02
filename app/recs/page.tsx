@@ -23,7 +23,6 @@ const RECS_QUERY = `*[
   url,
   order,
   platform,
-  likes,
   image{
     alt,
     asset
@@ -120,7 +119,6 @@ export default async function RecsPage() {
                       description={rec.description}
                       url={rec.url}
                       platform={rec.platform as Platform | undefined}
-                      likes={rec.likes}
                       imageUrl={
                         rec.image?.asset
                           ? id === "book"
