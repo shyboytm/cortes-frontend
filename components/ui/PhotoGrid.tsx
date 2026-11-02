@@ -4,6 +4,8 @@ import { useState } from "react"
 import Image from "next/image"
 import PhotoLightbox from "@/components/ui/PhotoLightbox"
 import LikeButton from "@/components/ui/LikeButton"
+import { useShuffled } from "@/lib/use-shuffled"
+import { cn } from "@/lib/utils"
 
 export interface PhotoItem {
   _id: string
@@ -26,7 +28,8 @@ export interface PhotoGridProps {
   photos: PhotoItem[]
 }
 
-export default function PhotoGrid({ photos }: PhotoGridProps) {
+export default function PhotoGrid({ photos: sourcePhotos }: PhotoGridProps) {
+  const { items: photos, ready } = useShuffled(sourcePhotos)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   if (photos.length === 0) {
@@ -37,7 +40,7 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
 
   return (
     <>
-      <div className="columns-1 gap-4 sm:columns-2 lg:columns-4">
+      <div className={cn("columns-1 gap-4 transition-opacity duration-300 sm:columns-2 lg:columns-4", ready ? "opacity-100" : "opacity-0")}>
         {photos.map((photo, index) => (
           <div
             key={photo._id}

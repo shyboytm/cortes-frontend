@@ -15,8 +15,7 @@ import PrimaryNav from '@/components/ui/PrimaryNav';
 import PageHeader from '@/components/ui/PageHeader';
 import RemixSequencer from '@/components/ui/RemixSequencer';
 import MusicReleaseCard from '@/components/ui/MusicReleaseCard';
-import VinylDisc from '@/components/ui/VinylDisc';
-import DraggableVinyl from '@/components/ui/DraggableVinyl';
+import RandomVinyl from '@/components/ui/RandomVinyl';
 import JumpNav from '@/components/ui/JumpNav';
 import { buttonVariants } from '@/components/ui/button';
 import { resolvePageMetadata } from '@/lib/page-meta';
@@ -54,18 +53,18 @@ export async function generateMetadata(): Promise<Metadata> {
   );
 }
 
-function pickRandomRelease<T>(list: T[]): T | null {
-  if (list.length === 0) return null;
-  return list[Math.floor(Math.random() * list.length)];
-}
-
 export default async function MusicPage() {
   const [releases, releasesWithArt] = await Promise.all([
     client.fetch<SanityDocument[]>(LATEST_RELEASES_QUERY, {}, options),
     client.fetch<SanityDocument[]>(RELEASE_ARTWORK_QUERY, {}, options),
   ]);
 
-  const vinylRelease = pickRandomRelease(releasesWithArt);
+  const vinylCandidates = releasesWithArt.map((release) => ({
+    imageUrl: release.artwork?.asset
+      ? urlFor(release.artwork.asset).width(600).height(600).fit("crop").url()
+      : undefined,
+    imageAlt: release.artwork?.alt || release.title,
+  }));
 
   return (
     <div className="pt-32 pb-24">
@@ -162,21 +161,7 @@ export default async function MusicPage() {
 
         <div className="mt-16 border-t border-black/10 dark:border-white/10">
           <div className="my-16 max-w-3xl m-auto tracking-wide">
-            {vinylRelease && (
-              <div className="mb-8 flex justify-center">
-                <DraggableVinyl>
-                  <VinylDisc
-                    size={160}
-                    imageUrl={
-                      vinylRelease.artwork?.asset
-                        ? urlFor(vinylRelease.artwork.asset).width(600).height(600).fit("crop").url()
-                        : undefined
-                    }
-                    imageAlt={vinylRelease.artwork?.alt || vinylRelease.title}
-                  />
-                </DraggableVinyl>
-              </div>
-            )}
+            {vinylCandidates.length > 0 && <RandomVinyl candidates={vinylCandidates} />}
             <h2 className="mb-3 text-2xl font-normal text-black dark:text-white text-center">Make your own Cordio remix</h2>
             <p className="mb-6 text-black/60 dark:text-white/60 text-center">
               Ever wanted to make your own music? Let&apos;s collab right here, right now with this browser-based remix toy built from

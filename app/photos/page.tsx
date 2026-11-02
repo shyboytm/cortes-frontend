@@ -4,7 +4,6 @@ import { type SanityImageSource } from "@sanity/image-url";
 import { Aperture, Camera, Instagram, ShoppingBag } from "lucide-react";
 import { client, sanityFetchOptions } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
-import { shuffleArray } from "@/lib/utils";
 import PrimaryNav from "@/components/ui/PrimaryNav";
 import PageHeader from "@/components/ui/PageHeader";
 import PhotoGrid, { type PhotoItem } from "@/components/ui/PhotoGrid";
@@ -75,7 +74,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PhotosPage() {
   const photos = await client.fetch<PhotoDocument[]>(PHOTOS_QUERY, {}, options);
 
-  const items: PhotoItem[] = shuffleArray(photos)
+  const items: PhotoItem[] = photos
     .filter((photo) => photo.image?.asset)
     .map((photo) => ({
       _id: photo._id,

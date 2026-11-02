@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 
 export interface NashvilleStatusProps {
   className?: string;
-  initialWeather?: Weather;
 }
 
 export const LATITUDE = 36.1627;
@@ -47,9 +46,9 @@ export interface Weather {
   label: string;
 }
 
-export default function NashvilleStatus({ className, initialWeather }: NashvilleStatusProps) {
+export default function NashvilleStatus({ className }: NashvilleStatusProps) {
   const [time, setTime] = useState<string | null>(null);
-  const [weather, setWeather] = useState<Weather | null>(initialWeather ?? null);
+  const [weather, setWeather] = useState<Weather | null>(null);
   const [weatherFailed, setWeatherFailed] = useState(false);
 
   useEffect(() => {

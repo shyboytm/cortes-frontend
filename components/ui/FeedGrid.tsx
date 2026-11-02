@@ -9,6 +9,8 @@ import { urlFor } from "@/sanity/image";
 import FeedVideo from "@/components/ui/FeedVideo";
 import LikeButton from "@/components/ui/LikeButton";
 import PhotoLightbox, { type LightboxItem } from "@/components/ui/PhotoLightbox";
+import { useShuffled } from "@/lib/use-shuffled";
+import { cn } from "@/lib/utils";
 
 export interface FeedItem {
   _id: string;
@@ -31,7 +33,8 @@ export interface FeedGridProps {
   items: FeedItem[];
 }
 
-export default function FeedGrid({ items }: FeedGridProps) {
+export default function FeedGrid({ items: sourceItems }: FeedGridProps) {
+  const { items, ready } = useShuffled(sourceItems);
   const lightboxItems: LightboxItem[] = items
     .filter((item) => !item.video?.url && item.image?.asset)
     .map((item) => ({
@@ -56,7 +59,7 @@ export default function FeedGrid({ items }: FeedGridProps) {
 
   return (
     <>
-      <div className="columns-1 gap-4 sm:columns-2 lg:columns-4">
+      <div className={cn("columns-1 gap-4 transition-opacity duration-300 sm:columns-2 lg:columns-4", ready ? "opacity-100" : "opacity-0")}>
         {items.map((item) => {
           const hasVideo = Boolean(item.video?.url);
           if (!hasVideo && !item.image?.asset) return null;
