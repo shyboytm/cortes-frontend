@@ -1,33 +1,14 @@
 'use client'
 
-import { Shader, SolidColor, FilmGrain, CRTScreen } from 'shaders/react'
-import { useIsDark } from '@/lib/hooks/useIsDark'
-import { useIsTabVisible } from '@/lib/hooks/useIsTabVisible'
+import dynamic from 'next/dynamic'
+import { useShaderEligible } from '@/lib/hooks/useShaderEligible'
+
+const ScreenOverlayCanvas = dynamic(() => import('@/components/ScreenOverlayCanvas'), { ssr: false })
 
 export default function ScreenOverlay() {
-  const isDark = useIsDark()
-  const isTabVisible = useIsTabVisible()
+  const eligible = useShaderEligible()
 
-  if (!isTabVisible) return null
+  if (!eligible) return null
 
-  return (
-    <Shader
-      className="fixed inset-0 z-50 w-screen h-screen pointer-events-none opacity-[0.2]"
-      disableTelemetry
-    >
-      <SolidColor color={isDark ? '#000000' : '#ffffff'} />
-
-      <FilmGrain strength={1} bias={2} animated />
-
-      <CRTScreen
-        pixelSize={50}
-        colorShift={0}
-        scanlineIntensity={isDark ? 0.7 : 0.15}
-        scanlineFrequency={350}
-        brightness={1}
-        contrast={1}
-        vignetteIntensity={1}
-      />
-    </Shader>
-  )
+  return <ScreenOverlayCanvas />
 }

@@ -18,7 +18,6 @@ import "./globals.scss";
 const ibmPlexSans = Space_Grotesk({
   variable: "--font-ibm-plex-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
 });
 
 const spaceMono = Space_Mono({
@@ -32,7 +31,7 @@ const doto = Doto({
   variable: "--font-doto-marquee",
   subsets: ["latin"],
   weight: "variable",
-  axes: ["ROND"],
+  preload: false,
 });
 
 export async function generateMetadata(): Promise<Metadata> {

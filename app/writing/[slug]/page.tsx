@@ -166,6 +166,7 @@ export default async function WritingPostPage({
               src={urlFor(post.image).width(1600).fit("max").url()}
               alt={post.title}
               fill
+              priority
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 800px"
             />
